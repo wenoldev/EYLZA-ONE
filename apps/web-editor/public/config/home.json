@@ -1,0 +1,109 @@
+[
+        {
+            "type": "banner",
+            "name": "Hero Banner",
+            "props": {
+                "imageUrl": "/abstract-hero-banner.png",
+                "title": "Welcome to TechStore",
+                "subTitle": "Discover cutting-edge technology",
+                "description": "At unbeatable prices",
+                "fullWidth": true,
+                "textAlignment": "center",
+                "verticalAlignment": "center",
+                "styles": {
+                    "height": "500px",
+                    "titleColor": "#ffffff",
+                    "titleFontSize": "3.5rem",
+                    "backgroundColor": "#0f172a"
+                },
+                "buttons": [
+                    {
+                        "label": "Shop Now",
+                        "link": "/products",
+                        "style": "primary"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "slider",
+            "name": "Featured Products",
+            "props": {
+                "title": "Featured Products",
+                "autoplay": true,
+                "autoplaySpeed": 3000,
+                "showArrows": true,
+                "showDots": true,
+                "images": [
+                    "/abstract-geometric-product.png",
+                    "/abstract-product-display.png"
+                ]
+            }
+        },
+        {
+            "type": "text",
+            "name": "Intro Text",
+            "props": {
+                "data": {
+                    "title": "About Us",
+                    "content": "<p>We provide the best tech gadgets in town. Explore our vast collection of latest devices.</p>"
+                },
+                "settings": {
+                    "alignment": "center",
+                    "maxWidth": "lg"
+                },
+                "styles": {
+                    "backgroundColor": "#f8fafc",
+                    "textColor": "#334155",
+                    "fontSize": 18
+                }
+            }
+        },
+        {
+            "type": "grid",
+            "name": "Product Grid",
+            "props": {
+                "title": "Best Sellers",
+                "items": [
+                    {
+                        "id": 1,
+                        "title": "Product 1",
+                        "price": "$99",
+                        "image": "/placeholder.png"
+                    },
+                    {
+                        "id": 2,
+                        "title": "Product 2",
+                        "price": "$149",
+                        "image": "/placeholder.png"
+                    },
+                    {
+                        "id": 3,
+                        "title": "Product 3",
+                        "price": "$199",
+                        "image": "/placeholder.png"
+                    },
+                    {
+                        "id": 4,
+                        "title": "Product 4",
+                        "price": "$299",
+                        "image": "/placeholder.png"
+                    }
+                ],
+                "layout": {
+                    "desktop": 4,
+                    "tablet": 2,
+                    "mobile": 1
+                },
+                "styles": {
+                    "gap": "2rem",
+                    "padding": "2rem 0",
+                    "backgroundColor": "#ffffff",
+                    "titleColor": "#111827",
+                    "cardStyles": {
+                        "imageShape": "rounded"
+                    }
+                }
+            }
+        }
+    ]

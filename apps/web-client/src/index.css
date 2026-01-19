@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+
+@layer utilities {
+  .font-serif-premium {
+    font-family: "Playfair Display", serif;
+  }
+
+  .golden {
+    color: #c5a059;
+  }
+}
+
+@theme {
+  --color-primary: var(--client-primary, #3b82f6);
+  --color-secondary: var(--client-secondary, #f3f4f6);
+  --color-background: var(--client-background, #ffffff);
+}
+
+:root {
+  --client-primary: #3b82f6;
+  --client-secondary: #f3f4f6;
+  --client-background: #ffffff;
+}
+
+body {
+  background-color: var(--client-background);
+  color: #1a1a1a;
+}

@@ -1,0 +1,19 @@
+[
+        {
+            "id": "text-about",
+            "type": "text",
+            "name": "About Us Content",
+            "visible": true,
+            "isDeletable": true,
+            "order": 1,
+            "props": {
+                "data": {
+                    "title": "About Our Store",
+                    "content": "<p>We have been serving customers since 2010.</p>"
+                },
+                "styles": {
+                    "backgroundColor": "#ffffff"
+                }
+            }
+        }
+    ]

@@ -1,0 +1,131 @@
+{
+  "global": {
+    "colors": {
+      "primary": "#2563eb",
+      "secondary": "#6b7280",
+      "background": "#ffffff",
+      "fontFamily": "Inter, system-ui, sans-serif"
+    },
+    "others": {
+      "fontFamily": "Inter"
+    }
+  },
+  "header": {
+    "type": "header",
+    "name": "Header",
+    "props": {
+      "general": {
+        "backgroundStyle": "fill",
+        "borderRadiusStyle": "smooth",
+        "textColor": "#333333",
+        "backgroundColor": "#ffffff",
+        "fontFamily": "Inter",
+        "logoText": "ZARISHKA",
+        "behaviour": "sticky"
+      },
+      "topBar": {
+        "show": true,
+        "content": "Free Shipping on all orders above 599.",
+        "showIcons": true,
+        "backgroundColor": "#4a5d4e",
+        "textColor": "#ffffff"
+      },
+      "mainBar": {
+        "order": [
+          {
+            "id": "navigation",
+            "visible": true
+          },
+          {
+            "id": "__gap__",
+            "visible": true
+          },
+          {
+            "id": "logo",
+            "visible": true
+          },
+          {
+            "id": "__gap__",
+            "visible": true
+          },
+          {
+            "id": "search",
+            "visible": true
+          },
+          {
+            "id": "icons",
+            "visible": true
+          }
+        ],
+        "searchDesign": "input"
+      },
+      "bottomBar": {
+        "show": false,
+        "alignment": "center"
+      }
+    }
+  },
+  "footer": {
+    "type": "footer",
+    "name": "Footer",
+    "props": {
+      "general": {
+        "design": "design1",
+        "hideFooter": false,
+        "backgroundColor": "#ffffff",
+        "textColor": "#1f2937",
+        "accentColor": "#3b82f6",
+        "borderColor": "#e5e7eb",
+        "fontFamily": "Inter",
+        "paddingTop": "3rem",
+        "paddingBottom": "3rem"
+      },
+      "sections": {
+        "menuOrder": [
+          {
+            "id": "brand",
+            "visible": true
+          },
+          {
+            "id": "quickLinks",
+            "visible": true
+          },
+          {
+            "id": "supportLinks",
+            "visible": true
+          },
+          {
+            "id": "policyLinks",
+            "visible": true
+          },
+          {
+            "id": "social",
+            "visible": true
+          },
+          {
+            "id": "contactInfo",
+            "visible": true
+          }
+        ],
+        "showPaymentMethods": true,
+        "paymentMethodsStyle": "badges",
+        "showDividers": true,
+        "linksUnderline": false,
+        "socialIconStyle": "circle"
+      },
+      "mobile": {
+        "textAlignment": "center",
+        "stackOrder": "brand-first",
+        "layout": "accordion",
+        "collapseSections": true,
+        "hideSocialOnMobile": false,
+        "hidePaymentOnMobile": false
+      },
+      "content": {
+        "copyrightText": "© 2025 ZARISHKA. All rights reserved.",
+        "showTagline": false,
+        "copyrightPosition": "center"
+      }
+    }
+  }
+}
