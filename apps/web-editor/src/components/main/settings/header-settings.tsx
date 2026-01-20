@@ -21,18 +21,18 @@ export function HeaderSettings({ header, onChange }: HeaderSettingsProps) {
           <ColorPicker
             label="Background Color"
             value={header.general?.backgroundColor || "#ffffff"}
-            onChange={(val) => onChange("general.backgroundColor", val)}
+            onChange={(val: string) => onChange("general.backgroundColor", val)}
           />
           <ColorPicker
             label="Text Color"
             value={header.general?.textColor || "#333333"}
-            onChange={(val) => onChange("general.textColor", val)}
+            onChange={(val: string) => onChange("general.textColor", val)}
           />
           <div className="space-y-2">
             <Label className="text-xs">Background Style</Label>
             <Select
               value={header.general?.backgroundStyle || "fill"}
-              onValueChange={(val) => onChange("general.backgroundStyle", val)}
+              onValueChange={(val: string) => onChange("general.backgroundStyle", val)}
             >
               <SelectTrigger className="h-8 text-xs">
                 <SelectValue />
@@ -53,7 +53,7 @@ export function HeaderSettings({ header, onChange }: HeaderSettingsProps) {
           <Label className="text-xs">Show Top Bar</Label>
           <Switch
             checked={header.topBar?.show}
-            onCheckedChange={(val) => onChange("topBar.show", val)}
+            onCheckedChange={(val: boolean) => onChange("topBar.show", val)}
           />
         </div>
         {header.topBar?.show && (
@@ -61,7 +61,7 @@ export function HeaderSettings({ header, onChange }: HeaderSettingsProps) {
             <Label className="text-xs">Content</Label>
             <Input
               value={header.topBar?.content || ""}
-              onChange={(e) => onChange("topBar.content", e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange("topBar.content", e.target.value)}
               className="h-8 text-xs"
             />
           </div>
@@ -74,7 +74,7 @@ export function HeaderSettings({ header, onChange }: HeaderSettingsProps) {
           <Label className="text-xs">Search Design</Label>
           <Select
             value={header.mainBar?.searchDesign || "input"}
-            onValueChange={(val) => onChange("mainBar.searchDesign", val)}
+            onValueChange={(val: string) => onChange("mainBar.searchDesign", val)}
           >
             <SelectTrigger className="h-8 text-xs">
               <SelectValue />

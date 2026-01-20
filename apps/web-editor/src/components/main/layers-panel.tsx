@@ -25,8 +25,6 @@ export function LayersPanelAdvanced({
   onToggleVisibility,
 }: LayersPanelProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
-  const [contextMenuId, setContextMenuId] = useState<string | null>(null)
-
   const isHeader = (comp: ComponentInstance) => comp.type === "header" && !comp.isDeletable
   const isFooter = (comp: ComponentInstance) => comp.type === "footer" && !comp.isDeletable
 
@@ -49,7 +47,6 @@ export function LayersPanelAdvanced({
     e.preventDefault()
     if (draggedIndex !== null && draggedIndex !== toIndex) {
       const fromComponent = components[draggedIndex]
-      const toComponent = components[toIndex]
 
       if (isHeader(fromComponent) || isFooter(fromComponent)) return
 

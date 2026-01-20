@@ -13,7 +13,7 @@ export async function getHeaderMenus() {
   const pages = themeData?.pages || [];
 
   return {
-    mainSection: pages.map(page => ({
+    mainSection: pages.map((page: any) => ({
       title: page.name,
       link: formatLink(page.slug)
     })),

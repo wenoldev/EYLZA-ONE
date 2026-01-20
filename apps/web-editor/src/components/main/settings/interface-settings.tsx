@@ -26,7 +26,7 @@ export function InterfaceSettings({ interfaceSettings, onChange }: InterfaceSett
           min={0}
           max={24}
           step={1}
-          onValueChange={([val]) => onChange("cornerRadius", val)}
+          onValueChange={([val]: number[]) => onChange("cornerRadius", val)}
         />
       </div>
 
@@ -37,7 +37,7 @@ export function InterfaceSettings({ interfaceSettings, onChange }: InterfaceSett
         </div>
         <Switch
           checked={interfaceSettings?.enableShadows}
-          onCheckedChange={(val) => onChange("enableShadows", val)}
+          onCheckedChange={(val: boolean) => onChange("enableShadows", val)}
         />
       </div>
 
@@ -48,7 +48,7 @@ export function InterfaceSettings({ interfaceSettings, onChange }: InterfaceSett
         </div>
         <Switch
           checked={interfaceSettings?.stickyHeader}
-          onCheckedChange={(val) => onChange("stickyHeader", val)}
+          onCheckedChange={(val: boolean) => onChange("stickyHeader", val)}
         />
       </div>
     </div>

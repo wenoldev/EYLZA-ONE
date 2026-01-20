@@ -22,10 +22,8 @@ export function useEditorSelection({
         "data-x-id": `${component.type}_${component.id}`,
         type: component.type,
         schema: {
-          id: component.type,
-          type: component.type,
           label: component.name,
-          fields: [],
+          tabs: [],
         },
         props: component.props,
       }

@@ -1,7 +1,6 @@
 import { Outlet, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
-import Header from '../dynamic/Header'
-import Footer from '../dynamic/Footer'
+import { Header, Footer } from '@eylza/dynamic-components'
 import { useStore } from '@/store/useStore'
 import ShadeLoader from '../loader/ShadeLoader'
 import NotFoundPage from '@/pages/common/NotFoundPage'

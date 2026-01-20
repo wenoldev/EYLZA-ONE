@@ -1,10 +1,8 @@
 
 import type { ComponentInstance, EditorElement } from "@/types/editor"
 import { PropertyEditor } from "../editor/property-editor"
-import { X } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
 import set from "lodash.set"
 import get from "lodash.get"
 
@@ -15,7 +13,7 @@ interface PropertyPanelProps {
   onClose: () => void
 }
 
-export function PropertyPanel({ selectedElement, component, onUpdateElement, onClose }: PropertyPanelProps) {
+export function PropertyPanel({ selectedElement, onUpdateElement }: PropertyPanelProps) {
   if (!selectedElement) {
     return (
       <div className="flex h-full flex-col bg-card w-full">
@@ -58,7 +56,7 @@ export function PropertyPanel({ selectedElement, component, onUpdateElement, onC
                   {tab.label}
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-6 pt-4 space-y-8">
-                  {tab.controls.map((control, index) => (
+                  {tab.controls.map((control) => (
                     <div key={control.property} className="animate-in fade-in slide-in-from-top-1 duration-300">
                       <PropertyEditor
                         field={control}

@@ -1,4 +1,4 @@
-import axios, { type AxiosInstance } from 'axios';
+import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosResponse, type AxiosError } from 'axios';
 import { getCookie, setCookie, removeCookie } from '@/utils/cookies';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '';
@@ -12,7 +12,7 @@ const api: AxiosInstance = axios.create({
 
 // Request interceptor to add authorization token
 api.interceptors.request.use(
-  (config) => {
+  (config: InternalAxiosRequestConfig) => {
     const token = getCookie('access');
 
     if (token) {
@@ -21,16 +21,16 @@ api.interceptors.request.use(
 
     return config;
   },
-  (error) => {
+  (error: AxiosError) => {
     return Promise.reject(error);
   }
 );
 
 // Response interceptor for global error handling
 api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+  (response: AxiosResponse) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
     if (originalRequest.url?.includes('/auth/refresh')) {
       return Promise.reject(error);
     }

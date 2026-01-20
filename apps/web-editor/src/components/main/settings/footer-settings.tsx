@@ -22,7 +22,7 @@ export function FooterSettings({ footer, onChange }: FooterSettingsProps) {
             <Label className="text-xs">Design</Label>
             <Select
               value={footer.props?.general?.design || "design1"}
-              onValueChange={(val) => onChange("props.general.design", val)}
+              onValueChange={(val: string) => onChange("props.general.design", val)}
             >
               <SelectTrigger className="h-8 text-xs">
                 <SelectValue />
@@ -37,12 +37,12 @@ export function FooterSettings({ footer, onChange }: FooterSettingsProps) {
           <ColorPicker
             label="Background Color"
             value={footer.props?.general?.backgroundColor || "#ffffff"}
-            onChange={(val) => onChange("props.general.backgroundColor", val)}
+            onChange={(val: string) => onChange("props.general.backgroundColor", val)}
           />
           <ColorPicker
             label="Text Color"
             value={footer.props?.general?.textColor || "#1f2937"}
-            onChange={(val) => onChange("props.general.textColor", val)}
+            onChange={(val: string) => onChange("props.general.textColor", val)}
           />
         </div>
       </div>
@@ -53,21 +53,21 @@ export function FooterSettings({ footer, onChange }: FooterSettingsProps) {
           <Label className="text-xs">Hide Footer</Label>
           <Switch
             checked={footer.props?.sections?.hideFooter}
-            onCheckedChange={(val) => onChange("props.sections.hideFooter", val)}
+            onCheckedChange={(val: boolean) => onChange("props.sections.hideFooter", val)}
           />
         </div>
         <div className="flex items-center justify-between">
           <Label className="text-xs">Show Social Icons</Label>
           <Switch
             checked={footer.props?.sections?.showSocialIcons}
-            onCheckedChange={(val) => onChange("props.sections.showSocialIcons", val)}
+            onCheckedChange={(val: boolean) => onChange("props.sections.showSocialIcons", val)}
           />
         </div>
         <div className="flex items-center justify-between">
           <Label className="text-xs">Show Payment Methods</Label>
           <Switch
             checked={footer.props?.sections?.showPaymentMethods}
-            onCheckedChange={(val) => onChange("props.sections.showPaymentMethods", val)}
+            onCheckedChange={(val: boolean) => onChange("props.sections.showPaymentMethods", val)}
           />
         </div>
       </div>
@@ -78,7 +78,7 @@ export function FooterSettings({ footer, onChange }: FooterSettingsProps) {
           <Label className="text-xs">Copyright Text</Label>
           <Input
             value={footer.props?.content?.copyrightText || ""}
-            onChange={(e) => onChange("props.content.copyrightText", e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange("props.content.copyrightText", e.target.value)}
             className="h-8 text-xs"
           />
         </div>

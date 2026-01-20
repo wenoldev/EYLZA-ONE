@@ -1,4 +1,6 @@
-import { FooterCompanyInfo, FooterMenus } from "@/components/dynamic/types/Footer";
+import type { FooterCompanyInfo, FooterMenus } from "@eylza/dynamic-components";
+
+
 
 export async function getFooterCompanyInfo(): Promise<FooterCompanyInfo> {
     // This would typically be an API call

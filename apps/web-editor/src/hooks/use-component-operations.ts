@@ -1,7 +1,7 @@
 
 import { useCallback } from "react"
 import type { ComponentInstance } from "@/types/editor"
-import { editorSchemas } from "@/lib/editor/schemas"
+import { editorSchemas } from "@/components/editor/schemas"
 
 export interface UseComponentOperationsProps {
   components: ComponentInstance[]

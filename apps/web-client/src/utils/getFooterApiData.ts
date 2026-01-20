@@ -1,4 +1,4 @@
-import type { FooterCompanyInfo, FooterMenus } from "@/components/dynamic/types/Footer";
+import type { FooterCompanyInfo, FooterMenus } from "@eylza/dynamic-components";
 import { useStore } from "@/store/useStore";
 
 export async function getFooterCompanyInfo(): Promise<FooterCompanyInfo> {
@@ -37,7 +37,7 @@ export async function getFooterMenus(): Promise<FooterMenus> {
     const pages = themeData?.pages || [];
 
     return {
-        quickLinks: pages.map(page => ({
+        quickLinks: pages.map((page: any) => ({
             label: page.name,
             href: formatLink(page.slug)
         })),

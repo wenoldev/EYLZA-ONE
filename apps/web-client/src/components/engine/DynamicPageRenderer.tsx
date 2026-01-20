@@ -1,6 +1,8 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, Suspense } from 'react'
 import { useStore } from '@/store/useStore'
 import ShadeLoader from '../loader/ShadeLoader'
+import { ComponentRegistry } from '@eylza/dynamic-components'
+
 
 interface DynamicPageRendererProps {
   pageKey: string;
@@ -17,7 +19,8 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({ pageKey }) =>
 
   const currentPage = useMemo(() => {
     if (!themeData?.pages) return null;
-    return themeData.pages.find(p => p.slug === pageKey || p.name.toLowerCase() === pageKey.toLowerCase());
+    return themeData.pages.find((p: any) => p.slug === pageKey || p.name.toLowerCase() === pageKey.toLowerCase());
+
   }, [themeData, pageKey]);
 
   const content = useMemo(() => {
@@ -38,13 +41,23 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({ pageKey }) =>
     <div className="w-full">
       {content && Array.isArray(content) && content.length > 0 ? (
         content.map((component: any, index: number) => { // eslint-disable-line @typescript-eslint/no-explicit-any
-          return (
-            <div key={component.id || index} className="py-10 border-b border-dashed border-border/30 bg-card/10">
-              <div className="max-w-7xl mx-auto px-4 text-center">
-                <p className="text-sm font-mono text-muted-foreground uppercase tracking-widest mb-2">Section: {component.type}</p>
-                <h3 className="text-2xl font-bold">{component.props?.title || 'Component Content'}</h3>
+          const Component = ComponentRegistry[component.type as keyof typeof ComponentRegistry] as any;
+
+          if (!Component) {
+            return (
+              <div key={component.id || index} className="py-10 border-b border-dashed border-border/30 bg-card/10">
+                <div className="max-w-7xl mx-auto px-4 text-center">
+                  <p className="text-sm font-mono text-muted-foreground uppercase tracking-widest mb-2">Section: {component.type}</p>
+                  <h3 className="text-2xl font-bold">{component.props?.title || 'Component Content'}</h3>
+                </div>
               </div>
-            </div>
+            );
+          }
+
+          return (
+            <Suspense key={component.id || index} fallback={<ShadeLoader />}>
+              <Component config={component.props} />
+            </Suspense>
           );
         })
       ) : (

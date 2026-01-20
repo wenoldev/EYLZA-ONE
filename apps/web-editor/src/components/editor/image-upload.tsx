@@ -3,7 +3,6 @@ import type React from "react"
 
 import { useState, useRef } from "react"
 import { Upload, X } from "lucide-react"
-import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 
 interface ImageUploadProps {

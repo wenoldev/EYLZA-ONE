@@ -1,7 +1,7 @@
 import { createStore } from 'zustand/vanilla';
 import { useStore } from 'zustand';
 import api from '@/lib/api';
-import { ComponentInstance, EditorElement, ViewportSize, PanelType } from '@/types/editor';
+import type { ComponentInstance, EditorElement, ViewportSize, PanelType } from '@/types/editor';
 
 interface HistoryState {
   pagesData: Record<string, ComponentInstance[]>;
@@ -71,7 +71,7 @@ interface EditorState {
 
 const getSlug = (pageName: string) => pageName.toLowerCase().replace(/\s+/g, "-");
 
-export const editorStore = createStore<EditorState>((set, get) => ({
+export const editorStore = createStore<EditorState>()((set, get) => ({
   storeData: null,
   activeThemeId: null,
   currentPage: "Home",
@@ -90,33 +90,33 @@ export const editorStore = createStore<EditorState>((set, get) => ({
   loadProgress: 0,
   history: { states: [], index: -1 },
 
-  setStoreData: (data) => set({ storeData: data }),
-  setActiveThemeId: (id) => set({ activeThemeId: id }),
-  setCurrentPage: (page) => set({ currentPage: page }),
+  setStoreData: (data: any) => set({ storeData: data }),
+  setActiveThemeId: (id: string | null) => set({ activeThemeId: id }),
+  setCurrentPage: (page: string) => set({ currentPage: page }),
 
-  setGlobalConfig: (config, skipHistory = false) => {
-    set((state) => ({
+  setGlobalConfig: (config: any | ((prev: any) => any), skipHistory = false) => {
+    set((state: EditorState) => ({
       globalConfig: typeof config === 'function' ? config(state.globalConfig) : config
     }));
     if (!skipHistory) get().takeSnapshot();
   },
 
-  setPages: (pages) => set({ pages }),
+  setPages: (pages: any[]) => set({ pages }),
 
-  setPagesData: (data) => set((state) => ({
+  setPagesData: (data: Record<string, ComponentInstance[]> | ((prev: Record<string, ComponentInstance[]>) => Record<string, ComponentInstance[]>)) => set((state: EditorState) => ({
     pagesData: typeof data === 'function' ? data(state.pagesData) : data
   })),
 
-  setSelectedComponent: (comp) => set({ selectedComponent: comp }),
-  setSelectedElement: (el) => set({ selectedElement: el }),
-  setActivePanel: (panel) => set({ activePanel: panel }),
-  setViewportSize: (size) => set({ viewportSize: size }),
-  setShowRightPanel: (show) => set({ showRightPanel: show }),
-  setIsLoading: (loading) => set({ isLoading: loading }),
-  setIsInitialLoading: (loading) => set({ isInitialLoading: loading }),
-  setLoadProgress: (progress) => set({ loadProgress: progress }),
+  setSelectedComponent: (comp: ComponentInstance | null) => set({ selectedComponent: comp }),
+  setSelectedElement: (el: EditorElement | null) => set({ selectedElement: el }),
+  setActivePanel: (panel: PanelType | null) => set({ activePanel: panel }),
+  setViewportSize: (size: ViewportSize) => set({ viewportSize: size }),
+  setShowRightPanel: (show: boolean) => set({ showRightPanel: show }),
+  setIsLoading: (loading: boolean) => set({ isLoading: loading }),
+  setIsInitialLoading: (loading: boolean) => set({ isInitialLoading: loading }),
+  setLoadProgress: (progress: number) => set({ loadProgress: progress }),
 
-  setInitialData: (global, pagesList) => {
+  setInitialData: (global: any, pagesList: any[]) => {
     set({
       globalConfig: global,
       initialGlobalConfig: JSON.parse(JSON.stringify(global)),
@@ -127,7 +127,7 @@ export const editorStore = createStore<EditorState>((set, get) => ({
     });
   },
 
-  fetchPageData: async (slug) => {
+  fetchPageData: async (slug: string) => {
     const { pagesData, storeData, activeThemeId, globalConfig, currentPage } = get();
     if (pagesData[slug]) return;
 
@@ -137,7 +137,7 @@ export const editorStore = createStore<EditorState>((set, get) => ({
       const { page } = response.data.data;
       const content = page.content || [];
 
-      set((state) => {
+      set((state: EditorState) => {
         const newPagesData = { ...state.pagesData, [slug]: content };
         const newInitialPagesData = { ...state.initialPagesData, [slug]: JSON.parse(JSON.stringify(content)) };
 
@@ -167,11 +167,11 @@ export const editorStore = createStore<EditorState>((set, get) => ({
     }
   },
 
-  updatePageComponents: (newComponents, skipHistory = false) => {
+  updatePageComponents: (newComponents: ComponentInstance[], skipHistory = false) => {
     const { currentPage } = get();
     const slug = getSlug(currentPage);
 
-    set((state) => ({
+    set((state: EditorState) => ({
       pagesData: { ...state.pagesData, [slug]: newComponents }
     }));
 
@@ -193,7 +193,7 @@ export const editorStore = createStore<EditorState>((set, get) => ({
       if (JSON.stringify(currentState) === JSON.stringify(newState)) return;
     }
 
-    set((state) => {
+    set((state: EditorState) => {
       const newStates = [...state.history.states.slice(0, state.history.index + 1), newState];
 
       // Limit history to 50 states
@@ -292,7 +292,7 @@ export const editorStore = createStore<EditorState>((set, get) => ({
         await api.patch(`/stores/${storeData.id}/themes/${activeThemeId}/pages/${slug}`, {
           content: pagesData[slug]
         });
-        set((state) => ({
+        set((state: EditorState) => ({
           initialPagesData: {
             ...state.initialPagesData,
             [slug]: JSON.parse(JSON.stringify(pagesData[slug]))

@@ -1,11 +1,8 @@
-import { Palette, Type, Layout, PanelTop, PanelBottom, FileEdit } from "lucide-react"
+import { Palette, Type, Layout, FileEdit } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { ColorSettings } from "./settings/color-settings"
 import { TypographySettings } from "./settings/typography-settings"
-import { InterfaceSettings } from "./settings/interface-settings"
-import { HeaderSettings } from "./settings/header-settings"
-import { FooterSettings } from "./settings/footer-settings"
 import { ThemeSettings } from "./settings/theme-settings"
 import { DraftSettings } from "./settings/draft-settings"
 
@@ -26,40 +23,6 @@ export function GlobalSettingsPanel({ config, onConfigChange }: GlobalSettingsPa
       [key]: value
     }
 
-    onConfigChange(newConfig)
-  }
-
-  const updateHeader = (path: string, value: any) => {
-    const newConfig = { ...config }
-    if (!newConfig.header) newConfig.header = {}
-
-    const parts = path.split('.')
-    let current = newConfig.header
-
-    for (let i = 0; i < parts.length - 1; i++) {
-      if (!current[parts[i]]) current[parts[i]] = {}
-      current[parts[i]] = { ...current[parts[i]] }
-      current = current[parts[i]]
-    }
-
-    current[parts[parts.length - 1]] = value
-    onConfigChange(newConfig)
-  }
-
-  const updateFooter = (path: string, value: any) => {
-    const newConfig = { ...config }
-    if (!newConfig.footer) newConfig.footer = {}
-
-    const parts = path.split('.')
-    let current = newConfig.footer
-
-    for (let i = 0; i < parts.length - 1; i++) {
-      if (!current[parts[i]]) current[parts[i]] = {}
-      current[parts[i]] = { ...current[parts[i]] }
-      current = current[parts[i]]
-    }
-
-    current[parts[parts.length - 1]] = value
     onConfigChange(newConfig)
   }
 

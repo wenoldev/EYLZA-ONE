@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { api, setApiStoreId } from '@/lib/api';
-import type { HeaderConfig } from '@/components/dynamic/types/Header';
-import type { FooterConfig } from '@/components/dynamic/types/Footer';
+import type { HeaderConfig, FooterConfig } from '@eylza/dynamic-components';
 
 export interface StoreTheme {
     id: string;
@@ -57,7 +56,7 @@ interface StoreState {
     fetchPageContent: (slug: string) => Promise<void>;
 }
 
-export const useStore = create<StoreState>((set, get) => ({
+export const useStore = create<StoreState>()((set, get) => ({
     themeData: null,
     store: null,
     isLoading: false,

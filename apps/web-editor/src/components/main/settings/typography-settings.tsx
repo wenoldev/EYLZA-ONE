@@ -20,7 +20,7 @@ export function TypographySettings({ typography, onChange }: TypographySettingsP
         <Label className="text-xs font-medium text-muted-foreground">Headings Font</Label>
         <Select
           value={typography.headingFont}
-          onValueChange={(val) => onChange("headingFont", val)}
+          onValueChange={(val: string) => onChange("headingFont", val)}
         >
           <SelectTrigger className="w-full text-sm h-9 bg-background border-input/60 hover:border-input focus:ring-1">
             <SelectValue />
@@ -38,7 +38,7 @@ export function TypographySettings({ typography, onChange }: TypographySettingsP
         <Label className="text-xs font-medium text-muted-foreground">Body Font</Label>
         <Select
           value={typography.bodyFont}
-          onValueChange={(val) => onChange("bodyFont", val)}
+          onValueChange={(val: string) => onChange("bodyFont", val)}
         >
           <SelectTrigger className="w-full text-sm h-9 bg-background border-input/60 hover:border-input focus:ring-1">
             <SelectValue />
@@ -63,7 +63,7 @@ export function TypographySettings({ typography, onChange }: TypographySettingsP
           min={12}
           max={24}
           step={1}
-          onValueChange={([val]) => onChange("baseSize", val)}
+          onValueChange={([val]: number[]) => onChange("baseSize", val)}
           className="py-1"
         />
       </div>

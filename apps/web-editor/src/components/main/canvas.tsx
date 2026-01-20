@@ -1,7 +1,7 @@
 
 import React, { useMemo, Suspense, memo } from "react"
 import type { ComponentInstance, ViewportSize } from "@/types/editor"
-import { ComponentRegistry } from "@/components/dynamic/registry"
+import { ComponentRegistry } from "@eylza/dynamic-components"
 import { SectionWrapper } from "../support/section-wrapper"
 import Loader from '@/components/common/Loader'
 
@@ -83,8 +83,6 @@ export const Canvas = memo(({
   selectedComponent,
   onSelectComponent,
   onHoverComponent,
-  onRemoveComponent,
-  onDuplicateComponent,
   onAddComponentDrop,
   viewportSize,
 }: CanvasProps) => {

@@ -4,7 +4,7 @@ import { router } from './router'
 import { useStore } from './store/useStore'
 
 function App() {
-     const fetchTheme = useStore(state => state.fetchTheme)
+     const fetchTheme = useStore((state) => state.fetchTheme)
 
      useEffect(() => {
           fetchTheme()
