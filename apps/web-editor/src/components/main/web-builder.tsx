@@ -100,9 +100,9 @@ export function WebBuilder() {
   const currentPageSlug = currentPage.toLowerCase().replace(/\s+/g, "-")
   const currentPageComponents = pagesData[currentPageSlug] || []
   const fullPageComponents = [
-    ...(globalConfig?.header ? [{ ...globalConfig.header, isGlobal: true }] : []),
+    ...(globalConfig?.header ? [{ ...globalConfig.header, type: 'header', isGlobal: true }] : []),
     ...currentPageComponents,
-    ...(globalConfig?.footer ? [{ ...globalConfig.footer, isGlobal: true }] : []),
+    ...(globalConfig?.footer ? [{ ...globalConfig.footer, type: 'footer', isGlobal: true }] : []),
   ]
 
   const simulateLoading = async () => {
