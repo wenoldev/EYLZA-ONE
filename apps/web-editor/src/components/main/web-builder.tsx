@@ -1,10 +1,9 @@
 "use client"
 
-import { Suspense, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import type {
   ComponentInstance,
   EditorElement,
-  PanelType,
 } from "@/types/editor"
 import { editorSchemas } from "@/components/editor/schemas"
 import { Canvas } from "./canvas"
@@ -15,7 +14,7 @@ import { TopBar } from "./top-bar"
 import { AddSectionGallery } from "./add-section-panel"
 import { NeonProgressBar } from "../common/neon-progress-bar"
 import { GlobalSettingsPanel } from "./global-settings-panel"
-import { X, Moon, Settings } from "lucide-react"
+import { X } from "lucide-react"
 import { EditorSkeleton } from "../common/editor-skeleton"
 import { componentGallery } from "@/lib/component-gallery"
 import { useEditorStore } from "@/store/useEditorStore"
@@ -35,7 +34,6 @@ export function WebBuilder() {
     setSelectedElement,
     activePanel,
     setActivePanel,
-    showRightPanel,
     viewportSize,
     isLoading,
     setIsLoading,
@@ -43,14 +41,9 @@ export function WebBuilder() {
     setIsInitialLoading,
     loadProgress,
     setLoadProgress,
-    undo,
-    redo,
-    canUndo,
-    canRedo,
     updatePageComponents,
     takeSnapshot,
     setInitialData,
-    hasChanges,
     fetchPageData
   } = useEditorStore()
 

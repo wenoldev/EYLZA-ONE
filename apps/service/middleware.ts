@@ -11,8 +11,8 @@ const supabase = createClient(
 export async function middleware(request: NextRequest) {
   // Handle CORS preflight requests
   if (request.method === 'OPTIONS') {
-    return new NextResponse(null, { 
-      status: 204, 
+    return new NextResponse(null, {
+      status: 204,
       headers: {
         ...corsHeaders,
         'Content-Length': '0',
@@ -22,10 +22,15 @@ export async function middleware(request: NextRequest) {
 
   // Skip authentication for public routes
   const isPublicRoute =
-    request.method === 'GET' &&
-    (request.nextUrl.pathname.startsWith('/api/v1/products') || 
-     request.nextUrl.pathname.startsWith('/api/v1/categories'));
-  
+    (request.method === 'GET' &&
+      (request.nextUrl.pathname.startsWith('/api/v1/products') ||
+        request.nextUrl.pathname.startsWith('/api/v1/categories') ||
+        request.nextUrl.pathname.startsWith('/api/v1/public'))) ||
+    (request.method === 'POST' &&
+      (request.nextUrl.pathname.startsWith('/api/v1/public/queries') ||
+        request.nextUrl.pathname.startsWith('/api/v1/public/testimonials') ||
+        request.nextUrl.pathname.startsWith('/api/v1/common/upload')))
+
   const isAuthRoute = request.nextUrl.pathname.startsWith('/api/v1/auth');
 
   if (isPublicRoute || isAuthRoute) {
@@ -51,7 +56,7 @@ export async function middleware(request: NextRequest) {
 
   const token = authHeader.replace('Bearer ', '');
   const { data: { user }, error } = await supabase.auth.getUser(token);
-  
+
   if (error || !user) {
     return NextResponse.json(
       {
@@ -79,7 +84,7 @@ export async function middleware(request: NextRequest) {
   requestHeaders.set('x-user-id', user.id);
   requestHeaders.set('x-user-role', role);
 
-  const response = NextResponse.next({ 
+  const response = NextResponse.next({
     request: {
       headers: requestHeaders,
     }
