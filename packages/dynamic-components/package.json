@@ -18,8 +18,11 @@
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
+    "@eylza/typescript-config": "*",
+    "@eylza/eslint-config": "*",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
+    "eslint": "^9.18.0",
     "typescript": "~5.9.3"
   }
 }
