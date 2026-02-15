@@ -12,6 +12,7 @@ import ThemeSelection from '@/components/modules/dashboard/themes/select-theme';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { StoreRequiredRoute } from '@/components/common/StoreRequiredRoute';
 import EditTheme from '@/components/modules/dashboard/themes/edit-theme';
+import TestimonialsPage from '@/components/modules/dashboard/testimonials';
 
 // Lazy-load the Dashboard component
 // Lazy-load the Dashboard component
@@ -98,6 +99,10 @@ const dashboardRoutes = [
             <VendorTickets />
           </Suspense>
         )
+      },
+      {
+        path: 'testimonials',
+        element: <TestimonialsPage />
       }
     ]
   }

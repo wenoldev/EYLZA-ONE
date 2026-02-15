@@ -35,13 +35,13 @@ interface DraggableProps<T extends DraggableItem> {
     setData: React.Dispatch<React.SetStateAction<T[]>>;
     filter?: string | null;
     filterDataArray?: T[];
-    component: 'product' | 'category' | 'queries';
+    component: 'product' | 'category' | 'queries' | 'testimonials';
     onReorder?: (updatedItems: T[]) => void;
     onEdit?: (item: T) => void;
     onDelete?: (id: string) => void;
     selectedRows: Set<number>;
     toggleRowSelection: (index: number) => void;
-    showSelect?:boolean;
+    showSelect?: boolean;
     permissions: ('view' | 'edit' | 'delete' | 'drag')[]
 }
 
@@ -52,9 +52,9 @@ function SortableItem(props: {
     onEdit: () => void;
     onDelete: () => void;
     isSelected: boolean;
-    showSelect?:boolean;
-    canEdit:boolean;
-    canDelete:boolean;
+    showSelect?: boolean;
+    canEdit: boolean;
+    canDelete: boolean;
     onToggleSelect: () => void;
 }) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
@@ -85,14 +85,14 @@ function SortableItem(props: {
                     {props.children}
                     <div className="ml-auto flex space-x-2">
                         {props.canEdit && (
-                        <Button variant="ghost" size="sm" onClick={props.onEdit}>
-                            <Pencil className="h-4 w-4" />
-                        </Button>
+                            <Button variant="ghost" size="sm" onClick={props.onEdit}>
+                                <Pencil className="h-4 w-4" />
+                            </Button>
                         )}
                         {props.canDelete && (
-                        <Button variant="ghost" size="sm" onClick={props.onDelete}>
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
+                            <Button variant="ghost" size="sm" onClick={props.onDelete}>
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
                         )}
                     </div>
                 </CardContent>
@@ -153,7 +153,7 @@ const DraggableContent = <T extends DraggableItem>({
                             id={item.id}
                             draggable={permissions.includes('drag')}
                             canEdit={permissions.includes('edit')}
-                            canDelete = {permissions.includes('delete')}
+                            canDelete={permissions.includes('delete')}
                             onEdit={() => onEdit && onEdit(item)}
                             onDelete={() => onDelete && onDelete(item.id)}
                             isSelected={selectedRows.has(index)}
@@ -172,7 +172,7 @@ const DraggableContent = <T extends DraggableItem>({
                                     <div className="flex flex-col justify-center">
                                         <h3 className="font-semibold text-lg">{item.name}</h3>
                                         <p className="flex gap-2 text-sm text-gray-600">
-                                           <span className='hidden sm:block'>Price:</span> ₹{Number(item.price ?? 0).toFixed(2)}
+                                            <span className='hidden sm:block'>Price:</span> ₹{Number(item.price ?? 0).toFixed(2)}
                                         </p>
                                         {item.category && (
                                             <p className="text-sm text-gray-400">
@@ -213,6 +213,22 @@ const DraggableContent = <T extends DraggableItem>({
                                         <h3 className="font-semibold text-lg">{item.name}</h3>
                                         <p className="text-sm text-gray-600 flex gap-1"><AtSign className='text-gray-300' />{item.email}</p>
                                         <p className="text-sm text-gray-600 flex gap-1"><MessageSquareMore className='text-gray-300' /> {item.message}</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {component === 'testimonials' && (
+                                <div className="flex flex-row items-center gap-4">
+                                    <div className="w-16 h-16 flex justify-center items-center flex-shrink-0 relative overflow-hidden rounded-full border">
+                                        <ImageViewer
+                                            src={item.profile_image ? item.profile_image : '/noimage.png'}
+                                            alt={item.name || 'No Image'}
+                                            className="object-cover w-full h-full"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col flex-grow space-y-1">
+                                        <h3 className="font-semibold text-lg">{item.name}</h3>
+                                        <p className="text-sm text-gray-600 italic">"{item.review}"</p>
                                     </div>
                                 </div>
                             )}

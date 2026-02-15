@@ -1,5 +1,5 @@
 import type { MenuGroup } from "@/types/menu";
-import { ChartPie, LayoutGrid, Package2, PaintbrushVertical, ShoppingCart, User, Ticket, Settings, Users, Store, Shield } from "lucide-react";
+import { ChartPie, LayoutGrid, Package2, PaintbrushVertical, ShoppingCart, User, Ticket, Settings, Users, Store, Shield, MessageSquareMore } from "lucide-react";
 
 export const userMenuData: MenuGroup[] = [
   {
@@ -56,6 +56,11 @@ export const userMenuData: MenuGroup[] = [
         title: "Tickets",
         route: { url: "tickets" },
         icon: Ticket,
+      },
+      {
+        title: "Testimonials",
+        route: { url: "testimonials" },
+        icon: MessageSquareMore,
       },
       {
         title: "Settings",
