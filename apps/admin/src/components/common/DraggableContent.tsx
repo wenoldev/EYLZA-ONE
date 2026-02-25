@@ -22,6 +22,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import ImageViewer from '@/components/common/ImageViewer';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 
 type DraggableItem = {
@@ -42,6 +44,7 @@ interface DraggableProps<T extends DraggableItem> {
     selectedRows: Set<number>;
     toggleRowSelection: (index: number) => void;
     showSelect?: boolean;
+    onStatusChange?: (id: string, isActive: boolean) => void;
     permissions: ('view' | 'edit' | 'delete' | 'drag')[]
 }
 
@@ -56,6 +59,8 @@ function SortableItem(props: {
     canEdit: boolean;
     canDelete: boolean;
     onToggleSelect: () => void;
+    isActive?: boolean;
+    onStatusChange?: (checked: boolean) => void;
 }) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
         id: props.id,
@@ -83,7 +88,19 @@ function SortableItem(props: {
                         </div>
                     )}
                     {props.children}
-                    <div className="ml-auto flex space-x-2">
+                    <div className="ml-auto flex items-center space-x-2">
+                        {props.onStatusChange && (
+                            <div className="flex items-center space-x-2 mr-2">
+                                <Switch
+                                    id={`active-${props.id}`}
+                                    checked={props.isActive !== false}
+                                    onCheckedChange={props.onStatusChange}
+                                />
+                                <Label htmlFor={`active-${props.id}`} className="text-xs text-gray-400 hidden sm:block">
+                                    {props.isActive !== false ? 'Visible' : 'Hidden'}
+                                </Label>
+                            </div>
+                        )}
                         {props.canEdit && (
                             <Button variant="ghost" size="sm" onClick={props.onEdit}>
                                 <Pencil className="h-4 w-4" />
@@ -112,6 +129,7 @@ const DraggableContent = <T extends DraggableItem>({
     selectedRows,
     showSelect,
     toggleRowSelection,
+    onStatusChange,
 }: DraggableProps<T>): JSX.Element => {
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -123,31 +141,29 @@ const DraggableContent = <T extends DraggableItem>({
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
         if (!over || active.id === over.id) return;
-        setData((items) => {
-            const oldIndex = items.findIndex((item) => item.id === active.id);
-            const newIndex = items.findIndex((item) => item.id === over.id);
-            const newItems = arrayMove(items, oldIndex, newIndex);
 
-            // Update the order property for all items
+        const oldIndex = data.findIndex((item) => item.id === active.id);
+        const newIndex = data.findIndex((item) => item.id === over.id);
+
+        if (oldIndex !== -1 && newIndex !== -1) {
+            const newItems = arrayMove(data, oldIndex, newIndex);
             const updatedItems = newItems.map((item, index) => ({
                 ...item,
                 order: index
             }));
 
-            onReorder?.(updatedItems);
-            return updatedItems;
-        });
+            setData(updatedItems as T[]);
+            onReorder?.(updatedItems as T[]);
+        }
     };
 
-    const filteredItems = data;
-    // Sort the filtered items by the 'order' property
-    filteredItems.sort((a, b) => (a.order || 0) - (b.order || 0));
+    const sortedItems = [...data].sort((a, b) => (a.order || 0) - (b.order || 0));
 
     return (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={filteredItems.map((item) => item.id)} strategy={verticalListSortingStrategy}>
+            <SortableContext items={sortedItems.map((item) => item.id)} strategy={verticalListSortingStrategy}>
                 <ul className="space-y-2">
-                    {filteredItems.map((item, index) => (
+                    {sortedItems.map((item, index) => (
                         <SortableItem
                             key={item.id}
                             id={item.id}
@@ -159,6 +175,8 @@ const DraggableContent = <T extends DraggableItem>({
                             isSelected={selectedRows.has(index)}
                             onToggleSelect={() => toggleRowSelection(index)}
                             showSelect={showSelect}
+                            isActive={item.is_active}
+                            onStatusChange={onStatusChange ? (checked) => onStatusChange(item.id, checked) : undefined}
                         >
                             {component === 'product' && (
                                 <div className="flex flex-row items-center gap-4">

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { SidebadrBody } from "./sidebar-body";
 import { SidebarBottom } from "./sidebar-bottom";
@@ -14,6 +14,7 @@ import { MenuSkeleton } from "@/skeletons/menu";
 import { useAuthStore } from "@/stores/authStore";
 import { StoreSwitcher } from "./StoreSwitcher";
 import { useStoreStore } from "@/stores/storeStore";
+import api from "@/lib/api";
 
 // Define props interface for AppSidebar
 interface AppSidebarProps {
@@ -25,9 +26,12 @@ interface AppSidebarProps {
 
 export function AppSidebar({ className, hideStoreSwitcher, ...props }: AppSidebarProps) {
   const { user, error, initializeAuth, isLoading } = useAuthStore();
-  const { stores, loading: storeLoading, fetchStores, error: storeError } = useStoreStore();
+  const { stores, loading: storeLoading, fetchStores } = useStoreStore();
   const navigate = useNavigate();
-  const menuData = (user?.user_metadata?.role === "admin" || user?.role === "admin") ? adminMenuData : userMenuData;
+  const [activePlugins, setActivePlugins] = useState<string[]>([]);
+
+  const currentStore = stores?.[0];
+  const userRole = user?.user_metadata?.role || user?.role;
 
   useEffect(() => {
     // Initialize auth state on mount
@@ -45,12 +49,10 @@ export function AppSidebar({ className, hideStoreSwitcher, ...props }: AppSideba
     if (!user) return;
 
     // If admin, skip store checks and redirects
-    const isAdmin = user.user_metadata?.role === "admin" || user.role === "admin";
+    const isAdmin = userRole === "admin";
     if (isAdmin) return;
 
-    const isVendor =
-      user.user_metadata?.role === "vendor" || user.role === "vendor";
-    console.log({ isVendor, stores });
+    const isVendor = userRole === "vendor";
 
     if (!stores || stores.length === 0) {
       // fetch only if not already loading
@@ -63,11 +65,37 @@ export function AppSidebar({ className, hideStoreSwitcher, ...props }: AppSideba
         navigate("/store-setup");
       }
     }
-    if (storeError) {
-      console.log("err", storeError)
-      navigate("/login")
-    }
-  }, [user, stores]);
+  }, [user, stores, userRole]);
+
+  useEffect(() => {
+    const fetchActivePlugins = async () => {
+      if (!currentStore || userRole === 'admin') return;
+      try {
+        const res = await api.get(`/api/v1/stores/${currentStore.id}/plugins`);
+        if (res.data?.data?.plugins) {
+          setActivePlugins(res.data.data.plugins.map((p: any) => p.slug));
+        }
+      } catch (err) {
+        console.error("Failed to fetch active plugins", err);
+      }
+    };
+
+    fetchActivePlugins();
+  }, [currentStore, userRole]);
+
+  const menuData = useMemo(() => {
+    const baseMenu = userRole === "admin" ? adminMenuData : userMenuData;
+    if (userRole === "admin") return baseMenu;
+
+    return baseMenu.map(group => ({
+      ...group,
+      items: group.items.filter(item => {
+        if (item.title === 'Testimonials') return activePlugins.includes('testimonials');
+        if (item.title === 'Gallery') return activePlugins.includes('gallery');
+        return true;
+      })
+    }));
+  }, [userRole, activePlugins]);
 
   if (isLoading) {
     return <MenuSkeleton />;

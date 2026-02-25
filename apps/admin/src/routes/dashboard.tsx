@@ -13,15 +13,18 @@ import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { StoreRequiredRoute } from '@/components/common/StoreRequiredRoute';
 import EditTheme from '@/components/modules/dashboard/themes/edit-theme';
 import TestimonialsPage from '@/components/modules/dashboard/testimonials';
+import PluginsPage from '@/components/modules/dashboard/plugins';
+import GalleryPage from '@/components/modules/dashboard/gallery';
+import CMSListPage from '@/components/modules/dashboard/cms';
+import CMSEditorPage from '@/components/modules/dashboard/cms/CMSEditor';
 
-// Lazy-load the Dashboard component
 // Lazy-load the Dashboard component
 const Dashboard = lazy(() => import('@/components/modules/dashboard'));
 const VendorTickets = lazy(() => import('@/components/modules/dashboard/tickets'));
 
 const dashboardRoutes = [
   {
-    path: '',
+    path: 'dashboard',
     element: (
       <ProtectedRoute allowedRoles={['admin', 'vendor']}>
         <StoreRequiredRoute>
@@ -33,6 +36,14 @@ const dashboardRoutes = [
       {
         path: '',
         element: <DashboardPage />
+      },
+      {
+        path: 'cms',
+        element: <CMSListPage />
+      },
+      {
+        path: 'cms/:id',
+        element: <CMSEditorPage />
       },
       {
         path: 'analytics',
@@ -103,6 +114,14 @@ const dashboardRoutes = [
       {
         path: 'testimonials',
         element: <TestimonialsPage />
+      },
+      {
+        path: 'gallery',
+        element: <GalleryPage />
+      },
+      {
+        path: 'plugins',
+        element: <PluginsPage />
       }
     ]
   }

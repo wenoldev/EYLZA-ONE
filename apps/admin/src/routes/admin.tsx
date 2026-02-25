@@ -10,6 +10,7 @@ const AdminThemes = lazy(() => import('@/components/modules/admin/themes'));
 const AdminTickets = lazy(() => import('@/components/modules/admin/tickets'));
 const AdminPlans = lazy(() => import('@/components/modules/admin/plans'));
 const AdminUsers = lazy(() => import('@/components/modules/admin/users'));
+const AdminPlugins = lazy(() => import('@/components/modules/dashboard/admin/plugins'));
 
 const adminRoutes = [
   {
@@ -67,6 +68,14 @@ const adminRoutes = [
         element: (
           <Suspense fallback={<Loader />}>
             <AdminUsers />
+          </Suspense>
+        )
+      },
+      {
+        path: 'plugins',
+        element: (
+          <Suspense fallback={<Loader />}>
+            <AdminPlugins />
           </Suspense>
         )
       }

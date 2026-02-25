@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type React from "react"
 import { useState, useEffect } from "react"
-import { X, Loader2, Upload } from "lucide-react"
+import { X, Loader2 } from "lucide-react"
 import { buildFormSchema } from "@/lib/zodSchemaBuilder"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -83,24 +83,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ fields, onSubmit, initialValu
     }))
   }
 
-  const handleFileChange = (fieldName: string, files: FileList | null) => {
-    if (!files || files.length === 0) return
-    const file = files[0]
-
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      if (e.target?.result && typeof e.target.result === "string") {
-        const fileContent = e.target.result as string
-        const uploadedFile = {
-          fileName: file.name,
-          fileContent, // base64
-        }
-        setImagePreview(fileContent)
-        handleChange(fieldName, uploadedFile)
-      }
-    }
-    reader.readAsDataURL(file)
-  }
 
   const handleRemoveFile = (fieldName: string) => {
     setImagePreview("")
@@ -268,29 +250,26 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ fields, onSubmit, initialValu
 
               {(field.type === "file" || field.type === "image") && (
                 <div className="space-y-2">
-                  <div className="flex items-center space-x-4">
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type="file"
-                      accept={field.accept || "image/*"}
-                      required={field.required}
-                      onChange={(e) => handleFileChange(field.name, e.target.files)}
-                      onBlur={() => handleBlur(field.name)}
-                      className={`w-full max-w-xs ${fieldError ? "border-red-500 focus-visible:ring-red-500" : ""}`}
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => {
-                        const fileInput = document.getElementById(field.name) as HTMLInputElement
-                        fileInput?.click()
-                      }}
-                    >
-                      <Upload className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  <UploadDialog
+                    multiple={false}
+                    onImagesSelected={(images) => {
+                      if (images.length > 0) {
+                        const img = images[0]
+                        if (typeof img.image_url === "string") {
+                          setImagePreview(img.image_url)
+                          handleChange(field.name, img.image_url)
+                        } else {
+                          setImagePreview(img.image_url.fileContent)
+                          handleChange(field.name, img.image_url)
+                        }
+                      }
+                    }}
+                    initialValues={
+                      formData[field.name]
+                        ? [{ image_url: formData[field.name], isPrimary: true }]
+                        : []
+                    }
+                  />
                   {imagePreview && (
                     <div className="relative w-32 h-32">
                       <img
@@ -323,7 +302,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ fields, onSubmit, initialValu
                   />
                   {imageGroupPreview.length > 0 && (
                     <div className="grid grid-cols-4 gap-2">
-                      {imageGroupPreview.slice(0, 3).map((image:any, index) => (
+                      {imageGroupPreview.slice(0, 3).map((image: any, index) => (
                         <div key={index} className="relative">
                           <img
                             src={
@@ -353,7 +332,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ fields, onSubmit, initialValu
                           <DialogContent>
                             <DialogTitle>All images</DialogTitle>
                             <div className="grid grid-cols-3 gap-4">
-                              {imageGroupPreview.map((image:any, index) => (
+                              {imageGroupPreview.map((image: any, index) => (
                                 <div key={index} className="relative">
                                   <img
                                     src={

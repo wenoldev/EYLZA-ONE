@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import NotFound from '@/components/modules/404';
 import dashboardRoutes from './dashboard';
@@ -12,6 +12,10 @@ import StoreSetupWizard from '@/components/modules/store-setup';
 const AuthPages = lazy(() => import('@/components/modules/auth/index'));
 
 export const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Navigate to="/dashboard" replace />,
+  },
   {
     path: 'login',
     element: (

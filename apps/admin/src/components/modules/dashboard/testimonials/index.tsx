@@ -24,11 +24,13 @@ const TestimonialPage = () => {
         testimonials,
         isLoading,
         isCreating,
+        isUpdating,
         error,
         fetchTestimonials,
         createTestimonial,
         updateTestimonial,
         deleteTestimonial,
+        reorderTestimonials,
         clearError
     } = useTestimonialStore();
 
@@ -60,16 +62,32 @@ const TestimonialPage = () => {
         { name: "name", label: "Customer Name", type: "text", required: true },
         { name: "review", label: "Review", type: "textarea", required: true },
         { name: "profile_image", label: "Profile Image", type: "file" },
+        {
+            name: "is_active",
+            label: "Visible",
+            type: "select",
+            options: [
+                { label: "Visible", value: "true" },
+                { label: "Hidden", value: "false" }
+            ],
+            defaultValue: "true"
+        }
     ];
 
     const handleFormSubmit = async (formData: Partial<Testimonial>) => {
         if (!userStoreId) return;
         try {
+            // Convert string "true"/"false" back to boolean if it came from the select
+            const formattedData = {
+                ...formData,
+                is_active: (formData as any).is_active === "true" || (formData as any).is_active === true
+            };
+
             if (editingItem) {
-                await updateTestimonial(editingItem.id, formData);
+                await updateTestimonial(editingItem.id, formattedData);
                 toast.success("Testimonial updated successfully");
             } else {
-                await createTestimonial({ ...formData, store_id: userStoreId });
+                await createTestimonial({ ...formattedData, store_id: userStoreId });
                 toast.success("Testimonial added successfully");
             }
             setIsSheetOpen(false);
@@ -90,6 +108,24 @@ const TestimonialPage = () => {
         }
     };
 
+    const handleStatusChange = async (id: string, is_active: boolean) => {
+        try {
+            await updateTestimonial(id, { is_active });
+            toast.success(`Testimonial is now ${is_active ? 'visible' : 'hidden'}`);
+        } catch (err) {
+            console.error("Status update error:", err);
+        }
+    };
+
+    const handleReorder = async (updatedItems: Testimonial[]) => {
+        try {
+            await reorderTestimonials(updatedItems);
+            toast.success("Order updated successfully");
+        } catch (err) {
+            console.error("Reorder error:", err);
+        }
+    };
+
     if (isLoading && testimonials.length === 0 && !hasInitialized) {
         return <Loader />;
     }
@@ -107,18 +143,20 @@ const TestimonialPage = () => {
             {testimonials.length > 0 ? (
                 <DraggableContent
                     data={testimonials}
-                    setData={() => { }}
-                    component="queries" // Reusing queries layout for text-focused items
+                    setData={(val) => {
+                        if (typeof val === 'function') {
+                            const updated = val(testimonials);
+                            handleReorder(updated);
+                        }
+                    }}
+                    component="testimonials"
                     onEdit={(item) => { setEditingItem(item); setIsSheetOpen(true); }}
                     onDelete={(id) => { setItemToDelete(id); setDeleteDialogOpen(true); }}
+                    onStatusChange={handleStatusChange}
                     selectedRows={new Set()}
                     toggleRowSelection={() => { }}
                     showSelect={false}
-                    permissions={['view', 'edit', 'delete']}
-                // Custom mapping for queries component: queries expects 'name', 'email' (sub), 'message' (main)
-                // We'll map 'review' to 'message' via the DraggableContent logic if it was dynamic, 
-                // but DraggableContent.tsx uses item.message for queries.
-                // Let's modify DraggableContent.tsx to support testimonials or adjust our data.
+                    permissions={['view', 'edit', 'delete', 'drag']}
                 />
             ) : (
                 <div className="text-center py-12">
@@ -134,7 +172,10 @@ const TestimonialPage = () => {
                 <DynamicForm
                     fields={formFields}
                     onSubmit={handleFormSubmit}
-                    initialValues={editingItem || {}}
+                    initialValues={editingItem ? {
+                        ...editingItem,
+                        is_active: editingItem.is_active?.toString()
+                    } : {}}
                 />
             </SideSheet>
 
@@ -146,7 +187,7 @@ const TestimonialPage = () => {
                     </DialogHeader>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-                        <Button variant="destructive" onClick={() => itemToDelete && handleDelete(itemToDelete)}>Delete</Button>
+                        <Button variant="destructive" onClick={() => itemToDelete && handleDelete(itemToDelete)} disabled={isUpdating}>Delete</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

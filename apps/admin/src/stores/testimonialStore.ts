@@ -8,6 +8,8 @@ export interface Testimonial {
     name: string;
     review: string;
     profile_image?: string;
+    is_active?: boolean;
+    order?: number;
     meta_data?: any;
     created_at: string;
 }
@@ -36,6 +38,7 @@ interface TestimonialState {
     createTestimonial: (data: Partial<Testimonial>) => Promise<Testimonial>;
     updateTestimonial: (id: string, data: Partial<Testimonial>) => Promise<Testimonial>;
     deleteTestimonial: (id: string) => Promise<void>;
+    reorderTestimonials: (testimonials: Testimonial[]) => Promise<void>;
     clearError: () => void;
 }
 
@@ -122,6 +125,17 @@ export const useTestimonialStore = create<TestimonialState>((set) => ({
             }));
         } catch (error: any) {
             set({ isDeleting: false, error: error.message || 'Failed to delete testimonial' });
+            throw error;
+        }
+    },
+
+    reorderTestimonials: async (testimonials: Testimonial[]) => {
+        try {
+            set({ testimonials, error: null });
+            // In a real scenario, you'd send the new order to the backend here
+            // await api.post('/api/v1/testimonials/reorder', { testimonials });
+        } catch (error: any) {
+            set({ error: error.message || 'Failed to reorder testimonials' });
             throw error;
         }
     },

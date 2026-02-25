@@ -1,5 +1,5 @@
 import type { MenuGroup } from "@/types/menu";
-import { ChartPie, LayoutGrid, Package2, PaintbrushVertical, ShoppingCart, User, Ticket, Settings, Users, Store, Shield, MessageSquareMore } from "lucide-react";
+import { ChartPie, LayoutGrid, Package2, PaintbrushVertical, ShoppingCart, User, Ticket, Settings, Users, Store, Shield, MessageSquareMore, Database } from "lucide-react";
 
 export const userMenuData: MenuGroup[] = [
   {
@@ -8,12 +8,12 @@ export const userMenuData: MenuGroup[] = [
       {
         title: "Dashboard",
         icon: LayoutGrid,
-        route: { url: "" }
+        route: { url: "dashboard" }
       },
       {
         title: "Analytics",
         icon: ChartPie,
-        route: { url: "analytics" }
+        route: { url: "dashboard/analytics" }
       }
     ]
   },
@@ -26,19 +26,19 @@ export const userMenuData: MenuGroup[] = [
         subItems: [
           {
             title: "All products",
-            route: { url: "products" }
+            route: { url: "dashboard/products" }
           },
-          { title: "Category", route: { url: "categories" } }
+          { title: "Category", route: { url: "dashboard/categories" } }
         ]
       },
       {
         title: "Orders",
-        route: { url: "orders" },
+        route: { url: "dashboard/orders" },
         icon: Package2,
       },
       {
         title: "Customer queries",
-        route: { url: "queries" },
+        route: { url: "dashboard/queries" },
         icon: User,
       },
       {
@@ -47,25 +47,40 @@ export const userMenuData: MenuGroup[] = [
         subItems: [
           {
             title: "Select theme",
-            route: { url: "select-theme" }
+            route: { url: "dashboard/select-theme" }
           },
-          { title: "Edit theme", route: { url: 'edit-theme' } }
+          { title: "Edit theme", route: { url: 'dashboard/edit-theme' } }
         ]
       },
       {
         title: "Tickets",
-        route: { url: "tickets" },
+        route: { url: "dashboard/tickets" },
         icon: Ticket,
       },
       {
         title: "Testimonials",
-        route: { url: "testimonials" },
+        route: { url: "dashboard/testimonials" },
         icon: MessageSquareMore,
+      },
+      {
+        title: "CMS",
+        route: { url: "dashboard/cms" },
+        icon: Database,
+      },
+      {
+        title: "Gallery",
+        route: { url: "dashboard/gallery" },
+        icon: LayoutGrid, // Using LayoutGrid for now
+      },
+      {
+        title: "Plugins",
+        route: { url: "dashboard/plugins" },
+        icon: Settings, // Using Settings for now
       },
       {
         title: "Settings",
         icon: Settings,
-        route: { url: "settings" }
+        route: { url: "dashboard/settings" }
       }
     ]
   }
@@ -109,6 +124,11 @@ export const adminMenuData: MenuGroup[] = [
         title: "Users",
         icon: Users,
         route: { url: "admin/users" }
+      },
+      {
+        title: "Plugins",
+        icon: Settings,
+        route: { url: "admin/plugins" }
       },
       {
         title: "Settings",
