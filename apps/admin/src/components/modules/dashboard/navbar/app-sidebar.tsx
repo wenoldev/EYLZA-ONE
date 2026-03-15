@@ -25,8 +25,15 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ className, hideStoreSwitcher, ...props }: AppSidebarProps) {
-  const { user, error, initializeAuth, isLoading } = useAuthStore();
-  const { stores, loading: storeLoading, fetchStores } = useStoreStore();
+  const user = useAuthStore((state) => state.user);
+  const userError = useAuthStore((state) => state.error);
+  const initializeAuth = useAuthStore((state) => state.initializeAuth);
+  const isLoading = useAuthStore((state) => state.isLoading);
+
+  const stores = useStoreStore((state) => state.stores);
+  const storeLoading = useStoreStore((state) => state.loading);
+  const fetchStores = useStoreStore((state) => state.fetchStores);
+
   const navigate = useNavigate();
   const [activePlugins, setActivePlugins] = useState<string[]>([]);
 
@@ -39,11 +46,11 @@ export function AppSidebar({ className, hideStoreSwitcher, ...props }: AppSideba
   }, [initializeAuth]);
 
   useEffect(() => {
-    // Redirect to login if there's an error or no user
-    if (error || !user) {
+    // Redirect to login if there's an error or no user, but only if not currently loading
+    if (!isLoading && (userError || !user)) {
       navigate("/login");
     }
-  }, [error, user, navigate]);
+  }, [userError, user, navigate, isLoading]);
 
   useEffect(() => {
     if (!user) return;
@@ -92,9 +99,11 @@ export function AppSidebar({ className, hideStoreSwitcher, ...props }: AppSideba
       items: group.items.filter(item => {
         if (item.title === 'Testimonials') return activePlugins.includes('testimonials');
         if (item.title === 'Gallery') return activePlugins.includes('gallery');
+        if (item.title === 'CMS') return activePlugins.includes('cms');
+        if (item.title === 'Analytics') return activePlugins.includes('analytics');
         return true;
       })
-    }));
+    })).filter(group => group.items.length > 0);
   }, [userRole, activePlugins]);
 
   if (isLoading) {
@@ -104,7 +113,7 @@ export function AppSidebar({ className, hideStoreSwitcher, ...props }: AppSideba
   return (
     <Sidebar collapsible="icon" className={className} {...props}>
       <SidebarHeader>
-        {!hideStoreSwitcher && <StoreSwitcher />}
+        {!hideStoreSwitcher && userRole !== "admin" && <StoreSwitcher />}
       </SidebarHeader>
       <SidebarContent>
         <SidebadrBody items={menuData} />

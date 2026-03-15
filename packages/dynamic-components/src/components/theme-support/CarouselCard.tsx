@@ -33,14 +33,14 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, styles }) => {
         <h2
           className="text-4xl md:text-6xl font-bold mb-4 tracking-tight"
           style={{ color: styles.textColor }}
-          dangerouslySetInnerHTML={{ __html: item.title }}
+          dangerouslySetInnerHTML={{ __html: item.title || '' }}
         />
         <p
           className="text-lg md:text-xl mb-8 opacity-90 font-medium"
           style={{ color: styles.textColor }}
-          dangerouslySetInnerHTML={{ __html: item.subtitle }}
+          dangerouslySetInnerHTML={{ __html: item.subtitle || '' }}
         />
-        {item.buttonLabel && (
+        {item.buttonText && (
           <a
             href={item.buttonLink || '#'}
             className="inline-block px-8 py-3 rounded-full font-bold transition-all duration-300 transform hover:scale-105 active:scale-95"
@@ -49,7 +49,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, styles }) => {
               color: '#ffffff'
             }}
           >
-            {item.buttonLabel}
+            {item.buttonText}
           </a>
         )}
       </div>

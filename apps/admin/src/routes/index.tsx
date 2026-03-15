@@ -7,6 +7,8 @@ import Loader from '@/components/common/Loader';
 import { AuthCallback } from '@/components/modules/auth/callback';
 import { Unauthorized } from '@/components/common/Unauthorized';
 import StoreSetupWizard from '@/components/modules/store-setup';
+import PricingPage from '@/components/modules/dashboard/billing/PricingPage';
+import {CheckoutPage} from '@/components/modules/dashboard/billing/CheckoutPage';
 
 // Lazy-load components
 const AuthPages = lazy(() => import('@/components/modules/auth/index'));
@@ -49,6 +51,14 @@ export const router = createBrowserRouter([
     ),
   },
   {
+    path: 'update-password',
+    element: (
+      <Suspense fallback={<Loader />}>
+        <AuthPages page="change" />
+      </Suspense>
+    ),
+  },
+  {
     path: 'auth',
     children: [
       { path: 'callback', element: <AuthCallback /> }
@@ -61,6 +71,14 @@ export const router = createBrowserRouter([
   {
     path: 'store-setup',
     element: <StoreSetupWizard />
+  },
+  {
+    path: 'pricing',
+    element: <PricingPage />
+  },
+  {
+    path: 'checkout',
+    element: <CheckoutPage />
   },
   ...dashboardRoutes,
   ...adminRoutes,

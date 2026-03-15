@@ -8,7 +8,7 @@ import api from '@/lib/api';
 
 const AdminPlans = () => {
   const [plans, setPlans] = useState<any[]>([]);
-  const [newPlan, setNewPlan] = useState({ name: '', price: '', interval: 'month' });
+  const [newPlan, setNewPlan] = useState({ name: '', monthlyPrice: '', annuallyPrice: '' });
 
   const fetchPlans = async () => {
     try {
@@ -26,20 +26,23 @@ const AdminPlans = () => {
   }, []);
 
   const handleCreate = async () => {
-    if (!newPlan.name || !newPlan.price) return;
+    if (!newPlan.name || !newPlan.monthlyPrice || !newPlan.annuallyPrice) return;
 
     try {
       const response = await api.post('/api/v1/admin/plans',
         {
           name: newPlan.name,
-          price: parseFloat(newPlan.price),
-          interval: newPlan.interval,
-          features: [] // Add feature input later if needed
+          price: {
+            monthly: parseFloat(newPlan.monthlyPrice),
+            annually: parseFloat(newPlan.annuallyPrice)
+          },
+          features: [], // Add feature input later if needed
+          is_active: true
         }
       );
 
       if (response.status === 200 || response.status === 201) {
-        setNewPlan({ name: '', price: '', interval: 'month' });
+        setNewPlan({ name: '', monthlyPrice: '', annuallyPrice: '' });
         fetchPlans();
       }
     } catch (error) {
@@ -67,26 +70,24 @@ const AdminPlans = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="planPrice">Price</Label>
+              <Label htmlFor="monthlyPrice">Monthly Price</Label>
               <Input
-                id="planPrice"
+                id="monthlyPrice"
                 type="number"
-                value={newPlan.price}
-                onChange={(e) => setNewPlan({ ...newPlan, price: e.target.value })}
+                value={newPlan.monthlyPrice}
+                onChange={(e) => setNewPlan({ ...newPlan, monthlyPrice: e.target.value })}
                 placeholder="0.00"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="planInterval">Interval</Label>
-              <select
-                id="planInterval"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                value={newPlan.interval}
-                onChange={(e) => setNewPlan({ ...newPlan, interval: e.target.value })}
-              >
-                <option value="month">Monthly</option>
-                <option value="year">Yearly</option>
-              </select>
+              <Label htmlFor="annuallyPrice">Annually Price</Label>
+              <Input
+                id="annuallyPrice"
+                type="number"
+                value={newPlan.annuallyPrice}
+                onChange={(e) => setNewPlan({ ...newPlan, annuallyPrice: e.target.value })}
+                placeholder="0.00"
+              />
             </div>
           </div>
           <Button onClick={handleCreate}>Create Plan</Button>
@@ -102,8 +103,8 @@ const AdminPlans = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Interval</TableHead>
+                <TableHead>Monthly Price</TableHead>
+                <TableHead>Annually Price</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
@@ -111,8 +112,8 @@ const AdminPlans = () => {
               {plans.map((plan) => (
                 <TableRow key={plan.id}>
                   <TableCell>{plan.name}</TableCell>
-                  <TableCell>${plan.price}</TableCell>
-                  <TableCell>{plan.interval}</TableCell>
+                  <TableCell>₹{plan.price?.monthly}</TableCell>
+                  <TableCell>₹{plan.price?.annually}</TableCell>
                   <TableCell>{plan.is_active ? 'Active' : 'Inactive'}</TableCell>
                 </TableRow>
               ))}

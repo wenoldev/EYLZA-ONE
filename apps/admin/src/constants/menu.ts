@@ -1,5 +1,5 @@
 import type { MenuGroup } from "@/types/menu";
-import { ChartPie, LayoutGrid, Package2, PaintbrushVertical, ShoppingCart, User, Ticket, Settings, Users, Store, Shield, MessageSquareMore, Database } from "lucide-react";
+import { ChartPie, LayoutGrid, Package2, PaintbrushVertical, ShoppingCart, User, Ticket, Settings, Users, Store, Shield, MessageSquareMore, Database, CreditCard, Puzzle } from "lucide-react";
 
 export const userMenuData: MenuGroup[] = [
   {
@@ -8,7 +8,7 @@ export const userMenuData: MenuGroup[] = [
       {
         title: "Dashboard",
         icon: LayoutGrid,
-        route: { url: "dashboard" }
+        route: { url: "dashboard/main" }
       },
       {
         title: "Analytics",
@@ -21,7 +21,7 @@ export const userMenuData: MenuGroup[] = [
     sectionName: "Menus",
     items: [
       {
-        title: "Products",
+        title: "Inventory",
         icon: ShoppingCart,
         subItems: [
           {
@@ -42,6 +42,21 @@ export const userMenuData: MenuGroup[] = [
         icon: User,
       },
       {
+        title: "Tickets",
+        route: { url: "dashboard/tickets" },
+        icon: Ticket,
+      },
+      {
+        title: "Plugins",
+        route: { url: "dashboard/plugins" },
+        icon: Store,
+      },
+      {
+        title: "Settings",
+        icon: Settings,
+        route: { url: "dashboard/settings" }
+      },
+      {
         title: "Themes",
         icon: PaintbrushVertical,
         subItems: [
@@ -51,17 +66,12 @@ export const userMenuData: MenuGroup[] = [
           },
           { title: "Edit theme", route: { url: 'dashboard/edit-theme' } }
         ]
-      },
-      {
-        title: "Tickets",
-        route: { url: "dashboard/tickets" },
-        icon: Ticket,
-      },
-      {
-        title: "Testimonials",
-        route: { url: "dashboard/testimonials" },
-        icon: MessageSquareMore,
-      },
+      }
+    ]
+  },
+  {
+    sectionName: "Plugins",
+    items: [
       {
         title: "CMS",
         route: { url: "dashboard/cms" },
@@ -70,33 +80,18 @@ export const userMenuData: MenuGroup[] = [
       {
         title: "Gallery",
         route: { url: "dashboard/gallery" },
-        icon: LayoutGrid, // Using LayoutGrid for now
+        icon: LayoutGrid,
       },
       {
-        title: "Plugins",
-        route: { url: "dashboard/plugins" },
-        icon: Settings, // Using Settings for now
-      },
-      {
-        title: "Settings",
-        icon: Settings,
-        route: { url: "dashboard/settings" }
+        title: "Testimonials",
+        route: { url: "dashboard/testimonials" },
+        icon: MessageSquareMore,
       }
     ]
   }
 ]
 
 export const adminMenuData: MenuGroup[] = [
-  {
-    sectionName: "General",
-    items: [
-      {
-        title: "Dashboard",
-        icon: LayoutGrid,
-        route: { url: "" }
-      }
-    ]
-  },
   {
     sectionName: "Management",
     items: [
@@ -117,7 +112,7 @@ export const adminMenuData: MenuGroup[] = [
       },
       {
         title: "Plans",
-        icon: Settings,
+        icon: CreditCard,
         route: { url: "admin/plans" }
       },
       {
@@ -127,22 +122,8 @@ export const adminMenuData: MenuGroup[] = [
       },
       {
         title: "Plugins",
-        icon: Settings,
+        icon: Puzzle,
         route: { url: "admin/plugins" }
-      },
-      {
-        title: "Settings",
-        icon: Settings,
-        route: { url: "dashboard/settings" }
-      },
-      {
-        title: "Policy",
-        icon: Shield,
-        subItems: [
-          { title: "Privacy", route: { url: "dashboard/settings", queryParams: { tab: "privacy" } } },
-          { title: "Terms and Condition", route: { url: "dashboard/settings", queryParams: { tab: "terms" } } },
-          { title: "Refund Policy", route: { url: "dashboard/settings", queryParams: { tab: "refund" } } }
-        ]
       }
     ]
   }

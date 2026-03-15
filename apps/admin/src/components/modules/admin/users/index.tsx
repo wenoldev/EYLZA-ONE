@@ -81,12 +81,15 @@ const AdminUsers = () => {
                 <TableRow key={user.id}>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.role}</TableCell>
-                  <TableCell>{user.banned_until ? 'Banned' : 'Active'}</TableCell>
+                  <TableCell>
+                    {user.status === 'banned' ? 'Banned' : 
+                     user.status === 'inactive' ? 'Inactive' : 'Active'}
+                  </TableCell>
                   <TableCell className="space-x-2">
                     <Button variant="outline" size="sm" onClick={() => handleAction(user.id, 'reset_password')}>
                       Reset Password
                     </Button>
-                    {user.banned_until ? (
+                    {user.status === 'banned' ? (
                       <Button variant="outline" size="sm" onClick={() => handleAction(user.id, 'unban')}>
                         Unban
                       </Button>

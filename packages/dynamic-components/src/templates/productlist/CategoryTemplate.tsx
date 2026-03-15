@@ -1,59 +1,69 @@
-// CategoryTemplate.tsx
+import { motion } from 'framer-motion';
 
 const CategoryTemplate = ({ data, styles }: any) => {
-  const {
-    imageShape = 'circle',
-    aspectRatio = '1/1',
-    textAlign = 'center',
-    titleColor = '#111827',
-    subtitleColor = '#6b7280',
-    showShadow = false
-  } = styles;
+    const {
+        imageShape = 'circle',
+        aspectRatio = '1/1',
+        textAlign = 'center',
+        titleColor = '#111827',
+        subtitleColor = '#6b7280',
+        showShadow = true
+    } = styles;
 
-  const shapeClasses: any = {
-    circle: 'rounded-full',
-    square: 'rounded-none',
-    rounded: 'rounded-2xl'
-  };
+    const shapeClasses: any = {
+        circle: 'rounded-full',
+        square: 'rounded-none',
+        rounded: 'rounded-[1.5rem]'
+    };
 
-  const alignmentClasses: any = {
-    left: 'text-left items-start',
-    center: 'text-center items-center',
-    right: 'text-right items-end'
-  };
+    const alignmentClasses: any = {
+        left: 'text-left items-start',
+        center: 'text-center items-center',
+        right: 'text-right items-end'
+    };
 
-  return (
-    <div
-      className={`flex flex-col ${alignmentClasses[textAlign]} transition-transform duration-300 hover:scale-[1.02] group`}
-    >
-      <div
-        className={`relative overflow-hidden mb-4 ${shapeClasses[imageShape]} transition-shadow duration-300`}
-        style={{
-          aspectRatio,
-          width: '100%',
-          boxShadow: showShadow ? '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' : 'none'
-        }}
-      >
-        <img
-          src={data.imageUrl || data.image}
-          alt={data.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-        />
-      </div>
-      <h3
-        className="text-lg font-bold uppercase tracking-wider mb-1"
-        style={{ color: titleColor }}
-        dangerouslySetInnerHTML={{ __html: data.title }}
-      />
-      {data.subtitle && (
-        <p
-          className="text-sm opacity-70"
-          style={{ color: subtitleColor }}
-          dangerouslySetInnerHTML={{ __html: data.subtitle }}
-        />
-      )}
-    </div>
-  );
+    return (
+        <a 
+            href={data.link || '#'}
+            className={`flex flex-col ${alignmentClasses[textAlign]} group cursor-pointer`}
+        >
+            <div
+                className={`relative overflow-hidden mb-6 ${shapeClasses[imageShape]} transition-all duration-500 ring-0 ring-primary/0 group-hover:ring-[6px] group-hover:ring-primary/5`}
+                style={{
+                    aspectRatio,
+                    width: '100%',
+                    boxShadow: showShadow ? '0 20px 40px -15px rgba(0, 0, 0, 0.08)' : 'none'
+                }}
+            >
+                <motion.img
+                    src={data.imageUrl || data.image || '/placeholder-category.jpg'}
+                    alt={data.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    whileHover={{ scale: 1.1 }}
+                />
+                
+                {/* Overlay for depth */}
+                <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            </div>
+            
+            <div className="space-y-1">
+                <h3
+                    className="text-sm md:text-base font-bold uppercase tracking-[0.15em] transition-colors duration-300 group-hover:text-primary"
+                    style={{ color: titleColor }}
+                >
+                    {data.title}
+                </h3>
+                {data.subtitle && (
+                    <p
+                        className="text-xs md:text-sm opacity-50 font-light"
+                        style={{ color: subtitleColor }}
+                    >
+                        {data.subtitle}
+                    </p>
+                )}
+            </div>
+        </a>
+    );
 };
 
 export default CategoryTemplate;

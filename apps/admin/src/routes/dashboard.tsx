@@ -3,6 +3,7 @@ import CategoriesPage from '@/components/modules/dashboard/category';
 import ProductsPage from '@/components/modules/dashboard/products';
 import { HelpPage } from '@/components/modules/dashboard/help';
 import { lazy, Suspense } from 'react';
+import { Navigate } from 'react-router-dom';
 import SettingsPage from '@/components/modules/dashboard/settings';
 import QueryPage from '@/components/modules/dashboard/queries';
 import OrdersPage from '@/components/modules/dashboard/orders';
@@ -21,6 +22,9 @@ import CMSEditorPage from '@/components/modules/dashboard/cms/CMSEditor';
 // Lazy-load the Dashboard component
 const Dashboard = lazy(() => import('@/components/modules/dashboard'));
 const VendorTickets = lazy(() => import('@/components/modules/dashboard/tickets'));
+const TicketList = lazy(() => import('@/components/modules/dashboard/tickets/TicketList'));
+const CreateTicket = lazy(() => import('@/components/modules/dashboard/tickets/CreateTicket'));
+const TicketDetail = lazy(() => import('@/components/modules/dashboard/tickets/TicketDetail'));
 
 const dashboardRoutes = [
   {
@@ -34,8 +38,12 @@ const dashboardRoutes = [
     ),
     children: [
       {
-        path: '',
+        path: 'main',
         element: <DashboardPage />
+      },
+      {
+        path: '',
+        element: <Navigate to="main" replace />
       },
       {
         path: 'cms',
@@ -109,7 +117,21 @@ const dashboardRoutes = [
           <Suspense fallback={<Loader />}>
             <VendorTickets />
           </Suspense>
-        )
+        ),
+        children: [
+          {
+            path: '',
+            element: <TicketList />
+          },
+          {
+            path: 'create',
+            element: <CreateTicket />
+          },
+          {
+            path: ':id',
+            element: <TicketDetail />
+          }
+        ]
       },
       {
         path: 'testimonials',

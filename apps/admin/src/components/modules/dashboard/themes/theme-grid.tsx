@@ -1,11 +1,12 @@
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import ThemeCard from "./theme-card"
 import api from "@/lib/api"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 import type { Theme } from "@/types/themes"
 import { useStoreStore } from "@/stores/storeStore"
+import { useAuthStore } from "@/stores/authStore"
 import { useNavigate } from "react-router-dom"
 
 // Define specific interfaces to avoid 'any'
@@ -23,7 +24,7 @@ interface APITheme {
 }
 
 interface ProcessedTheme {
-  id: number | string
+  id: string
   name: string
   category: string
   preview: string
@@ -32,6 +33,7 @@ interface ProcessedTheme {
   isFavorite: boolean
   version: string
   added: string
+  isPurchased?: boolean
 }
 
 interface ThemeGridProps {
@@ -43,74 +45,72 @@ interface ThemeGridProps {
 
 export default function ThemeGrid({ filter, search, sort, onSelectTheme }: ThemeGridProps) {
   const { stores } = useStoreStore()
+  const { user } = useAuthStore()
   const navigate = useNavigate()
   const [allThemes, setAllThemes] = useState<ProcessedTheme[]>([])
+  const [purchasedIds, setPurchasedIds] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [installing, setInstalling] = useState<string | null>(null)
-
+  const [purchasing, setPurchasing] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetchThemes = async () => {
-      try {
-        setLoading(true)
-        const response = await api.get('/api/v1/themes')
-        if (response.data?.data?.themes) {
-
-          const themesData: APITheme[] = response.data.data.themes
-
-          const mappedThemes: ProcessedTheme[] = themesData.map((t) => ({
-            id: t.id,
-            name: t.name,
-            category: t.global_config?.category || "General",
-            preview: "/placeholder.svg", // preview_url removed from schema
-            isPaidTheme: t.ispaid,
-            price: t.amount ? parseFloat(t.amount) : 0,
-            isFavorite: false,
-            version: t.global_config?.version || "1.0.0",
-            added: new Date(t.created_at).toLocaleDateString()
-          }))
-          setAllThemes(mappedThemes)
-        }
-      } catch (error) {
-        console.error("Failed to fetch themes", error)
-        toast.error("Failed to load themes from marketplace")
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchThemes()
+    fetchThemesAndPurchases()
   }, [])
 
-  let filtered = allThemes
+  const fetchThemesAndPurchases = async () => {
+    try {
+      setLoading(true)
+      const [themesRes, purchasesRes] = await Promise.all([
+        api.get('/api/v1/themes'),
+        api.get('/api/v1/assets/purchased?type=theme')
+      ])
 
-  // Filter by category
-  if (filter !== "All") {
-    filtered = filtered.filter(
-      (theme) =>
-        theme.category === filter ||
-        (filter === "Favorite" && theme.isFavorite === true) ||
-        (filter === "Free" && !theme.isPaidTheme) ||
-        (filter === "Paid" && theme.isPaidTheme),
-    )
+      const themesData: APITheme[] = themesRes.data?.data?.themes || []
+      const purchasesData = purchasesRes.data?.data?.purchases || []
+      const purchasedThemeIds = purchasesData.map((p: any) => p.asset_id)
+      
+      setPurchasedIds(purchasedThemeIds)
+
+      const mappedThemes: ProcessedTheme[] = themesData.map((t) => ({
+        id: t.id,
+        name: t.name,
+        category: t.global_config?.category || "General",
+        preview: "/placeholder.svg",
+        isPaidTheme: t.ispaid,
+        price: t.amount ? parseFloat(t.amount) : 0,
+        isFavorite: false,
+        version: t.global_config?.version || "1.0.0",
+        added: new Date(t.created_at).toLocaleDateString(),
+        isPurchased: purchasedThemeIds.includes(t.id)
+      }))
+
+      setAllThemes(mappedThemes)
+    } catch (error) {
+      console.error("Failed to fetch themes", error)
+      toast.error("Failed to load themes from marketplace")
+    } finally {
+      setLoading(false)
+    }
   }
 
-  // Filter by search
-  if (search) {
-    filtered = filtered.filter((theme) => theme.name.toLowerCase().includes(search.toLowerCase()))
-  }
+  const filtered = useMemo(() => {
+    let result = allThemes
+    if (filter !== "All") {
+      result = result.filter(
+        (theme) =>
+          theme.category === filter ||
+          (filter === "Favorite" && theme.isFavorite === true) ||
+          (filter === "Free" && !theme.isPaidTheme) ||
+          (filter === "Paid" && theme.isPaidTheme),
+      )
+    }
+    if (search) {
+      result = result.filter((theme) => theme.name.toLowerCase().includes(search.toLowerCase()))
+    }
+    return result
+  }, [allThemes, filter, search])
 
-  // Sort
-  if (sort === "Newest") {
-    // Logic for new sort if needed
-    // Already sorted by API mostly, but ensures local sort
-    // filtered = [...filtered].reverse() // Removing reverse as API sorts likely
-    // If API sorts by created_at desc, then Newest is default. If we want explicit sort logic:
-    // filtered.sort((a, b) => new Date(b.added).getTime() - new Date(a.added).getTime())
-  } else if (sort === "Popular") {
-    filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name)) // Placeholder
-  }
-
-  const toggleFavorite = (id: number | string) => {
+  const toggleFavorite = (id: string) => {
     setAllThemes((prev) =>
       prev.map(theme =>
         theme.id === id
@@ -121,9 +121,84 @@ export default function ThemeGrid({ filter, search, sort, onSelectTheme }: Theme
   }
 
   const handlePreview = (theme: ProcessedTheme) => {
-    // Assuming demo stores follow a pattern: [theme-slug].eylza.shop
     const demoUrl = `https://${theme.name.toLowerCase().replace(/\s+/g, '-')}-demo.eylza.shop`;
     window.open(demoUrl, '_blank');
+  };
+
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handlePurchase = async (theme: ProcessedTheme) => {
+    if (!stores?.[0]?.id || !user) {
+      toast.error('Store or User not found');
+      return;
+    }
+
+    try {
+      setPurchasing(theme.id);
+      const res = await loadRazorpay();
+      if (!res) {
+        toast.error('Razorpay SDK failed to load');
+        return;
+      }
+
+      const orderRes = await api.post('/api/v1/themes/purchase', {
+        theme_id: theme.id,
+        store_id: stores[0].id
+      });
+
+      const orderData = orderRes.data;
+      if (orderData.error) throw new Error(orderData.error.message);
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_YOUR_KEY',
+        amount: orderData.data.amount,
+        currency: orderData.data.currency,
+        name: 'Eylza Themes',
+        description: `Purchase ${theme.name} Theme`,
+        order_id: orderData.data.order_id,
+        handler: async (response: any) => {
+          try {
+            const verifyRes = await api.post('/api/v1/themes/verify', {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              theme_id: theme.id,
+              store_id: stores[0].id
+            });
+
+            if (verifyRes.data?.data?.success) {
+              toast.success(`${theme.name} purchased successfully!`);
+              fetchThemesAndPurchases();
+            } else {
+              throw new Error(verifyRes.data?.error?.message || 'Verification failed');
+            }
+          } catch (err: any) {
+            toast.error(err.message || 'Payment verification failed');
+          }
+        },
+        prefill: {
+          name: user.user_metadata?.name || '',
+          email: user.email || '',
+        },
+        theme: { color: '#000000' },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch (error: any) {
+      console.error('Purchase error:', error);
+      toast.error(error.message || 'Could not initiate purchase');
+    } finally {
+      setPurchasing(null);
+    }
   };
 
   const handleSelect = async (theme: ProcessedTheme) => {
@@ -132,8 +207,13 @@ export default function ThemeGrid({ filter, search, sort, onSelectTheme }: Theme
       return;
     }
 
+    if (theme.isPaidTheme && !purchasedIds.includes(theme.id)) {
+      handlePurchase(theme);
+      return;
+    }
+
     try {
-      setInstalling(theme.id.toString());
+      setInstalling(theme.id);
       const shortId = Math.random().toString(36).substring(2, 6).toUpperCase();
       const newThemeName = `${theme.name} - ${shortId}`;
 
@@ -147,8 +227,7 @@ export default function ThemeGrid({ filter, search, sort, onSelectTheme }: Theme
       } else {
         toast.success(`Theme "${newThemeName}" added to your library`);
         onSelectTheme(theme);
-        // Navigate to edit theme to see it in draft
-        navigate('/edit-theme');
+        navigate('/dashboard/edit-theme');
       }
     } catch (error) {
       console.error("Installation error:", error);
@@ -157,7 +236,6 @@ export default function ThemeGrid({ filter, search, sort, onSelectTheme }: Theme
       setInstalling(null);
     }
   };
-
 
   if (loading) {
     return (
@@ -173,7 +251,10 @@ export default function ThemeGrid({ filter, search, sort, onSelectTheme }: Theme
         {filtered.map((theme) => (
           <div key={theme.id} className="relative group/card h-full">
             <ThemeCard
-              theme={theme as Theme}
+              theme={{
+                ...theme,
+                isPurchased: theme.isPaidTheme ? purchasedIds.includes(theme.id) : true
+              } as any}
               onFavoriteToggle={(e) => {
                 e.stopPropagation();
                 toggleFavorite(theme.id);
@@ -181,11 +262,13 @@ export default function ThemeGrid({ filter, search, sort, onSelectTheme }: Theme
               onPreview={() => handlePreview(theme)}
               onSelect={() => handleSelect(theme)}
             />
-            {installing === theme.id.toString() && (
+            {(installing === theme.id || purchasing === theme.id) && (
               <div className="absolute inset-0 bg-background/60 backdrop-blur-[1px] flex items-center justify-center rounded-xl z-20">
                 <div className="flex flex-col items-center gap-2">
                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider">Installing</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider">
+                    {purchasing === theme.id ? "Processing" : "Installing"}
+                  </span>
                 </div>
               </div>
             )}

@@ -1,6 +1,4 @@
-
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useState, useEffect } from "react"
 import { Check } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { StoreDetailsStep } from "./store-details-setup"
@@ -21,6 +19,7 @@ export interface StoreFormData {
   contact_email: string
   slug: string
   timezone: string
+  plan_id?: string
 }
 
 const initialFormData: StoreFormData = {
@@ -34,14 +33,13 @@ const initialFormData: StoreFormData = {
   phone: "",
   contact_email: "",
   slug: "",
-  timezone: "",
+  timezone: "Asia/Kolkata",
 }
 
 export default function StoreSetupWizard() {
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState<StoreFormData>(initialFormData)
-  const { createStore, loading ,error} = useStoreStore()
-  const navigate = useNavigate()
+  const { createStore, loading, error } = useStoreStore()
 
   const totalSteps = 3
 
@@ -60,6 +58,7 @@ export default function StoreSetupWizard() {
       setCurrentStep(currentStep - 1)
     }
   }
+
   useEffect(() => {
     if (error) {
       toast.error(error || "Something went wrong");
@@ -78,14 +77,17 @@ export default function StoreSetupWizard() {
         country: formData.country,
         city: formData.city,
         timezone: formData.timezone,
+        plan_id: formData.plan_id
       }
 
       const store = await createStore(storePayload)
       if (store) {
-        navigate(`/`)
+        window.location.href = `/pricing?storeId=${store.id}`;
       }
+      return store;
     } catch (error) {
       console.error("Failed to create store:", error)
+      return null;
     }
   }
 
@@ -124,21 +126,21 @@ export default function StoreSetupWizard() {
               </div>
             </div>
             <div>
-              <h1 className="text-xl font-bold">Ecwid</h1>
-              <p className="text-sm text-gray-600">by Lightspeed</p>
+              <h1 className="text-xl font-bold">Eylza</h1>
+              <p className="text-sm text-gray-600">Global E-commerce Solution</p>
             </div>
           </div>
 
           <div className="mb-6">
             <h2 className="text-lg font-semibold mb-2">
               Complete your registration{" "}
-              <span className="text-green-600">
+              <span className="text-blue-600">
                 Step {currentStep} of {totalSteps}.
               </span>
             </h2>
             <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
               <div
-                className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${(currentStep / totalSteps) * 100}%` }}
               ></div>
             </div>
@@ -150,7 +152,7 @@ export default function StoreSetupWizard() {
             <div className="flex items-center gap-3">
               <div
                 className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                  currentStep >= 1 ? "bg-green-600 text-white" : "bg-gray-200"
+                  currentStep >= 1 ? "bg-blue-600 text-white" : "bg-gray-200"
                 }`}
               >
                 {currentStep > 1 ? <Check className="w-4 h-4" /> : "1"}
@@ -160,7 +162,7 @@ export default function StoreSetupWizard() {
             <div className="flex items-center gap-3">
               <div
                 className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                  currentStep >= 2 ? "bg-green-600 text-white" : "bg-gray-200"
+                  currentStep >= 2 ? "bg-blue-600 text-white" : "bg-gray-200"
                 }`}
               >
                 {currentStep > 2 ? <Check className="w-4 h-4" /> : "2"}
@@ -170,7 +172,7 @@ export default function StoreSetupWizard() {
             <div className="flex items-center gap-3">
               <div
                 className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                  currentStep >= 3 ? "bg-green-600 text-white" : "bg-gray-200"
+                  currentStep >= 3 ? "bg-blue-600 text-white" : "bg-gray-200"
                 }`}
               >
                 {currentStep > 3 ? <Check className="w-4 h-4" /> : "3"}

@@ -23,7 +23,7 @@ const TableRenderer: React.FC<TableRendererProps> = ({ schema, content = [], onU
 
   const handleOpenAdd = () => {
     setEditingIndex(null);
-    setTempItem(schema.fields.reduce((acc, f) => ({ ...acc, [f.name]: null }), {}));
+    setTempItem(schema?.fields?.reduce((acc, f) => ({ ...acc, [f.name]: null }), {}) || {});
     setIsDialogOpen(true);
   };
 
@@ -147,7 +147,7 @@ const TableRenderer: React.FC<TableRendererProps> = ({ schema, content = [], onU
           
           <ScrollArea className="flex-1 p-6 overflow-y-auto">
             <div className="space-y-6 pb-6">
-                {schema.fields.map((field) => (
+                {schema?.fields?.map((field) => (
                     <FieldRenderer 
                         key={field.name} 
                         field={field} 

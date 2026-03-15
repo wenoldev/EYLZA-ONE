@@ -11,6 +11,8 @@ import { Outlet, useNavigate } from 'react-router-dom'
 import { Breadcrumbs } from './navbar/nav-breadcrumbs'
 import ThemeSwitcher from '@/components/common/ThemeSwitcher'
 import { useAuthStore } from '@/stores/authStore'
+import { useStoreStore } from '@/stores/storeStore'
+import api from '@/lib/api'
 
 interface Notification {
   id: number;
@@ -34,6 +36,28 @@ const Dashboard = () => {
 
   const unreadCount = notifications.filter(n => n.unread).length;
 
+  const { stores, activeStoreId } = useStoreStore();
+  const [billingInfo, setBillingInfo] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchBilling = async () => {
+      if (!activeStoreId) return;
+      try {
+        const res = await api.get(`/api/v1/billing/status?storeId=${activeStoreId}`);
+        const data = res.data.data;
+        setBillingInfo(data);
+        
+        // Redirect to pricing if blocked
+        if (data.isBlocked) {
+          navigate(`/pricing?storeId=${activeStoreId}`);
+        }
+      } catch (err) {
+        console.error('Failed to fetch billing status', err);
+      }
+    };
+    fetchBilling();
+  }, [activeStoreId]);
+
   const markAsRead = (id: number) => {
     setNotifications(notifications.map(n => 
       n.id === id ? { ...n, unread: false } : n
@@ -54,7 +78,26 @@ const Dashboard = () => {
             </div>
           </div>
           <div className='flex-grow' />
-          <div className='mr-4 flex items-center gap-2'>
+          <div className='mr-4 flex items-center gap-4'>
+            {billingInfo && (
+              <>
+                {billingInfo.subscriptionStatus === 'trial' && billingInfo.daysRemaining > 0 && (
+                  <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200 gap-1 hidden md:flex">
+                    <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                    Trial: {billingInfo.daysRemaining} days left
+                  </Badge>
+                )}
+                {billingInfo.subscriptionStatus === 'active' && billingInfo.daysRemaining <= 10 && billingInfo.daysRemaining > 0 && (
+                  <Badge 
+                    variant="secondary" 
+                    className={`${billingInfo.daysRemaining <= 3 ? 'bg-red-50 text-red-700 border-red-200' : 'bg-orange-50 text-orange-700 border-orange-200'} gap-1 hidden md:flex`}
+                  >
+                    <span className={`w-2 h-2 rounded-full ${billingInfo.daysRemaining <= 3 ? 'bg-red-500' : 'bg-orange-500'} animate-pulse`} />
+                    Plan ends in {billingInfo.daysRemaining} days
+                  </Badge>
+                )}
+              </>
+            )}
             {/* Theme Toggle */}
             <ThemeSwitcher />
             {/* Notifications */}

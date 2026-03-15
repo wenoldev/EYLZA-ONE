@@ -1,19 +1,18 @@
-
 import { useState, useEffect } from 'react';
 import {
-    Facebook, Twitter, Instagram, Linkedin, Youtube,
-    MapPin, Phone, Mail, ChevronDown, ChevronUp
+    Facebook, Twitter, Instagram, 
+    MapPin, Mail, Send, ChevronDown
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { FooterConfig, FooterMenus, FooterCompanyInfo } from '../../types/Footer';
-
+import { motion, AnimatePresence } from 'framer-motion';
 
 /* -------------------- Types -------------------- */
 interface FooterProps {
     config: FooterConfig;
     menus: FooterMenus;
     contactInfo: FooterCompanyInfo;
-    viewportSize?: 'mobile' | 'tablet';
+    viewportSize?: 'mobile' | 'tablet' | 'desktop' | string;
 }
 
 /* -------------------- Social Icon -------------------- */
@@ -38,102 +37,59 @@ const SocialLink = ({
     };
 
     return (
-        <a
+        <motion.a
+            whileHover={{ scale: 1.1, y: -2 }}
             href={href}
             aria-label={label}
-            className={`p-2 transition-all duration-200 hover:opacity-80 flex items-center justify-center ${styles[style]}`}
-            style={style !== 'plain' ? { backgroundColor: `${accentColor}20`, color: accentColor } : { color: accentColor }}
+            className={`w-10 h-10 transition-all duration-200 flex items-center justify-center ${styles[style]}`}
+            style={style !== 'plain' ? { backgroundColor: `${accentColor}15`, color: accentColor } : { color: accentColor }}
         >
             <Icon size={18} />
-        </a>
+        </motion.a>
     );
 };
 
 /* -------------------- Brand -------------------- */
-const Brand = ({ logoUrl, name }: { logoUrl?: string; name: string }) =>
+const Brand = ({ logoUrl, name, textColor }: { logoUrl?: string; name: string, textColor: string }) =>
     logoUrl ? (
-        <img src={logoUrl} alt={name} className="h-10 w-auto object-contain" />
+        <img src={logoUrl} alt={name} className="h-12 w-auto object-contain mb-2" />
     ) : (
-        <span className="text-xl sm:text-2xl font-bold">{name}</span>
+        <span className="text-2xl sm:text-3xl font-black tracking-tighter" style={{ color: textColor }}>{name}</span>
     );
 
-/* -------------------- Payments -------------------- */
-const PaymentMethods = ({ borderColor, style = 'badges', isMobile }: { borderColor?: string; style?: 'badges' | 'icons'; isMobile: boolean }) => {
-    const methods = [
-        { name: 'Visa', icon: 'V' },
-        { name: 'Mastercard', icon: 'M' },
-        { name: 'PayPal', icon: 'P' },
-        { name: 'Apple Pay', icon: 'A' },
-        { name: 'Google Pay', icon: 'G' }
-    ];
-
-    if (style === 'icons') {
-        return (
-            <div className={`flex flex-wrap gap-2 sm:gap-3 justify-center ${!isMobile ? 'lg:justify-start' : ''} opacity-70`}>
-                {methods.map(m => (
-                    <div key={m.name} title={m.name} className="w-7 h-5 sm:w-8 border flex items-center justify-center rounded-sm text-[10px] font-bold" style={{ borderColor }}>
-                        {m.icon}
-                    </div>
-                ))}
-            </div>
-        );
-    }
-
-    return (
-        <div className={`flex flex-wrap gap-2 justify-center ${!isMobile ? 'lg:justify-start' : ''}`}>
-            {methods.map(m => (
-                <div
-                    key={m.name}
-                    className="px-2 sm:px-3 py-1 text-[10px] uppercase tracking-wider border rounded opacity-70 font-medium"
-                    style={{ borderColor }}
-                >
-                    {m.name}
-                </div>
-            ))}
-        </div>
-    );
-};
-
-/* -------------------- Accordion -------------------- */
-const CollapsibleSection = ({
-    title,
-    children,
-    defaultOpen = false,
-    borderColor,
-    isMobile
-}: {
-    title: string;
-    children: React.ReactNode;
-    defaultOpen?: boolean;
-    borderColor?: string;
-    isMobile: boolean;
-}) => {
-    const [open, setOpen] = useState(defaultOpen);
-    const desktopClass = (cls: string) => !isMobile ? cls : '';
-
-    return (
-        <div className={`border-b ${desktopClass('lg:border-none')}`} style={{ borderColor: `${borderColor}40` }}>
-            <button
-                onClick={() => setOpen(!open)}
-                className={`flex justify-between w-full py-4 ${desktopClass('lg:hidden')} items-center hover:opacity-70 transition-opacity`}
-                aria-expanded={open}
+/* -------------------- Header -------------------- */
+const SectionHeader = ({ title, isOpen, onToggle, isMobile, showAccordion }: { 
+    title: string; 
+    isOpen?: boolean; 
+    onToggle?: () => void;
+    isMobile?: boolean;
+    showAccordion?: boolean;
+}) => (
+    <div 
+        className={`flex items-center justify-between group cursor-pointer lg:cursor-default mb-8`}
+        onClick={() => isMobile && showAccordion && onToggle?.()}
+    >
+        <h3 className="font-bold text-[11px] uppercase tracking-[0.2em] opacity-80">
+            {title}
+        </h3>
+        {isMobile && showAccordion && (
+            <motion.div
+                animate={{ rotate: isOpen ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+                className="opacity-40"
             >
-                <span className="font-bold text-sm uppercase tracking-wider">{title}</span>
-                {open ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-            </button>
-            <div className={`${open ? 'block' : 'hidden'} ${desktopClass('lg:block')} pb-6 lg:pb-0`}>
-                <h3 className={`${desktopClass('hidden lg:block')} font-bold mb-6 text-sm uppercase tracking-wider`}>{title}</h3>
-                {children}
-            </div>
-        </div>
-    );
-};
+                <ChevronDown size={16} />
+            </motion.div>
+        )}
+    </div>
+);
 
 /* -------------------- Footer -------------------- */
 export const FooterMain = ({ config, menus, contactInfo, viewportSize }: FooterProps) => {
+    const [email, setEmail] = useState('');
+    const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
     const [isMobile, setIsMobile] = useState(() => {
         if (typeof window === 'undefined') return false;
-        // Check if viewportSize prop is provided (typically in editor context)
         if (viewportSize) return viewportSize === 'mobile' || viewportSize === 'tablet';
         return window.innerWidth < 1024;
     });
@@ -153,209 +109,181 @@ export const FooterMain = ({ config, menus, contactInfo, viewportSize }: FooterP
 
     if (!config || config?.general?.hideFooter) return null;
 
-    const year = new Date().getFullYear();
-    const { general, sections: sectionConfig, mobile, content: footerContent } = config;
-    const desktopClass = (cls: string) => !isMobile ? cls : '';
+    const { general, content: footerContent, mobile } = config;
+    const accentColor = general.accentColor || '#111';
+    const textColor = general.textColor || '#111';
+    const borderColor = general.borderColor || '#e5e7eb';
+    const showAccordion = mobile?.layout === 'accordion' || mobile?.collapseSections;
 
-    /* ---------- Mobile layout helper ---------- */
-    const getMobileLayoutClasses = () => {
-        switch (mobile?.layout) {
-            case 'row':
-                return 'flex flex-row flex-wrap gap-6 sm:gap-8';
-            case 'grid-2':
-                return 'grid grid-cols-2 gap-6 sm:gap-8';
-            default:
-                return 'flex flex-col space-y-6';
-        }
+    const toggleSection = (section: string) => {
+        setOpenSections(prev => ({
+            ...prev,
+            [section]: !prev[section]
+        }));
     };
 
-    const useAccordion = isMobile && mobile?.layout === 'accordion';
-    const textAlignmentClass = isMobile ? (mobile?.textAlignment === 'left' ? 'text-left' : 'text-center') : 'text-left';
-    const linkClass = `text-sm opacity-70 hover:opacity-100 transition-all duration-200 ${sectionConfig.linksUnderline ? 'hover:underline' : ''}`;
-
-    const renderSection = (id: string) => {
-        const titleMap: Record<string, string> = {
-            brand: 'About Us',
-            quickLinks: 'Quick Links',
-            supportLinks: 'Support',
-            policyLinks: 'Policies',
-            social: 'Follow Us',
-            contactInfo: 'Contact Us'
-        };
-
-        const content: Record<string, React.ReactNode> = {
-            brand: (
-                <div className={`space-y-4 ${isMobile && mobile?.textAlignment === 'center' ? 'flex flex-col items-center' : ''}`}>
-                    <Brand
-                        logoUrl={contactInfo.companyInfo.logoUrl}
-                        name={contactInfo.companyInfo.name || ''}
-                    />
-                    <p className="text-sm opacity-70 leading-relaxed max-w-xs">
-                        {contactInfo.companyInfo.description}
-                    </p>
-                </div>
-            ),
-            quickLinks: (
-                <ul className="space-y-3">
-                    {menus.quickLinks.map(l => (
-                        <li key={l.href}><a href={l.href} className={linkClass}>{l.label}</a></li>
-                    ))}
-                </ul>
-            ),
-            supportLinks: (
-                <ul className="space-y-3">
-                    {menus.supportLinks.map(l => (
-                        <li key={l.href}><a href={l.href} className={linkClass}>{l.label}</a></li>
-                    ))}
-                </ul>
-            ),
-            policyLinks: (
-                <ul className="space-y-3">
-                    {menus.policyLinks.map(l => (
-                        <li key={l.href}><a href={l.href} className={linkClass}>{l.label}</a></li>
-                    ))}
-                </ul>
-            ),
-            social: (!isMobile || !mobile?.hideSocialOnMobile) ? (
-                <div className={`flex gap-3 flex-wrap ${isMobile && mobile?.textAlignment === 'center' ? 'justify-center' : ''}`}>
-                    {contactInfo.socialLinks.facebook && <SocialLink href={contactInfo.socialLinks.facebook} icon={Facebook} label="Facebook" style={sectionConfig.socialIconStyle} accentColor={general.accentColor} />}
-                    {contactInfo.socialLinks.instagram && <SocialLink href={contactInfo.socialLinks.instagram} icon={Instagram} label="Instagram" style={sectionConfig.socialIconStyle} accentColor={general.accentColor} />}
-                    {contactInfo.socialLinks.twitter && <SocialLink href={contactInfo.socialLinks.twitter} icon={Twitter} label="Twitter" style={sectionConfig.socialIconStyle} accentColor={general.accentColor} />}
-                    {contactInfo.socialLinks.linkedin && <SocialLink href={contactInfo.socialLinks.linkedin} icon={Linkedin} label="LinkedIn" style={sectionConfig.socialIconStyle} accentColor={general.accentColor} />}
-                    {contactInfo.socialLinks.youtube && <SocialLink href={contactInfo.socialLinks.youtube} icon={Youtube} label="YouTube" style={sectionConfig.socialIconStyle} accentColor={general.accentColor} />}
-                </div>
-            ) : null,
-            contactInfo: (
-                <div className={`space-y-4 text-sm ${isMobile && mobile?.textAlignment === 'center' ? 'flex flex-col items-center' : ''}`}>
-                    <div className="flex gap-3 items-start opacity-70">
-                        <MapPin size={18} className="shrink-0 mt-0.5" />
-                        <span className="break-words">{contactInfo.companyInfo.address}</span>
-                    </div>
-                    <div className="flex gap-3 items-center opacity-70">
-                        <Phone size={18} className="shrink-0" />
-                        <a href={`tel:${contactInfo.companyInfo.phone}`} className="hover:opacity-100 transition-opacity">{contactInfo.companyInfo.phone}</a>
-                    </div>
-                    <div className="flex gap-3 items-center opacity-70">
-                        <Mail size={18} className="shrink-0" />
-                        <a href={`mailto:${contactInfo.companyInfo.email}`} className="hover:opacity-100 transition-opacity break-all">{contactInfo.companyInfo.email}</a>
-                    </div>
-                    {sectionConfig.showPaymentMethods && (!isMobile || !mobile?.hidePaymentOnMobile) && (
-                        <div className="pt-2">
-                            <PaymentMethods borderColor={general.borderColor} style={sectionConfig.paymentMethodsStyle} isMobile={isMobile} />
-                        </div>
-                    )}
-                </div>
-            )
-        };
-
-        if (useAccordion && id !== 'brand') {
-            return (
-                <CollapsibleSection title={titleMap[id]} borderColor={general.borderColor} isMobile={isMobile}>
-                    {content[id]}
-                </CollapsibleSection>
-            );
-        }
-
-        return (
-            <div className="space-y-6">
-                {id !== 'brand' && <h3 className="font-bold text-sm uppercase tracking-wider">{titleMap[id]}</h3>}
-                {content[id]}
-            </div>
-        );
+    const handleSubscribe = (e: React.FormEvent) => {
+        e.preventDefault();
+        setEmail('');
     };
 
-    const rawSections = sectionConfig.menuOrder?.filter(s => s.visible) ?? [];
-    let displaySections = [...rawSections];
-
-    if (isMobile) {
-        if (mobile?.stackOrder === 'brand-first') {
-            displaySections = [
-                ...displaySections.filter(s => s.id === 'brand'),
-                ...displaySections.filter(s => s.id !== 'brand')
-            ];
-        } else if (mobile?.stackOrder === 'contact-first') {
-            displaySections = [
-                ...displaySections.filter(s => s.id === 'contactInfo'),
-                ...displaySections.filter(s => s.id !== 'brand') // Fixed logic here too
-            ];
-        }
-    }
-
-    const copyrightPositionClass = {
-        left: 'text-left',
-        center: 'text-center',
-        right: 'text-right'
-    }[footerContent.copyrightPosition || 'center'];
-
-    const dividerStyle = sectionConfig.showDividers ? { borderRight: `1px solid ${general.borderColor}40` } : {};
+    const renderLinks = (links: any[]) => (
+        <ul className="space-y-4 pb-4">
+            {links.map(l => (
+                <li key={l.href}>
+                    <a href={l.href} className="text-sm opacity-50 hover:opacity-100 hover:translate-x-1 transition-all inline-block underline-offset-4 hover:underline">
+                        {l.label}
+                    </a>
+                </li>
+            ))}
+        </ul>
+    );
 
     return (
         <footer
             style={{
                 backgroundColor: general.backgroundColor,
-                color: general.textColor,
+                color: textColor,
                 fontFamily: general.fontFamily || 'Inter',
-                paddingTop: general.paddingTop || '3rem',
-                paddingBottom: general.paddingBottom || '3rem',
+                paddingTop: isMobile ? '4rem' : '7rem',
+                paddingBottom: '3rem',
+                borderColor: borderColor
             }}
-            className={`px-4 ${!isMobile ? 'sm:px-6 lg:px-12' : ''}`}
+            className="px-6 md:px-12 lg:px-20 border-t"
         >
-            <div className="max-w-7xl mx-auto">
-                {/* ---------- DESIGN 1: Multi-Column Grid ---------- */}
-                {general.design === 'design1' && (
-                    <div className={`${getMobileLayoutClasses()} ${desktopClass('lg:grid lg:grid-cols-4 lg:gap-12')} ${textAlignmentClass}`}>
-                        {displaySections.map((s, idx) => (
-                            <div
-                                key={s.id}
-                                className={`${sectionConfig.showDividers && idx < displaySections.length - 1 && !isMobile ? 'pr-12' : ''}`}
-                                style={sectionConfig.showDividers && idx < displaySections.length - 1 && !isMobile ? dividerStyle : {}}
-                            >
-                                {renderSection(s.id)}
-                            </div>
-                        ))}
-                    </div>
-                )}
-
-                {/* ---------- DESIGN 2: Centered Minimal ---------- */}
-                {general.design === 'design2' && (
-                    <div className={`flex flex-col items-center space-y-8 sm:space-y-12 text-center`}>
-                        {displaySections.map((s, idx) => (
-                            <div key={s.id} className="w-full max-w-2xl">
-                                {renderSection(s.id)}
-                                {sectionConfig.showDividers && idx < displaySections.length - 1 && (
-                                    <div className="mt-8 sm:mt-12 h-px w-full max-w-xs mx-auto opacity-20" style={{ backgroundColor: general.borderColor }} />
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                )}
-
-                {/* ---------- DESIGN 3: Horizontal Compact ---------- */}
-                {general.design === 'design3' && (
-                    <div className={`${getMobileLayoutClasses()} ${desktopClass('lg:flex lg:flex-row lg:justify-between lg:items-start lg:gap-12')} ${textAlignmentClass}`}>
-                        {displaySections.map((s, idx) => (
-                            <div
-                                key={s.id}
-                                className={`flex-1 ${sectionConfig.showDividers && idx < displaySections.length - 1 && !isMobile ? 'pr-12' : ''}`}
-                                style={sectionConfig.showDividers && idx < displaySections.length - 1 && !isMobile ? dividerStyle : {}}
-                            >
-                                {renderSection(s.id)}
-                            </div>
-                        ))}
-                    </div>
-                )}
-
-                {/* ---------- Bottom Bar ---------- */}
-                <div className={`mt-12 sm:mt-16 pt-6 sm:pt-8 border-t ${copyrightPositionClass}`} style={{ borderColor: `${general.borderColor}40` }}>
-                    <div className="space-y-2">
-                        <p className="text-xs sm:text-sm opacity-60">
-                            {footerContent.copyrightText || `© ${year} ${contactInfo.companyInfo.name}. All rights reserved.`}
-                        </p>
-                        {footerContent.showTagline && contactInfo.companyInfo.tagline && (
-                            <p className="text-xs opacity-40 italic">
-                                {contactInfo.companyInfo.tagline}
+            <div className="max-w-[1440px] mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-20">
+                    
+                    {/* Brand & Mission (4 Columns) */}
+                    <div className="lg:col-span-4 space-y-8">
+                        <div className="space-y-6">
+                            <Brand logoUrl={contactInfo.companyInfo.logoUrl} name={contactInfo.companyInfo.name || ''} textColor={textColor} />
+                            <p className="text-sm opacity-60 leading-relaxed max-w-sm font-light">
+                                {contactInfo.companyInfo.description || "Discover our curated collection of premium products designed for modern living."}
                             </p>
-                        )}
+                        </div>
+                        
+                        <div className="flex gap-4">
+                            {contactInfo.socialLinks.facebook && <SocialLink href={contactInfo.socialLinks.facebook} icon={Facebook} label="Facebook" style="circle" accentColor={accentColor} />}
+                            {contactInfo.socialLinks.instagram && <SocialLink href={contactInfo.socialLinks.instagram} icon={Instagram} label="Instagram" style="circle" accentColor={accentColor} />}
+                            {contactInfo.socialLinks.twitter && <SocialLink href={contactInfo.socialLinks.twitter} icon={Twitter} label="Twitter" style="circle" accentColor={accentColor} />}
+                        </div>
+                    </div>
+
+                    {/* Quick & Support Links (4 Columns) */}
+                    <div className="lg:col-span-4 grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {/* Shop Section */}
+                        <div style={{ borderColor: isMobile && showAccordion ? borderColor : 'transparent' }} className={`${isMobile && showAccordion ? 'border-b' : ''}`}>
+                            <SectionHeader 
+                                title="Shop" 
+                                isMobile={isMobile} 
+                                showAccordion={showAccordion}
+                                isOpen={openSections['shop']}
+                                onToggle={() => toggleSection('shop')}
+                            />
+                            <AnimatePresence>
+                                {(!isMobile || !showAccordion || openSections['shop']) && (
+                                    <motion.div
+                                        initial={isMobile && showAccordion ? { height: 0, opacity: 0 } : false}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        className="overflow-hidden"
+                                    >
+                                        {renderLinks(menus.quickLinks)}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
+                        {/* Company Section */}
+                        <div style={{ borderColor: isMobile && showAccordion ? borderColor : 'transparent' }} className={`${isMobile && showAccordion ? 'border-b' : ''}`}>
+                            <SectionHeader 
+                                title="Company" 
+                                isMobile={isMobile} 
+                                showAccordion={showAccordion}
+                                isOpen={openSections['company']}
+                                onToggle={() => toggleSection('company')}
+                            />
+                            <AnimatePresence>
+                                {(!isMobile || !showAccordion || openSections['company']) && (
+                                    <motion.div
+                                        initial={isMobile && showAccordion ? { height: 0, opacity: 0 } : false}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        className="overflow-hidden"
+                                    >
+                                        {renderLinks(menus.supportLinks)}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </div>
+
+                    {/* Newsletter & Contact (4 Columns) */}
+                    <div className="lg:col-span-4 space-y-12">
+                        <div>
+                            <SectionHeader title="Newsletter" />
+                            <p className="text-sm opacity-50 mb-6 font-light">Join our list and get exclusive offers and updates.</p>
+                            <form onSubmit={handleSubscribe} className="relative group">
+                                <input 
+                                    type="email" 
+                                    placeholder="your@email.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full bg-transparent border-b py-3 pr-10 focus:outline-none transition-all font-light text-sm"
+                                    style={{ borderColor: `${textColor}33` }}
+                                    required
+                                />
+                                <button type="submit" className="absolute right-0 top-1/2 -translate-y-1/2 p-2 opacity-40 group-hover:opacity-100 transition-opacity">
+                                    <Send size={18} />
+                                </button>
+                            </form>
+                        </div>
+
+                        <div style={{ borderColor: isMobile && showAccordion ? borderColor : 'transparent' }} className={`${isMobile && showAccordion ? 'border-b pb-4' : ''}`}>
+                            <SectionHeader 
+                                title="Contact" 
+                                isMobile={isMobile} 
+                                showAccordion={showAccordion}
+                                isOpen={openSections['contact']}
+                                onToggle={() => toggleSection('contact')}
+                            />
+                            <AnimatePresence>
+                                {(!isMobile || !showAccordion || openSections['contact']) && (
+                                    <motion.div
+                                        initial={isMobile && showAccordion ? { height: 0, opacity: 0 } : false}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <div className="space-y-3 text-sm opacity-60 font-light">
+                                            <div className="flex gap-4 items-start">
+                                                <MapPin size={16} className="shrink-0 mt-1" />
+                                                <span>{contactInfo.companyInfo.address}</span>
+                                            </div>
+                                            <div className="flex gap-4 items-center">
+                                                <Mail size={16} className="shrink-0" />
+                                                <a href={`mailto:${contactInfo.companyInfo.email}`} className="hover:underline">{contactInfo.companyInfo.email}</a>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Bottom Bar */}
+                <div style={{ borderColor: borderColor }} className="mt-20 pt-10 border-t flex flex-col md:flex-row justify-between items-center gap-6">
+                    <p className={`${mobile?.textAlignment === 'center' ? 'text-center md:text-left' : 'text-left'} text-[10px] uppercase tracking-widest opacity-40`}>
+                        {footerContent.copyrightText || `© ${new Date().getFullYear()} ${contactInfo.companyInfo.name}. All rights reserved.`}
+                    </p>
+                    <div className="flex items-center gap-6 opacity-40">
+                        {menus.policyLinks.map(l => (
+                            <a key={l.href} href={l.href} className="text-[10px] uppercase tracking-widest hover:opacity-100 transition-opacity whitespace-nowrap">
+                                {l.label}
+                            </a>
+                        ))}
                     </div>
                 </div>
             </div>

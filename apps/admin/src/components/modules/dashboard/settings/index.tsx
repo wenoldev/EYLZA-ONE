@@ -30,22 +30,22 @@ const settingsMenu: MenuGroup[] = [
       {
         title: "Profile",
         icon: User,
-        route: { url: "settings", queryParams: { tab: "profile" } }
+        route: { url: "dashboard/settings", queryParams: { tab: "profile" } }
       },
       {
         title: "Store",
         icon: Store,
-        route: { url: "settings", queryParams: { tab: "store" } }
+        route: { url: "dashboard/settings", queryParams: { tab: "store" } }
       },
       {
         title: "Security",
         icon: Lock,
-        route: { url: "settings", queryParams: { tab: "security" } }
+        route: { url: "dashboard/settings", queryParams: { tab: "security" } }
       },
       {
         title: "Notifications",
         icon: Bell,
-        route: { url: "settings", queryParams: { tab: "notifications" } }
+        route: { url: "dashboard/settings", queryParams: { tab: "notifications" } }
       },
     ],
   },
@@ -58,15 +58,15 @@ const settingsMenu: MenuGroup[] = [
         subItems: [
           {
             title: "Privacy",
-            route: { url: "settings", queryParams: { tab: "privacy" } }
+            route: { url: "dashboard/settings", queryParams: { tab: "privacy" } }
           },
           {
             title: "Terms and Condition",
-            route: { url: "settings", queryParams: { tab: "terms" } }
+            route: { url: "dashboard/settings", queryParams: { tab: "terms" } }
           },
           {
             title: "Refund Policy",
-            route: { url: "settings", queryParams: { tab: "refund" } }
+            route: { url: "dashboard/settings", queryParams: { tab: "refund" } }
           },
         ],
       },

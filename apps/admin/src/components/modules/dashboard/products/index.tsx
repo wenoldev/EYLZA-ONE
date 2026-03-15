@@ -8,7 +8,7 @@ import type { FormField } from '@/types/form';
 import DraggableContent from '@/components/common/DraggableContent';
 import { useProductStore, useProductActions, type Product } from '@/stores/productStore';
 import { useCategoryStore, useCategoryActions } from '@/stores/categoryStore';
-import { CircleCheck, Plus, Trash2, Search } from 'lucide-react';
+import { CircleCheck, Plus, Trash2, Search, RotateCw } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import FilterList from '@/components/common/FilterList';
 import Loader from '@/components/common/Loader';
@@ -337,6 +337,17 @@ const ProductsPage = () => {
           >
             <Plus className="h-4 w-4" />
             {isCreating ? 'Creating...' : 'Add Product'}
+          </Button>
+
+          <Button 
+            variant="outline" 
+            size="icon" 
+            onClick={() => fetchProductsData({...productFilters, store_id: userStoreId})} 
+            disabled={isLoading}
+            title="Refresh"
+            className="ml-2"
+          >
+            <RotateCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
           </Button>
 
           {categories.length > 0 && (

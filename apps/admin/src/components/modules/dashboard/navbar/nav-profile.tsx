@@ -7,12 +7,40 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useAuthStore } from "@/stores/authStore"
+import { useStoreStore } from "@/stores/storeStore"
+import type { PricingPlan } from "@/constants/plans"
+import api from "@/lib/api"
 import { useNavigate } from "react-router-dom"
 import { LogOut, Crown, Settings } from "lucide-react"
+import { useState, useEffect } from "react"
 
 export function NavProfile() {
   const { user, logout } = useAuthStore()
+  const { stores } = useStoreStore()
   const navigate = useNavigate()
+  const [plans, setPlans] = useState<PricingPlan[]>([])
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await api.get('/api/v1/admin/plans')
+        if (response.data?.data?.plans) {
+          setPlans(response.data.data.plans)
+        }
+      } catch (error) {
+        console.error('Failed to fetch plans:', error)
+      }
+    }
+    fetchPlans()
+  }, [])
+
+  const currentStore = stores?.[0]
+  const currentPlanId = currentStore?.plan_id || 'free'
+  
+  const currentPlanIndex = plans.findIndex(p => p.id === currentPlanId)
+  const nextPlan = currentPlanIndex !== -1 && currentPlanIndex < plans.length - 1 
+    ? plans[currentPlanIndex + 1] 
+    : null
 
   const userDisplayName = user?.user_metadata?.full_name || "User"
   const userEmail = user?.user_metadata?.email || user?.email || "m@example.com"
@@ -27,7 +55,7 @@ export function NavProfile() {
   }
 
   const handleSettingsClick = () => {
-    navigate("/settings")
+    navigate("/dashboard/settings")
   }
 
   return (
@@ -53,10 +81,15 @@ export function NavProfile() {
         </div>
 
         {/* Menu Items */}
-        <DropdownMenuItem className="px-2 py-2 cursor-pointer">
-          <Crown className="w-4 h-4 mr-3 text-amber-500" />
-          <span>Upgrade to Pro</span>
-        </DropdownMenuItem>
+        {nextPlan && (
+          <DropdownMenuItem 
+            className="px-2 py-2 cursor-pointer"
+            onClick={() => navigate('/pricing')}
+          >
+            <Crown className="w-4 h-4 mr-3 text-amber-500" />
+            <span>Upgrade to {nextPlan.name}</span>
+          </DropdownMenuItem>
+        )}
 
         <DropdownMenuItem className="px-2 py-2 cursor-pointer" onClick={handleSettingsClick}>
           <Settings className="w-4 h-4 mr-3 text-muted-foreground" />

@@ -115,8 +115,9 @@ export const useAuthStore = create<AuthState>()(
       },
 
       refreshToken: async () => {
-        const { session, logout } = get();
+        const { session, logout, isLoading } = get();
 
+        if (isLoading) return;
         if (!session?.refresh_token) {
           logout();
           return;
@@ -179,11 +180,12 @@ export const useAuthStore = create<AuthState>()(
       },
 
       initializeAuth: async () => {
-        const { session, isTokenExpired, refreshToken } = get();
+        const { session, isTokenExpired, refreshToken, isLoading } = get();
 
-        if (!session) return;
+        if (isLoading || !session) return;
 
         if (isTokenExpired()) {
+          console.log("Auth token expired, refreshing...");
           await refreshToken();
         }
       }

@@ -1,4 +1,6 @@
 import { ChevronsUpDown, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useStoreStore } from "@/stores/storeStore";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,20 +10,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { useStoreStore } from "@/stores/storeStore";
 import { useAuthStore } from "@/stores/authStore";
 import { useState, useEffect } from "react";
 import StoreSwitcherSkeleton from "@/skeletons/storeSwitcher"
@@ -82,53 +82,35 @@ const getStatusGlow = (status: Status) => {
 
 export function StoreSwitcher() {
   const { isMobile } = useSidebar();
-  const { stores, loading, error, createStore } = useStoreStore();
-  const { user } = useAuthStore();
+  const navigate = useNavigate();
+  const { stores, loading, error, activeStoreId, setActiveStoreId, fetchStores } = useStoreStore();
   const [activeTeam, setActiveTeam] = useState<Store | null>(null);
-
-  // Dialog state
   const [isLimitDialogOpen, setIsLimitDialogOpen] = useState(false);
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [newStoreName, setNewStoreName] = useState("");
 
-  // Set active team when stores are loaded
+  // Fetch stores if not loaded
   useEffect(() => {
-    if (stores && stores?.length > 0 && !activeTeam) {
-      setActiveTeam(mapToStore(stores[0]));
+    if (!stores && !loading) {
+      fetchStores();
     }
-  }, [stores, activeTeam]);
+  }, [stores, loading, fetchStores]);
+
+
+  // Set active team based on activeStoreId or default to first store
+  useEffect(() => {
+    if (stores && stores.length > 0) {
+      const storeToSet = activeStoreId 
+        ? stores.find(s => s.id === activeStoreId) 
+        : stores[0];
+      
+      if (storeToSet) {
+        setActiveTeam(mapToStore(storeToSet));
+      }
+    }
+  }, [stores, activeStoreId]);
 
   // Handle adding a new store
   const handleAddStore = () => {
-    if (!user || (user.role !== "admin" && user.role !== "vendor")) {
-      setIsLimitDialogOpen(true); // Reuse dialog for permission error
-      return;
-    }
-
-    if (stores && stores.length > 0) {
-      setIsLimitDialogOpen(true);
-      return;
-    }
-
-    setIsCreateDialogOpen(true);
-  };
-
-  // Handle store creation confirmation
-  const handleConfirmCreate = async () => {
-    const newStore = await createStore({
-      name: newStoreName,
-      description: "A new store",
-      currency: "USD",
-      country: "USA",
-      city: "New York",
-      timezone: "America/New_York",
-    });
-
-    if (newStore) {
-      setActiveTeam(mapToStore(newStore));
-    }
-    setIsCreateDialogOpen(false);
-    setNewStoreName("");
+    setIsLimitDialogOpen(true);
   };
 
   if (loading) {
@@ -154,46 +136,6 @@ export function StoreSwitcher() {
             <span>Create a store</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
-        {/* Limit Dialog */}
-        <Dialog open={isLimitDialogOpen} onOpenChange={setIsLimitDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Permission Denied</DialogTitle>
-            </DialogHeader>
-            <p>You must be an admin or vendor to create a store.</p>
-            <DialogFooter>
-              <Button variant="default" onClick={() => setIsLimitDialogOpen(false)}>
-                OK
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-        {/* Create Store Dialog */}
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create a new store</DialogTitle>
-            </DialogHeader>
-            <input
-              type="text"
-              placeholder="Store name"
-              value={newStoreName}
-              onChange={(e) => setNewStoreName(e.target.value)}
-              className="w-full border p-2 rounded-md"
-            />
-            <DialogFooter>
-              <Button variant="secondary" onClick={() => setIsCreateDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button
-                onClick={handleConfirmCreate}
-                disabled={!newStoreName.trim()}
-              >
-                Create
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </SidebarMenu>
     );
   }
@@ -236,7 +178,7 @@ export function StoreSwitcher() {
               return (
                 <DropdownMenuItem
                   key={store.id}
-                  onClick={() => setActiveTeam(mappedStore)}
+                  onClick={() => setActiveStoreId(store.id)}
                   className="gap-2 p-2"
                 >
                   <div
@@ -271,44 +213,14 @@ export function StoreSwitcher() {
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
-      {/* Limit Dialog */}
       <Dialog open={isLimitDialogOpen} onOpenChange={setIsLimitDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Plan Limit Reached</DialogTitle>
+            <DialogTitle>Store Creation Restricted</DialogTitle>
+            <DialogDescription>
+              To create additional stores, please upgrade your plan.
+            </DialogDescription>
           </DialogHeader>
-          <p>Your current plan only supports 1 store.</p>
-          <DialogFooter>
-            <Button variant="default" onClick={() => setIsLimitDialogOpen(false)}>
-              OK
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      {/* Create Store Dialog */}
-      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create a new store</DialogTitle>
-          </DialogHeader>
-          <input
-            type="text"
-            placeholder="Store name"
-            value={newStoreName}
-            onChange={(e) => setNewStoreName(e.target.value)}
-            className="w-full border p-2 rounded-md"
-          />
-          <DialogFooter>
-            <Button variant="secondary" onClick={() => setIsCreateDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleConfirmCreate}
-              disabled={!newStoreName.trim()}
-            >
-              Create
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </SidebarMenu>

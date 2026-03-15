@@ -6,10 +6,11 @@ const CategoryBar = ({ config, menus }: { config: HeaderConfig; menus: HeaderMen
 
     return (
         <div
-            className="py-3 border-b border-gray-100 overflow-x-auto no-scrollbar"
+            className="py-3 border-b overflow-x-auto no-scrollbar"
             style={{
                 backgroundColor: config.general.backgroundColor,
                 color: config.general.textColor,
+                borderColor: config.general.borderColor || '#f3f4f6'
             }}
         >
             <div className={`px-6 flex items-center ${config.bottomBar.alignment == 'center' ? 'justify-center':'justify-start'} md:gap-8 gap-4 whitespace-nowrap min-w-max md:min-w-0`}>

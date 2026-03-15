@@ -12,6 +12,12 @@ const AdminPlans = lazy(() => import('@/components/modules/admin/plans'));
 const AdminUsers = lazy(() => import('@/components/modules/admin/users'));
 const AdminPlugins = lazy(() => import('@/components/modules/dashboard/admin/plugins'));
 
+// Theme sub-components
+const ThemeList = lazy(() => import('@/components/modules/admin/themes/ThemeList'));
+const ThemeForm = lazy(() => import('@/components/modules/admin/themes/ThemeForm'));
+const ThemePageList = lazy(() => import('@/components/modules/admin/themes/ThemePageList'));
+const PageEditor = lazy(() => import('@/components/modules/admin/themes/PageEditor'));
+
 const adminRoutes = [
   {
     path: 'admin',
@@ -45,7 +51,49 @@ const adminRoutes = [
           <Suspense fallback={<Loader />}>
             <AdminThemes />
           </Suspense>
-        )
+        ),
+        children: [
+          {
+            path: '',
+            element: (
+              <Suspense fallback={<Loader />}>
+                <ThemeList />
+              </Suspense>
+            )
+          },
+          {
+            path: 'create',
+            element: (
+              <Suspense fallback={<Loader />}>
+                <ThemeForm />
+              </Suspense>
+            )
+          },
+          {
+            path: 'edit/:id',
+            element: (
+              <Suspense fallback={<Loader />}>
+                <ThemeForm />
+              </Suspense>
+            )
+          },
+          {
+            path: 'pages/:id',
+            element: (
+              <Suspense fallback={<Loader />}>
+                <ThemePageList />
+              </Suspense>
+            )
+          },
+          {
+            path: 'pages/:id/edit/:pageId',
+            element: (
+              <Suspense fallback={<Loader />}>
+                <PageEditor />
+              </Suspense>
+            )
+          }
+        ]
       },
       {
         path: 'tickets',

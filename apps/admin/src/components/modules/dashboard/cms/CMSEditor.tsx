@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Save, Code, Layout, Settings2, Copy, ExternalLink } from 'lucide-react';
+import { ChevronLeft, Save, Code, Layout, Settings2, Copy } from 'lucide-react';
 import Loader from '@/components/common/Loader';
 import { useCMSStore, type CMS } from '@/stores/cmsStore';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -57,10 +57,10 @@ const CMSEditorPage = () => {
         fetchData();
     }, [fetchData]);
 
-    const handleCopyUrl = () => {
-        if (!cms?.content_json_url) return;
-        navigator.clipboard.writeText(cms.content_json_url);
-        toast.success("Content URL copied to clipboard");
+    const handleCopyId = () => {
+        if (!cms?.id) return;
+        navigator.clipboard.writeText(cms.id);
+        toast.success("CMS ID copied to clipboard");
     };
 
     const handleSaveContent = async (newContent: any) => {
@@ -100,6 +100,13 @@ const CMSEditorPage = () => {
         if (!id) return;
         try {
             const newSchema = JSON.parse(editorValue);
+            
+            // Basic validation
+            if (!newSchema.displayType || !Array.isArray(newSchema.fields)) {
+                toast.error("Invalid Structure: Must have 'displayType' and 'fields' array.");
+                return;
+            }
+
             setIsSaving(true);
             const result = await updateCMSContent(id, 'editor', newSchema);
             const processed = result.data.content; // Content is named 'content' in PUT response but contains updated schema if type=editor
@@ -137,20 +144,20 @@ const CMSEditorPage = () => {
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button variant="outline" size="sm" onClick={handleCopyUrl} className="flex items-center gap-2">
+                                <Button variant="outline" size="sm" onClick={handleCopyId} className="flex items-center gap-2">
                                     <Copy className="h-4 w-4" />
-                                    Copy Content URL
+                                    Copy CMS ID
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p className="text-xs">Direct JSON link for developers</p>
+                                <p className="text-xs">Copy unique ID for API usage</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
 
-                    <Button variant="outline" size="sm" onClick={() => window.open(cms.content_json_url, '_blank')} title="View Raw JSON">
-                        <ExternalLink className="h-4 w-4" />
-                    </Button>
+                    <div className="px-3 py-1 bg-muted rounded border text-[10px] font-mono select-all">
+                        ID: {cms.id}
+                    </div>
 
                     <Button variant="outline" size="sm" onClick={() => fetchData()}>
                         Refresh
@@ -178,7 +185,25 @@ const CMSEditorPage = () => {
                     </div>
 
                     <TabsContent value="content" className="mt-0">
-                        {schema.displayType === 'table' ? (
+                        {!schema || !Array.isArray(schema.fields) ? (
+                            <div className="p-12 border-2 border-dashed rounded-xl flex flex-col items-center justify-center text-center space-y-4 bg-muted/20">
+                                <div className="p-4 bg-destructive/10 rounded-full">
+                                    <Settings2 className="h-8 w-8 text-destructive" />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold">Invalid Structure Schema</h3>
+                                    <p className="text-muted-foreground text-sm max-w-md">
+                                        Your CMS structure is missing required fields. Please go to the <b>Developer (JSON)</b> tab and define your fields.
+                                    </p>
+                                </div>
+                                <Button variant="outline" onClick={() => {
+                                    const devTab = document.querySelector('[value="schema"]') as HTMLElement;
+                                    devTab?.click();
+                                }}>
+                                    Go to Developer Tab
+                                </Button>
+                            </div>
+                        ) : schema.displayType === 'table' ? (
                             <TableRenderer 
                                 schema={schema} 
                                 content={content} 
@@ -258,7 +283,7 @@ const CMSEditorPage = () => {
                         
                         <div className="mt-6 bg-blue-50 dark:bg-blue-900/10 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
                            <p className="text-xs text-blue-700 dark:text-blue-300">
-                             <strong>Developer Tip:</strong> Use the left editor to define your UI fields and the right editor to manually adjust or batch-edit your data. Both sync to Cloudinary.
+                             <strong>Developer Tip:</strong> Use the left editor to define your UI fields and the right editor to manually adjust or batch-edit your data. Both are saved and accessible via API.
                            </p>
                         </div>
                     </TabsContent>

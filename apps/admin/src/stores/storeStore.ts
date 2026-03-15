@@ -6,18 +6,21 @@ interface Store {
   id: string;
   name: string;
   slug: string;
-  description?: string;
-  logo_url?: string;
-  contact_email?: string;
-  phone?: string;
-  currency?: string;
-  country?: string;
-  city?: string;
-  timezone?: string;
-  status: 'active' | 'inactive' | 'suspended';
-  created_at: string;
-  updated_at: string;
-  user_store?: { user_id: string; role: 'owner' | 'manager' | 'staff' }[];
+  description?: string | null;
+  logo_url?: string | null;
+  contact_email?: string | null;
+  phone?: string | null;
+  currency?: string | null;
+  country?: string | null;
+  city?: string | null;
+  timezone?: string | null;
+  status: 'active' | 'inactive' | 'suspended' | null;
+  color?: string | null;
+  user_id?: string | null;
+  trial_ends_at?: string | null;
+  plan_id?: string | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 interface StoreResponse {
@@ -68,6 +71,8 @@ interface StoreState {
   page: number;
   limit: number;
   total: number;
+  activeStoreId: string | null;
+  setActiveStoreId: (storeId: string) => void;
   fetchStores: (params?: { page?: number; limit?: number; status?: string; search?: string }) => Promise<void>;
   createStore: (payload: CreateStorePayload) => Promise<Store | null>;
   updateStore: (storeId: string, payload: UpdateStorePayload) => Promise<Store | null>;
@@ -81,15 +86,17 @@ interface StoreOperationResponse {
 }
 
 
-export const useStoreStore = create<StoreState>((set) => ({
+export const useStoreStore = create<StoreState>((set, get) => ({
   stores: null,
   loading: false,
   error: null,
   page: 1,
   limit: 20,
   total: 0,
+  activeStoreId: null,
+  setActiveStoreId: (storeId: string) => set({ activeStoreId: storeId }),
 
-  fetchStores: async ({ page = 1, limit = 1, status, search } = {}) => {
+  fetchStores: async ({ page = 1, limit = 20, status, search } = {}) => {
     set({ loading: true, error: null });
     try {
       const response = await api.get<StoreResponse>('/api/v1/stores', {
@@ -105,6 +112,7 @@ export const useStoreStore = create<StoreState>((set) => ({
         page: response.data.data.page,
         limit: response.data.data.limit,
         total: response.data.data.stores.length, // Adjust if backend provides total count
+        activeStoreId: response.data.data.stores.length > 0 && !get().activeStoreId ? response.data.data.stores[0].id : get().activeStoreId,
         loading: false,
         error: null,
       });

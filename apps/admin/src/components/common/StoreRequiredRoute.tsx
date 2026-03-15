@@ -19,20 +19,27 @@ export const StoreRequiredRoute = ({ children }: { children: React.ReactNode }) 
     }
   }, [user, isVendor, stores, loading, fetchStores]);
 
-  // 1️⃣ Still loading user or store data → show loader
-  if (!user || loading || stores === null) {
+  if (!user) {
     return <Loader />;
   }
 
-  // 2️⃣ Store fetch failed → logout
-  if (error) {
-    return <Navigate to="/login" replace />;
-  }
+  // 1️⃣ For vendors, we must wait for store data
+  if (isVendor) {
+    if (loading || stores === null) {
+      return <Loader />;
+    }
 
-  // 3️⃣ After fetch is complete → Now decide redirect
-  if (isVendor && stores.length === 0) {
-    return <Navigate to="/store-setup" state={{ from: location }} replace />;
-  }
+    // 2️⃣ Store fetch failed → logout
+    if (error) {
+      return <Navigate to="/login" replace />;
+    }
 
+    // 3️⃣ After fetch is complete → Now decide redirect
+    if (stores.length === 0) {
+      return <Navigate to="/store-setup" state={{ from: location }} replace />;
+    }
+    
+  }
+  
   return <>{children}</>;
 };

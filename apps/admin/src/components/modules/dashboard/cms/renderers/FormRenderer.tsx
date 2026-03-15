@@ -46,7 +46,7 @@ const FormRenderer: React.FC<FormRendererProps> = ({ schema, content, onUpdate, 
           </div>
         </CardHeader>
         <CardContent className="space-y-8">
-          {schema.fields.map((field) => (
+          {schema?.fields?.map((field) => (
             <FieldRenderer 
               key={field.name} 
               field={field} 

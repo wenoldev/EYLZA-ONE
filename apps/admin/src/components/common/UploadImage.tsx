@@ -187,13 +187,13 @@ export function UploadDialog({ onImagesSelected, initialValues, multiple = true 
           <DialogTitle>Add Images</DialogTitle>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-grow flex flex-col overflow-hidden">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="grow flex flex-col overflow-hidden">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="upload">Upload New</TabsTrigger>
             <TabsTrigger value="gallery">Store Gallery</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="upload" className="flex-grow overflow-y-auto space-y-4 pt-4">
+          <TabsContent value="upload" className="grow overflow-y-auto space-y-4 pt-4">
             <div
               className={`border-2 border-dashed rounded-lg p-10 text-center transition-all duration-300 ${isDragging ? "bg-muted/50 scale-[1.02]" : "hover:bg-muted/50"
                 } cursor-pointer`}
@@ -215,7 +215,7 @@ export function UploadDialog({ onImagesSelected, initialValues, multiple = true 
             </div>
           </TabsContent>
 
-          <TabsContent value="gallery" className="flex-grow overflow-y-auto pt-4">
+          <TabsContent value="gallery" className="grow overflow-y-auto pt-4">
             {isLoadingGallery ? (
               <div className="flex justify-center items-center h-40">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -270,7 +270,7 @@ export function UploadDialog({ onImagesSelected, initialValues, multiple = true 
                     className="h-full w-full object-contain"
                   />
                 </div>
-                <div className="flex-grow">
+                <div className="grow">
                   {image.isPrimary ? (
                     <span className="text-xs font-bold uppercase tracking-wider text-primary">Primary Image</span>
                   ) : (
@@ -294,7 +294,7 @@ export function UploadDialog({ onImagesSelected, initialValues, multiple = true 
         )}
 
         <div className="flex justify-end space-x-2 pt-4 border-t mt-4">
-          <Button variant="outline" onClick={() => { setImages(initialValues); setOpen(false); }}>
+          <Button variant="outline" onClick={() => { setImages(initialValues || []); setOpen(false); }}>
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={images.length === 0}>

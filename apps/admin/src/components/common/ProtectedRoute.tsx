@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuthGuard } from '@/stores/authStore';
+import { useAuthStore } from '@/stores/authStore';
 import Loader from '@/components/common/Loader';
 
 interface ProtectedRouteProps {
@@ -13,7 +13,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   allowedRoles = ['admin', 'vendor'],
   redirectTo = '/login'
 }) => {
-  const { isAuthenticated, isLoading, role } = useAuthGuard();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const role = useAuthStore((state) => state.role);
   const location = useLocation();
 
   if (isLoading) {

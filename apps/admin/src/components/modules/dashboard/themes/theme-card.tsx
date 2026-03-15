@@ -38,7 +38,7 @@ export default function ThemeCard({ theme, onFavoriteToggle, onSelect, onPreview
             className="w-28 font-medium bg-primary text-primary-foreground"
             onClick={(e) => { e.stopPropagation(); onSelect(); }}
           >
-            Select
+            {theme.isPaidTheme && !(theme as any).isPurchased ? "Buy Now" : "Select"}
           </Button>
         </div>
 

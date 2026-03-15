@@ -1,8 +1,12 @@
 export interface User {
   id: string;
   email: string;
-  role?: 'admin' | 'vendor';
-  created_at?: string;
+  name?: string | null;
+  phone?: string | null;
+  role?: 'admin' | 'vendor' | null;
+  status?: 'active' | 'inactive' | 'banned' | null;
+  created_at?: string | null;
+  updated_at?: string | null;
   user_metadata?: {
     email?: string;
     email_verified?: boolean;

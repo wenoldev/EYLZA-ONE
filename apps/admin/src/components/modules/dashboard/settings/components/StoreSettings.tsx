@@ -1,22 +1,56 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Store, Loader2 } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Store, Loader2, Globe, Mail, Phone, MapPin, Clock, Tag } from "lucide-react"
 import { useStoreStore } from "@/stores/storeStore"
 import { toast } from "sonner"
+
+const countries = [
+  { value: "US", label: "United States" },
+  { value: "IN", label: "India" },
+  { value: "GB", label: "United Kingdom" },
+  { value: "CA", label: "Canada" },
+  { value: "AU", label: "Australia" },
+]
+
+const currencies = [
+  { value: "USD", label: "US Dollar" },
+  { value: "INR", label: "Indian Rupee" },
+  { value: "GBP", label: "British Pound" },
+  { value: "CAD", label: "Canadian Dollar" },
+  { value: "AUD", label: "Australian Dollar" },
+]
+
+const timezones = [
+  "America/New_York",
+  "America/Chicago",
+  "America/Denver",
+  "America/Los_Angeles",
+  "Europe/London",
+  "Europe/Paris",
+  "Asia/Tokyo",
+  "Asia/Kolkata",
+  "Australia/Sydney",
+]
 
 export function StoreSettings() {
     const { stores, loading: storeLoading, error: storeError, fetchStores, updateStore } = useStoreStore()
     const currentStore = stores?.[0]
 
-    const [storeName, setStoreName] = useState("")
-    const [storeDescription, setStoreDescription] = useState("")
-    const [storeContactEmail, setStoreContactEmail] = useState("")
-    const [storePhone, setStorePhone] = useState("")
+    const [formData, setFormData] = useState({
+        name: "",
+        slug: "",
+        description: "",
+        contact_email: "",
+        phone: "",
+        country: "",
+        currency: "",
+        city: "",
+        timezone: "",
+    })
 
     useEffect(() => {
         if (!stores || stores.length === 0) {
@@ -26,12 +60,28 @@ export function StoreSettings() {
 
     useEffect(() => {
         if (currentStore) {
-            setStoreName(currentStore.name || "")
-            setStoreDescription(currentStore.description || "")
-            setStoreContactEmail(currentStore.contact_email || "")
-            setStorePhone(currentStore.phone || "")
+            setFormData({
+                name: currentStore.name || "",
+                slug: currentStore.slug || "",
+                description: currentStore.description || "",
+                contact_email: currentStore.contact_email || "",
+                phone: currentStore.phone || "",
+                country: currentStore.country || "IN",
+                currency: currentStore.currency || "INR",
+                city: currentStore.city || "",
+                timezone: currentStore.timezone || "Asia/Kolkata",
+            })
         }
     }, [currentStore])
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { id, value } = e.target
+        setFormData(prev => ({ ...prev, [id]: value }))
+    }
+
+    const handleSelectChange = (id: string, value: string) => {
+        setFormData(prev => ({ ...prev, [id]: value }))
+    }
 
     const handleSaveStore = async () => {
         if (!currentStore) {
@@ -39,12 +89,7 @@ export function StoreSettings() {
             return
         }
 
-        const result = await updateStore(currentStore.id, {
-            name: storeName,
-            description: storeDescription,
-            contact_email: storeContactEmail,
-            phone: storePhone,
-        })
+        const result = await updateStore(currentStore.id, formData)
 
         if (result) {
             toast.success("Store updated successfully")
@@ -53,83 +98,187 @@ export function StoreSettings() {
         }
     }
 
+    if (!currentStore && !storeLoading) {
+        return (
+            <div className="rounded-lg border border-dashed p-8 text-center bg-white">
+                <Store className="mx-auto h-12 w-12 text-gray-400" />
+                <p className="mt-2 text-gray-600">No store found. Please create a store first.</p>
+            </div>
+        )
+    }
+
     return (
-        <div className="max-w-2xl space-y-6">
+        <div className="max-w-4xl space-y-8 pb-10">
             <div>
-                <h3 className="text-xl font-semibold text-gray-900">Store</h3>
-                <p className="text-sm text-gray-500">Manage your store information</p>
+                <h3 className="text-2xl font-bold text-gray-900">Store Settings</h3>
+                <p className="text-sm text-gray-500">Manage your store's identity and regional settings</p>
             </div>
 
-            {!currentStore && !storeLoading ? (
-                <div className="rounded-lg border border-dashed p-8 text-center">
-                    <Store className="mx-auto h-12 w-12 text-gray-400" />
-                    <p className="mt-2 text-gray-600">No store found. Please create a store first.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* General Information */}
+                <div className="space-y-6 bg-white p-6 rounded-xl border">
+                    <div className="flex items-center gap-2 mb-2">
+                        <Tag className="w-5 h-5 text-blue-600" />
+                        <h4 className="font-semibold text-gray-900">Basic Information</h4>
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="name">Store Name</Label>
+                            <Input
+                                id="name"
+                                value={formData.name}
+                                onChange={handleInputChange}
+                                placeholder="My Amazing Store"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="slug">Store URL Slug</Label>
+                            <div className="flex items-center">
+                                <span className="bg-gray-100 border border-r-0 rounded-l-md px-3 py-2 text-sm text-gray-500 h-10 flex items-center">/</span>
+                                <Input
+                                    id="slug"
+                                    value={formData.slug}
+                                    onChange={handleInputChange}
+                                    placeholder="my-store"
+                                    className="rounded-l-none"
+                                />
+                            </div>
+                            <p className="text-[10px] text-gray-500 mt-1">Changing this will change your store's web address.</p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="description">Store Description</Label>
+                            <Textarea
+                                id="description"
+                                value={formData.description}
+                                onChange={handleInputChange}
+                                placeholder="Describe your store to your customers..."
+                                rows={4}
+                            />
+                        </div>
+                    </div>
                 </div>
-            ) : (
-                <>
-                    <div>
-                        <Label htmlFor="storeName">Store Name</Label>
-                        <Input
-                            id="storeName"
-                            value={storeName}
-                            onChange={(e) => setStoreName(e.target.value)}
-                            placeholder="My Store"
-                        />
+
+                {/* Regional & Contact */}
+                <div className="space-y-6 bg-white p-6 rounded-xl border">
+                    <div className="flex items-center gap-2 mb-2">
+                        <Globe className="w-5 h-5 text-blue-600" />
+                        <h4 className="font-semibold text-gray-900">Regional & Contact</h4>
                     </div>
 
-                    <div>
-                        <Label htmlFor="storeDescription">Description</Label>
-                        <Textarea
-                            id="storeDescription"
-                            value={storeDescription}
-                            onChange={(e) => setStoreDescription(e.target.value)}
-                            placeholder="Store description..."
-                            rows={4}
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                        <div>
-                            <Label htmlFor="storeEmail">Contact Email</Label>
-                            <Input
-                                id="storeEmail"
-                                type="email"
-                                value={storeContactEmail}
-                                onChange={(e) => setStoreContactEmail(e.target.value)}
-                                placeholder="store@example.com"
-                            />
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label>Country</Label>
+                                <Select value={formData.country} onValueChange={(val) => handleSelectChange("country", val)}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select Country" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {countries.map((c) => (
+                                            <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Currency</Label>
+                                <Select value={formData.currency} onValueChange={(val) => handleSelectChange("currency", val)}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select Currency" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {currencies.map((c) => (
+                                            <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
-                        <div>
-                            <Label htmlFor="storePhone">Phone</Label>
-                            <Input
-                                id="storePhone"
-                                value={storePhone}
-                                onChange={(e) => setStorePhone(e.target.value)}
-                                placeholder="+1 234 567 8900"
-                            />
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="city">City</Label>
+                                <div className="relative">
+                                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                    <Input
+                                        id="city"
+                                        value={formData.city}
+                                        onChange={handleInputChange}
+                                        placeholder="New York"
+                                        className="pl-10"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Timezone</Label>
+                                <Select value={formData.timezone} onValueChange={(val) => handleSelectChange("timezone", val)}>
+                                    <SelectTrigger>
+                                        <div className="flex items-center gap-2">
+                                            <Clock className="w-4 h-4 text-gray-400" />
+                                            <SelectValue placeholder="Select Timezone" />
+                                        </div>
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {timezones.map((tz) => (
+                                            <SelectItem key={tz} value={tz}>{tz.replace("_", " ")}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="contact_email">Contact Email</Label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                <Input
+                                    id="contact_email"
+                                    type="email"
+                                    value={formData.contact_email}
+                                    onChange={handleInputChange}
+                                    placeholder="contact@store.com"
+                                    className="pl-10"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="phone">Phone Number</Label>
+                            <div className="relative">
+                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                <Input
+                                    id="phone"
+                                    value={formData.phone}
+                                    onChange={handleInputChange}
+                                    placeholder="+1 234 567 890"
+                                    className="pl-10"
+                                />
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div>
-                        <Label>Store Status</Label>
-                        <p className="mt-1 text-gray-700 capitalize">{currentStore?.status || "N/A"}</p>
-                    </div>
+            <div className="flex justify-end gap-4 border-t pt-6">
+                <Button variant="outline" onClick={() => fetchStores({ page: 1, limit: 1 })} disabled={storeLoading}>
+                    Cancel
+                </Button>
+                <Button onClick={handleSaveStore} disabled={storeLoading} className="bg-blue-600 hover:bg-blue-700">
+                    {storeLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Save Changes
+                </Button>
+            </div>
 
-                    <div>
-                        <Label>Created</Label>
-                        <p className="mt-1 text-gray-700">
-                            {currentStore?.created_at
-                                ? new Date(currentStore.created_at).toLocaleDateString()
-                                : "N/A"}
-                        </p>
-                    </div>
-
-                    <Button onClick={handleSaveStore} disabled={storeLoading}>
-                        {storeLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Update Store
-                    </Button>
-                </>
-            )}
+            <div className="bg-blue-50 border border-blue-100 p-4 rounded-lg flex items-start gap-3">
+                <Globe className="w-5 h-5 text-blue-600 mt-0.5" />
+                <div className="text-sm">
+                    <p className="font-semibold text-blue-900">Store Status: <span className="capitalize">{currentStore?.status || "active"}</span></p>
+                    <p className="text-blue-700">Started on {currentStore?.created_at ? new Date(currentStore.created_at).toLocaleDateString() : "N/A"}</p>
+                </div>
+            </div>
         </div>
     )
 }

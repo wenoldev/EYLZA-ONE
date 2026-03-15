@@ -17,7 +17,9 @@ export interface SliderConfig {
     };
     styles: {
         backgroundColor?: string;
+        textColor?: string;
         titleColor?: string;
+        cardBg?: string;
         cardStyles: DynamicCardProps['styles'];
         gap?: string;
         padding?: string;

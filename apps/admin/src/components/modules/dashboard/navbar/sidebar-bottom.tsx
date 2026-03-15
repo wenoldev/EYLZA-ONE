@@ -12,7 +12,7 @@ export function SidebarBottom() {
     <div className="space-y-1">
 
       <SidebarMenuButton asChild>
-        <Link to="/help">
+        <Link to="/dashboard/help">
           <HelpCircle className="h-4 w-4" />
           Help & Support
         </Link>

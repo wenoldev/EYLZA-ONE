@@ -30,6 +30,7 @@ export interface HeaderConfig {
         fontFamily?: FontFamily;
         logoText?: string;
         behaviour?: "static" | "sticky";
+        borderColor?: string;
     };
     topBar?: {
         show: boolean;

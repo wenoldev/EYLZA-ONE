@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { CircleCheck, Trash2, Search } from "lucide-react"
+import { CircleCheck, Trash2, Search, RotateCw } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { useStoreStore } from "@/stores/storeStore"
 import { useQueriesStore } from "@/stores/queryStore"
@@ -141,6 +141,16 @@ const QueryPage = () => {
               />
               <Button onClick={handleSearch} className="rounded-l-none">
                 <Search className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={() => fetchQueries(storeData?.[0]?.id)} 
+                disabled={loading}
+                title="Refresh"
+                className="ml-2"
+              >
+                <RotateCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
               </Button>
             </div>
 

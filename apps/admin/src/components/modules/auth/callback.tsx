@@ -84,9 +84,15 @@ export const AuthCallback: React.FC = () => {
         // Initialize auth state from storage
         await initializeAuth();
 
-        // Redirect based on role after a short delay
+        // Detect if this is a password recovery flow
+        const type = hashParams.get('type');
+        const isRecovery = type === 'recovery';
+
+        // Redirect based on role or recovery flow after a short delay
         setTimeout(() => {
-          if (isAuthenticated && role) {
+          if (isRecovery) {
+            navigate('/update-password');
+          } else if (isAuthenticated && role) {
             if (role === 'admin') {
               navigate('/admin/dashboard');
             } else if (role === 'vendor') {
@@ -140,7 +146,7 @@ export const AuthCallback: React.FC = () => {
               </h1>
               <div className="bg-green-50 border border-green-200 rounded-xl p-3">
                 <p className="text-green-600 text-sm">
-                  You have been successfully authenticated. Redirecting to dashboard...
+                  You have been successfully authenticated. Redirecting you...
                 </p>
               </div>
             </div>

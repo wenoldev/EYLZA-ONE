@@ -67,7 +67,7 @@ export function StoreDetailsStep({ formData, updateFormData, onNext }: StoreDeta
               className="pr-10"
             />
             {formData.name && (
-              <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-600" />
+              <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-blue-600" />
             )}
           </div>
         </div>
@@ -100,7 +100,7 @@ export function StoreDetailsStep({ formData, updateFormData, onNext }: StoreDeta
                 </SelectContent>
               </Select>
               {formData.country && (
-                <Check className="absolute right-10 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-600 pointer-events-none" />
+                <Check className="absolute right-10 top-1/2 transform -translate-y-1/2 w-5 h-5 text-blue-600 pointer-events-none" />
               )}
             </div>
             <div className="relative">
@@ -117,7 +117,7 @@ export function StoreDetailsStep({ formData, updateFormData, onNext }: StoreDeta
                 </SelectContent>
               </Select>
               {formData.currency && (
-                <Check className="absolute right-10 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-600 pointer-events-none" />
+                <Check className="absolute right-10 top-1/2 transform -translate-y-1/2 w-5 h-5 text-blue-600 pointer-events-none" />
               )}
             </div>
           </div>

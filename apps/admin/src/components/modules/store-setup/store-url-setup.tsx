@@ -140,14 +140,14 @@ export function StoreUrlStep({ formData, updateFormData, onBack, onSubmit, loadi
             </div>
             <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
               {slugStatus === "checking" && <Loader2 className="w-5 h-5 animate-spin text-gray-400" />}
-              {slugStatus === "available" && <Check className="w-5 h-5 text-green-600" />}
+              {slugStatus === "available" && <Check className="w-5 h-5 text-blue-600" />}
               {slugStatus === "taken" && <X className="w-5 h-5 text-red-600" />}
             </div>
           </div>
           {slugStatus === "taken" && (
             <p className="text-sm text-red-600 mt-2">This URL is already taken. Please try a different one.</p>
           )}
-          {slugStatus === "available" && <p className="text-sm text-green-600 mt-2">Great! This URL is available.</p>}
+          {slugStatus === "available" && <p className="text-sm text-blue-600 mt-2">Great! This URL is available.</p>}
         </div>
 
         <div>
@@ -196,7 +196,7 @@ export function StoreUrlStep({ formData, updateFormData, onBack, onSubmit, loadi
             Creating Store...
           </>
         ) : (
-          "Create Store"
+          "Finish & Choose Plan"
         )}
       </Button>
     </div>

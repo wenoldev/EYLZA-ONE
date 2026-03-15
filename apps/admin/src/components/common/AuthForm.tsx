@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthIntegration } from '@/stores/authStore';
+import { useAuthIntegration, useAuthStore } from '@/stores/authStore';
 import { Eye, EyeOff } from 'lucide-react';
 
 type AuthPage = 'login' | 'register' | 'forgot' | 'change';
@@ -59,6 +59,7 @@ export const AuthForm: React.FC<{ page: AuthPage }> = ({ page }) => {
   const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const { handleLogin, error, isLoading, clearError } = useAuthIntegration();
+  const { session } = useAuthStore();
 
   const current = config[page];
 
@@ -83,6 +84,7 @@ export const AuthForm: React.FC<{ page: AuthPage }> = ({ page }) => {
     if (email) body.email = email;
     if (password) body.password = password;
     if (newPassword) body.new_password = newPassword;
+    if (session?.access_token) body.access_token = session.access_token;
     if (page === 'register' && name) body.options.data = { full_name: name };
     if (page === 'register') body.role = 'vendor';
 
@@ -103,6 +105,11 @@ export const AuthForm: React.FC<{ page: AuthPage }> = ({ page }) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .then(() => {
         setShowEmailConfirmation(true);
+        if (page === 'change') {
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 3000);
+        }
       })
       .catch(err => {
         console.error(err);
@@ -138,34 +145,34 @@ export const AuthForm: React.FC<{ page: AuthPage }> = ({ page }) => {
     }
   };
 
-  const handleFacebookSignIn = async () => {
-    clearError();
+  // const handleFacebookSignIn = async () => {
+  //   clearError();
 
-    try {
-      const apiUrl = import.meta.env.VITE_API_URL;
-      const response = await fetch(`${apiUrl}/api/v1/auth`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'facebook-login',
-          options: { redirectTo: `${window.location.origin}/auth/callback` },
-        }),
-      });
+  //   try {
+  //     const apiUrl = import.meta.env.VITE_API_URL;
+  //     const response = await fetch(`${apiUrl}/api/v1/auth`, {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         action: 'facebook-login',
+  //         options: { redirectTo: `${window.location.origin}/auth/callback` },
+  //       }),
+  //     });
 
-      const result: { data: { url: string; provider: string }; error?: { message: string; code: string } } = await response.json();
+  //     const result: { data: { url: string; provider: string }; error?: { message: string; code: string } } = await response.json();
 
-      if (!response.ok || result.error) {
-        throw new Error(result.error?.message || 'Facebook sign-in failed');
-      }
+  //     if (!response.ok || result.error) {
+  //       throw new Error(result.error?.message || 'Facebook sign-in failed');
+  //     }
 
-      window.location.href = result.data.url;
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  //     window.location.href = result.data.url;
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   return (
-    <div className="min-h-screen w-lg bg-gray-50 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen lg:h-full w-full bg-gray-50 flex items-center justify-center px-4 py-8 lg:overflow-y-auto">
       <div className="w-full max-w-lg"> {/* ← Wider form */}
 
         {/* Header */}
@@ -176,7 +183,7 @@ export const AuthForm: React.FC<{ page: AuthPage }> = ({ page }) => {
           )}
         </div>
 
-        <div className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
 
           {/* Name */}
           {current.fields.includes('name') && (
@@ -283,13 +290,15 @@ export const AuthForm: React.FC<{ page: AuthPage }> = ({ page }) => {
             <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-green-700 text-center">
               {page === 'register'
                 ? 'Check your email to confirm your account.'
-                : 'Check your email for password reset instructions.'}
+                : page === 'forgot'
+                ? 'Check your email for password reset instructions.'
+                : 'Password updated successfully! You can now sign in.'}
             </div>
           )}
 
           {/* Submit */}
           <button
-            onClick={handleSubmit}
+            type="submit"
             disabled={isLoading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition disabled:opacity-50"
           >
@@ -308,8 +317,9 @@ export const AuthForm: React.FC<{ page: AuthPage }> = ({ page }) => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <button
+                  type="button"
                   onClick={handleGoogleSignIn}
                   disabled={isLoading}
                   className="flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-xl hover:bg-gray-50 font-medium text-gray-700 transition cursor-pointer"
@@ -323,7 +333,7 @@ export const AuthForm: React.FC<{ page: AuthPage }> = ({ page }) => {
                   Google
                 </button>
 
-                <button
+                {/* <button
                   onClick={handleFacebookSignIn}
                   disabled={isLoading}
                   className="flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-xl text-gray-700 font-medium cursor-pointer"
@@ -332,7 +342,7 @@ export const AuthForm: React.FC<{ page: AuthPage }> = ({ page }) => {
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                   </svg>
                   Facebook
-                </button>
+                </button> */}
               </div>
             </>
           )}
@@ -345,7 +355,7 @@ export const AuthForm: React.FC<{ page: AuthPage }> = ({ page }) => {
             </Link>
           </p>
 
-        </div>
+          </form>
       </div>
     </div>
   );

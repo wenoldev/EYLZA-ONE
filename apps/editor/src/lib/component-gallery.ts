@@ -76,32 +76,83 @@ export const componentGallery: ComponentGalleryItem[] = [
           showDots: true,
         },
       },
+      {
+        id: "slider-category-circles",
+        name: "Category Circles (Premium)",
+        type: "slider",
+        thumbnail: "/category-slider.png",
+        defaultProps: {
+          template: "category",
+          title: "Explore Collections",
+          subtitle: "Discover our curated picks",
+          items: [
+            { title: "Sarees", imageUrl: "/cat1.jpg", link: "/category/saree" },
+            { title: "Blouses", imageUrl: "/cat2.jpg", link: "/category/blouse" },
+            { title: "Accessories", imageUrl: "/cat3.jpg", link: "/category/acc" }
+          ],
+          itemsPerView: { desktop: 5, tablet: 4, mobile: 2 },
+          styles: { padding: "5rem 0", gap: "2rem" }
+        }
+      },
     ],
+  },
+  {
+    type: "collectionGrid",
+    label: "Collection Grid",
+    variants: [
+      {
+        id: "collection-grid-masonry",
+        name: "Masonry Collections",
+        type: "collectionGrid",
+        thumbnail: "/collection-grid.png",
+        defaultProps: {
+          title: "Our Signature Styles",
+          items: [
+            { title: "Bridal Couture", subtitle: "Traditional", imageUrl: "/c1.jpg", link: "/bridal", span: "large" },
+            { title: "Handwork", subtitle: "Artisan Made", imageUrl: "/c2.jpg", link: "/handwork", span: "tall" },
+            { title: "Summer Basics", subtitle: "Lightweight", imageUrl: "/c3.jpg", link: "/summer", span: "normal" }
+          ]
+        }
+      }
+    ]
   },
   {
     type: "carousel",
     label: "Carousel",
     variants: [
       {
-        id: "carousel-products",
-        name: "Product Carousel",
+        id: "carousel-premium-fade",
+        name: "Premium Fade Carousel",
         type: "carousel",
-        thumbnail: "/product-carousel.png",
+        thumbnail: "/carousel-premium.png",
         defaultProps: {
-          type: "products",
-          itemsPerView: 4,
-        },
-      },
-      {
-        id: "carousel-testimonials",
-        name: "Testimonials",
-        type: "carousel",
-        thumbnail: "/testimonial-carousel.png",
-        defaultProps: {
-          type: "testimonials",
-          itemsPerView: 3,
-        },
-      },
+          items: [
+            {
+              image: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e12?auto=format&fit=crop&q=80",
+              title: "ELEVATE YOUR STYLE",
+              subtitle: "NEW ARRIVALS 2024",
+              buttonText: "SHOP THE COLLECTION",
+              buttonLink: "/products",
+              textAlignment: "center",
+              overlayOpacity: 40
+            },
+            {
+              image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80",
+              title: "MODERN ESSENTIALS",
+              subtitle: "CURATED SELECTION",
+              buttonText: "VIEW ALL",
+              buttonLink: "/products",
+              textAlignment: "left",
+              overlayOpacity: 30
+            }
+          ],
+          height: "650px",
+          autoplay: true,
+          interval: 5000,
+          indicatorPosition: "right",
+          showArrows: true
+        }
+      }
     ],
   },
   {
@@ -169,6 +220,41 @@ export const componentGallery: ComponentGalleryItem[] = [
           }
         }
       }
+    ]
+  },
+  {
+    type: "contact",
+    label: "Contact",
+    variants: [
+      { id: "contact-standard", name: "Standard Contact", type: "contact", thumbnail: "/contact.png", defaultProps: {} }
+    ]
+  },
+  {
+    type: "login",
+    label: "Login",
+    variants: [
+      { id: "login-standard", name: "Modern Login", type: "login", thumbnail: "/login.png", defaultProps: {} }
+    ]
+  },
+  {
+    type: "cart",
+    label: "Shopping Cart",
+    variants: [
+      { id: "cart-standard", name: "Standard Cart", type: "cart", thumbnail: "/cart.png", defaultProps: {} }
+    ]
+  },
+  {
+    type: "checkout",
+    label: "Checkout",
+    variants: [
+      { id: "checkout-standard", name: "Standard Checkout", type: "checkout", thumbnail: "/checkout.png", defaultProps: {} }
+    ]
+  },
+  {
+    type: "orders",
+    label: "Orders",
+    variants: [
+      { id: "orders-standard", name: "Standard Orders", type: "orders", thumbnail: "/orders.png", defaultProps: {} }
     ]
   },
   {

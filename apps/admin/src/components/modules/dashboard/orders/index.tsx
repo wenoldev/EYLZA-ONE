@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 import Loader from "@/components/common/Loader"
 import FilterList from "@/components/common/FilterList"
+import { RotateCw } from "lucide-react"
 import type { Column, TableConfig } from "@/types"
 
 const OrdersPage: React.FC = () => {
@@ -219,6 +220,15 @@ const OrdersPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
           <p className="text-gray-600">Manage your store orders</p>
         </div>
+        <Button 
+          variant="outline" 
+          size="icon" 
+          onClick={() => fetchOrders({ ...filters, store_id: stores[0]?.id })} 
+          disabled={isLoading}
+          title="Refresh"
+        >
+          <RotateCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
+        </Button>
       </div>
 
       {orders.length > 0 && (

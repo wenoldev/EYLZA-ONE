@@ -7,6 +7,10 @@ import { gridSchema } from "./grid"
 import { carouselSchema } from "./carousel"
 import { productListSchema } from "./productList"
 import { productDetailSchema } from "./productDetail"
+import { collectionGridSchema } from "./collection-grid"
+import { 
+  contactSchema, loginSchema, cartSchema, checkoutSchema, ordersSchema 
+} from "./page-sections"
 
 export {
   headerSchema,
@@ -16,7 +20,13 @@ export {
   gridSchema,
   carouselSchema,
   productListSchema,
-  productDetailSchema
+  productDetailSchema,
+  collectionGridSchema,
+  contactSchema,
+  loginSchema,
+  cartSchema,
+  checkoutSchema,
+  ordersSchema
 }
 
 export const editorSchemas: Record<string, EditorSchema> = {
@@ -27,5 +37,11 @@ export const editorSchemas: Record<string, EditorSchema> = {
   header: headerSchema,
   footer: footerSchema,
   productList: productListSchema,
-  productDetail: productDetailSchema
+  productDetail: productDetailSchema,
+  collectionGrid: collectionGridSchema,
+  contact: contactSchema,
+  login: loginSchema,
+  cart: cartSchema,
+  checkout: checkoutSchema,
+  orders: ordersSchema
 }

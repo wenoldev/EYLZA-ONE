@@ -10,6 +10,12 @@ export const ComponentRegistry = {
     header: lazy(() => import('../components/themes/Header')),
     footer: lazy(() => import('../components/themes/Footer')),
     accordion: lazy(() => import('../components/themes/Accordion')),
+    collectionGrid: lazy(() => import('../components/themes/CollectionGrid')),
+    contact: lazy(() => import('../components/themes/ContactSection')),
+    login: lazy(() => import('../components/themes/LoginSection')),
+    cart: lazy(() => import('../components/themes/CartSection')),
+    checkout: lazy(() => import('../components/themes/CheckoutSection')),
+    orders: lazy(() => import('../components/themes/OrdersSection')),
 };
 
 export type ComponentType = keyof typeof ComponentRegistry;

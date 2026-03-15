@@ -66,8 +66,9 @@ const IconsComponent = ({ config, isSearchExpanded, setIsSearchExpanded, onToggl
                 <button
                     onClick={onToggleMobileMenu}
                     className="p-1 flex items-center justify-center"
+                    style={{ color: accentColor }}
                 >
-                    {isMobileMenuOpen ? <X size={iconSize} /> : <Menu size={iconSize} />}
+                    {isMobileMenuOpen ? <X size={iconSize} strokeWidth={strokeWidth} /> : <Menu size={iconSize} strokeWidth={strokeWidth} />}
                 </button>
             )}
         </div>
