@@ -1,135 +1,200 @@
-# Turborepo starter
+# Eylza One
 
-This Turborepo starter is maintained by the Turborepo core team.
+Frontend platform for **Eylza**, a multi-vendor e-commerce SaaS.
 
-## Using this example
+Eylza One contains the primary user interfaces used across the platform:
 
-Run the following command:
+* Admin Dashboard
+* Store Editor
+* Client Storefront
 
-```sh
-npx create-turbo@latest
-```
+This repository provides the unified frontend layer used by administrators, vendors, and customers.
 
-## What's inside?
+---
 
-This Turborepo includes the following packages/apps:
+## Overview
 
-### Apps and Packages
+Eylza One acts as the central frontend system that powers the Eylza ecosystem.
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+It includes:
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+* Platform administration tools
+* Vendor store builder and customization editor
+* Public storefront rendering system
 
-### Utilities
+The project is designed to support **multi-tenant stores**, allowing multiple vendors to operate independent stores on the same platform.
 
-This Turborepo has some additional tools already setup for you:
+---
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+## Applications
 
-### Build
+### Admin Dashboard
 
-To build all apps and packages, run the following command:
+Used by platform administrators.
 
-```
-cd my-turborepo
+Responsibilities include:
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+* Vendor management
+* Subscription management
+* Marketplace asset management
+* System monitoring
+* Payment and transaction logs
+* Support ticket handling
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
+---
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+### Store Editor
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+Used by vendors to build and manage their stores.
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+Capabilities include:
 
-### Develop
+* Page layout editing
+* Theme customization
+* Section based page builder
+* Product management
+* Store configuration
+* Plugin and asset integration
 
-To develop all apps and packages, run the following command:
+---
 
-```
-cd my-turborepo
+### Client Storefront
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+The customer-facing storefront for each vendor.
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+Features include:
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+* Product browsing
+* Product detail pages
+* Cart and checkout
+* Order tracking
+* Customer accounts
+
+---
+
+## Repository Structure
 
 ```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+eylza-one
+│
+├── admin
+│   └── platform administration dashboard
+│
+├── editor
+│   └── store builder and customization interface
+│
+├── client
+│   └── storefront rendering system
+│
+├── shared
+│   └── reusable components and utilities
+│
+└── assets
+    └── static assets and resources
 ```
 
-### Remote Caching
+---
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+## Core Concepts
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+### Multi-Tenant Architecture
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+Each vendor operates an isolated store environment while sharing the same platform infrastructure.
+
+---
+
+### Section Based Layout System
+
+Pages are built using reusable sections.
+
+Examples:
+
+* hero
+* product grid
+* banner
+* testimonial
+* featured collection
+
+Each section supports configurable settings through the store editor.
+
+---
+
+### Theme System
+
+Stores can install and activate themes from the Eylza marketplace.
+
+Themes control:
+
+* layout
+* typography
+* component styles
+* page structure
+
+---
+
+### Plugin Integration
+
+Plugins extend store functionality.
+
+Examples include:
+
+* analytics tools
+* marketing widgets
+* payment integrations
+* automation tools
+
+---
+
+## Integration
+
+Eylza One communicates with the **Eylza Backend** service via API.
+
+Primary API groups:
 
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+/auth
+/vendors
+/products
+/orders
+/subscriptions
+/assets
+/admin
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+---
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+## Development Goals
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
+The platform is designed with the following goals:
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
+* High customization
+* Scalable multi-vendor architecture
+* Modular frontend components
+* Theme and plugin ecosystem
+* High performance storefront rendering
 
-## Useful Links
+---
 
-Learn more about the power of Turborepo:
+## Future Improvements
 
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+Planned enhancements include:
+
+* Real-time editor preview
+* drag and drop layout builder
+* plugin marketplace integration
+* storefront performance optimization
+* AI assisted store design
+
+---
+
+## Related Repositories
+
+* **eylza-backend** – core platform backend services
+* **eylza-assets** – theme and plugin packages
+* **eylza-cli** – developer tools
+
+---
+
+## License
+
+Proprietary software. All rights reserved.
