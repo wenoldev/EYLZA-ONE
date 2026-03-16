@@ -36,7 +36,7 @@ const Dashboard = () => {
 
   const unreadCount = notifications.filter(n => n.unread).length;
 
-  const { stores, activeStoreId } = useStoreStore();
+  const { activeStoreId } = useStoreStore();
   const [billingInfo, setBillingInfo] = useState<any>(null);
 
   useEffect(() => {

@@ -9,7 +9,7 @@ import { AlertCircle, Lock } from 'lucide-react';
 import { loadRazorpayScript } from '@/lib/razorpay';
 
 export const BillingOverlay: React.FC = () => {
-  const { stores, activeStoreId } = useStoreStore();
+  const { activeStoreId } = useStoreStore();
   const [billingInfo, setBillingInfo] = useState<any>(null);
   const [plans, setPlans] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

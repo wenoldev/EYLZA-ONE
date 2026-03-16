@@ -223,7 +223,7 @@ const OrdersPage: React.FC = () => {
         <Button 
           variant="outline" 
           size="icon" 
-          onClick={() => fetchOrders({ ...filters, store_id: stores[0]?.id })} 
+          onClick={() => fetchOrders({ ...filters, store_id: stores![0]?.id })} 
           disabled={isLoading}
           title="Refresh"
         >

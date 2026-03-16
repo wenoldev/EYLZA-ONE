@@ -9,7 +9,7 @@ import { useStoreStore } from '@/stores/storeStore';
 import { toast } from 'sonner';
 import Loader from '@/components/common/Loader';
 import { Plus, Eye, RotateCw } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const TicketList = () => {
   const [tickets, setTickets] = useState<any[]>([]);

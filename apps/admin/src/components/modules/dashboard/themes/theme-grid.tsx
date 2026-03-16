@@ -4,7 +4,6 @@ import ThemeCard from "./theme-card"
 import api from "@/lib/api"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
-import type { Theme } from "@/types/themes"
 import { useStoreStore } from "@/stores/storeStore"
 import { useAuthStore } from "@/stores/authStore"
 import { useNavigate } from "react-router-dom"
@@ -43,7 +42,7 @@ interface ThemeGridProps {
   onSelectTheme: (theme: ProcessedTheme) => void
 }
 
-export default function ThemeGrid({ filter, search, sort, onSelectTheme }: ThemeGridProps) {
+export default function ThemeGrid({ filter, search, onSelectTheme }: ThemeGridProps) {
   const { stores } = useStoreStore()
   const { user } = useAuthStore()
   const navigate = useNavigate()

@@ -1,5 +1,4 @@
 import { ChevronsUpDown, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useStoreStore } from "@/stores/storeStore";
 import {
   DropdownMenu,
@@ -22,7 +21,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useAuthStore } from "@/stores/authStore";
 import { useState, useEffect } from "react";
 import StoreSwitcherSkeleton from "@/skeletons/storeSwitcher"
 
@@ -82,7 +80,6 @@ const getStatusGlow = (status: Status) => {
 
 export function StoreSwitcher() {
   const { isMobile } = useSidebar();
-  const navigate = useNavigate();
   const { stores, loading, error, activeStoreId, setActiveStoreId, fetchStores } = useStoreStore();
   const [activeTeam, setActiveTeam] = useState<Store | null>(null);
   const [isLimitDialogOpen, setIsLimitDialogOpen] = useState(false);

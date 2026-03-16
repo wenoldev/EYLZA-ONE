@@ -1,5 +1,5 @@
 import type { MenuGroup } from "@/types/menu";
-import { ChartPie, LayoutGrid, Package2, PaintbrushVertical, ShoppingCart, User, Ticket, Settings, Users, Store, Shield, MessageSquareMore, Database, CreditCard, Puzzle } from "lucide-react";
+import { ChartPie, LayoutGrid, Package2, PaintbrushVertical, ShoppingCart, User, Ticket, Settings, Users, Store, MessageSquareMore, Database, CreditCard, Puzzle } from "lucide-react";
 
 export const userMenuData: MenuGroup[] = [
   {
