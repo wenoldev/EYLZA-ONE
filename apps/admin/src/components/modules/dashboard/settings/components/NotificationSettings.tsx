@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Loader2, Bell, BellOff, MessageSquare } from "lucide-react"
-import { useAuthStore } from "@/stores/authStore"
+// import { useAuthStore } from "@/stores/authStore"
 import { useStoreStore } from "@/stores/storeStore"
 import { toast } from "sonner"
 import api from "@/lib/api"
@@ -22,7 +22,7 @@ function urlBase64ToUint8Array(base64String: string) {
 }
 
 export function NotificationSettings() {
-    const { user } = useAuthStore()
+    // const { user } = useAuthStore()
     const { stores, fetchStores } = useStoreStore()
     const currentStore = stores?.[0]
     const storeId = currentStore?.id
