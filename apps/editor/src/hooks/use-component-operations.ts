@@ -9,8 +9,8 @@ export interface UseComponentOperationsProps {
 }
 
 export function useComponentOperations({ components, onComponentsChange }: UseComponentOperationsProps) {
-  const getSchemaDefaults = useCallback((type: string) => {
-    const schema = editorSchemas[type]
+  const getSchemaDefaults = useCallback((selector: string) => {
+    const schema = editorSchemas[selector]
     if (!schema) return {}
 
     const defaults: any = {}
@@ -29,15 +29,15 @@ export function useComponentOperations({ components, onComponentsChange }: UseCo
   }, [])
 
   const addComponent = useCallback(
-    (type: string, index?: number) => {
+    (selector: string, index?: number) => {
       const newComponent: ComponentInstance = {
-        id: `${type}-${Date.now()}`,
-        type,
-        name: `${type.charAt(0).toUpperCase() + type.slice(1)} ${components.filter((c) => c.type === type).length + 1}`,
+        id: `${selector}-${Date.now()}`,
+        selector,
+        name: `${selector.charAt(0).toUpperCase() + selector.slice(1)} ${components.filter((c) => c.selector === selector).length + 1}`,
         visible: true,
-        isDeletable: !["header", "footer"].includes(type),
+        isDeletable: !["header", "footer"].includes(selector),
         order: index ?? components.length,
-        props: getSchemaDefaults(type),
+        props: getSchemaDefaults(selector),
       }
 
       if (index !== undefined) {
@@ -68,7 +68,7 @@ export function useComponentOperations({ components, onComponentsChange }: UseCo
 
       const newComponent: ComponentInstance = {
         ...component,
-        id: `${component.type}-${Date.now()}`,
+        id: `${component.selector}-${Date.now()}`,
         name: `${component.name} (Copy)`,
       }
 

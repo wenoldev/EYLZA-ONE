@@ -12,7 +12,7 @@ interface CanvasProps {
   onHoverComponent: (id: string | null) => void
   onRemoveComponent: (id: string) => void
   onDuplicateComponent: (id: string) => void
-  onAddComponentDrop: (type: string, index: number, variant?: string) => void
+  onAddComponentDrop: (selector: string, index: number, variant?: string) => void
   viewportSize: ViewportSize
 }
 
@@ -39,11 +39,12 @@ const CanvasItem = memo(({
   handleDrop: (e: React.DragEvent, index: number) => void
   viewportSize: ViewportSize
 }) => {
-  const Component = ComponentRegistry[component.type as keyof typeof ComponentRegistry] as any
+  const selector = component.selector || (component as any).type
+  const Component = ComponentRegistry[selector as keyof typeof ComponentRegistry] as any
   if (!Component) return null
 
   return (
-    <div key={component.id}>
+    <div key={component.id || `canvas-${index}`}>
       <div
         onDragOver={(e) => handleDragOver(e, index)}
         onDragLeave={handleDragLeave}
@@ -67,11 +68,19 @@ const CanvasItem = memo(({
         onHover={onHover}
       >
         <Suspense fallback={<Loader />}>
-          <Component
-            config={component.props}
-            data-x-id={`${component.type}_${component.id}`}
-            viewportSize={viewportSize}
-          />
+          {["header", "footer"].includes(selector) ? (
+            <Component
+              config={component.props}
+              data-x-id={`${selector}_${component.id}`}
+              viewportSize={viewportSize}
+            />
+          ) : (
+            <Component
+              {...component.props}
+              data-x-id={`${selector}_${component.id}`}
+              viewportSize={viewportSize}
+            />
+          )}
         </Suspense>
       </SectionWrapper>
     </div>
@@ -87,7 +96,6 @@ export const Canvas = memo(({
   viewportSize,
 }: CanvasProps) => {
   const [dropIndicator, setDropIndicator] = React.useState<number | null>(null)
-
   const handleDragOver = React.useCallback((e: React.DragEvent, index: number) => {
     e.preventDefault()
     e.dataTransfer.dropEffect = "copy"

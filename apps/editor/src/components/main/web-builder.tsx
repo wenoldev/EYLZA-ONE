@@ -21,31 +21,29 @@ import { useEditorStore } from "@/store/useEditorStore"
 import api from "@/lib/api"
 
 export function WebBuilder() {
-  const {
-    storeData,
-    activeThemeId,
-    currentPage,
-    globalConfig,
-    setGlobalConfig,
-    pagesData,
-    selectedComponent,
-    setSelectedComponent,
-    selectedElement,
-    setSelectedElement,
-    activePanel,
-    setActivePanel,
-    viewportSize,
-    isLoading,
-    setIsLoading,
-    isInitialLoading,
-    setIsInitialLoading,
-    loadProgress,
-    setLoadProgress,
-    updatePageComponents,
-    takeSnapshot,
-    setInitialData,
-    fetchPageData
-  } = useEditorStore()
+  const storeData = useEditorStore(state => state.storeData)
+  const activeThemeId = useEditorStore(state => state.activeThemeId)
+  const currentPage = useEditorStore(state => state.currentPage)
+  const globalConfig = useEditorStore(state => state.globalConfig)
+  const setGlobalConfig = useEditorStore(state => state.setGlobalConfig)
+  const pagesData = useEditorStore(state => state.pagesData)
+  const selectedComponent = useEditorStore(state => state.selectedComponent)
+  const setSelectedComponent = useEditorStore(state => state.setSelectedComponent)
+  const selectedElement = useEditorStore(state => state.selectedElement)
+  const setSelectedElement = useEditorStore(state => state.setSelectedElement)
+  const activePanel = useEditorStore(state => state.activePanel)
+  const setActivePanel = useEditorStore(state => state.setActivePanel)
+  const viewportSize = useEditorStore(state => state.viewportSize)
+  const isLoading = useEditorStore(state => state.isLoading)
+  const setIsLoading = useEditorStore(state => state.setIsLoading)
+  const isInitialLoading = useEditorStore(state => state.isInitialLoading)
+  const setIsInitialLoading = useEditorStore(state => state.setIsInitialLoading)
+  const loadProgress = useEditorStore(state => state.loadProgress)
+  const setLoadProgress = useEditorStore(state => state.setLoadProgress)
+  const updatePageComponents = useEditorStore(state => state.updatePageComponents)
+  const takeSnapshot = useEditorStore(state => state.takeSnapshot)
+  const setInitialData = useEditorStore(state => state.setInitialData)
+  const fetchPageData = useEditorStore(state => state.fetchPageData)
 
   const canvasRef = useRef<HTMLDivElement>(null)
 
@@ -72,9 +70,10 @@ export function WebBuilder() {
   }, [setIsInitialLoading, setInitialData, storeData?.id, activeThemeId])
 
   useEffect(() => {
+    if (isInitialLoading) return;
     const slug = currentPage.toLowerCase().replace(/\s+/g, "-")
     fetchPageData(slug)
-  }, [currentPage, fetchPageData])
+  }, [currentPage, fetchPageData, isInitialLoading])
 
   useEffect(() => {
     if (!globalConfig?.global) return
@@ -92,10 +91,11 @@ export function WebBuilder() {
 
   const currentPageSlug = currentPage.toLowerCase().replace(/\s+/g, "-")
   const currentPageComponents = pagesData[currentPageSlug] || []
+  
   const fullPageComponents = [
-    ...(globalConfig?.header ? [{ ...globalConfig.header, type: 'header', isGlobal: true }] : []),
+    ...(globalConfig?.header ? [{ ...globalConfig.header, selector: 'header', isGlobal: true }] : []),
     ...currentPageComponents,
-    ...(globalConfig?.footer ? [{ ...globalConfig.footer, type: 'footer', isGlobal: true }] : []),
+    ...(globalConfig?.footer ? [{ ...globalConfig.footer, selector: 'footer', isGlobal: true }] : []),
   ]
 
   const simulateLoading = async () => {
@@ -109,10 +109,10 @@ export function WebBuilder() {
     setIsLoading(false)
   }
 
-  const handleAddComponent = (type: string, variantId?: string) => {
+  const handleAddComponent = (selector: string, variantId?: string) => {
     simulateLoading()
 
-    const newComp = createNewComponent(type, variantId, currentPageComponents.length)
+    const newComp = createNewComponent(selector, variantId, currentPageComponents.length)
 
     const updated = [...currentPageComponents]
     updated.push(newComp)
@@ -120,8 +120,8 @@ export function WebBuilder() {
     updatePageComponents(updated)
   }
 
-  const handleAddComponentDrop = (type: string, index: number, variantId?: string) => {
-    const newComp = createNewComponent(type, variantId, index)
+  const handleAddComponentDrop = (selector: string, index: number, variantId?: string) => {
+    const newComp = createNewComponent(selector, variantId, index)
 
     let target = index
     if (target < 0) target = 0
@@ -136,26 +136,26 @@ export function WebBuilder() {
     updatePageComponents(updated)
   }
 
-  const createNewComponent = (type: string, variantId: string | undefined, order: number): ComponentInstance => {
-    const galleryItem = componentGallery.find(item => item.type === type)
+  const createNewComponent = (selector: string, variantId: string | undefined, order: number): ComponentInstance => {
+    const galleryItem = componentGallery.find(item => item.selector === selector)
     const variant = galleryItem?.variants?.find((v: any) => v.id === variantId)
 
-    const defaults = variant?.defaultProps || getSchemaDefaults(type)
+    const defaults = variant?.defaultProps || getSchemaDefaults(selector)
 
     return {
-      id: `${type}-${Date.now()}`,
-      type,
-      name: `${type.charAt(0).toUpperCase() + type.slice(1)} ${currentPageComponents.filter(c => c.type === type).length + 1}`,
+      id: `${selector}-${Date.now()}`,
+      selector,
+      name: `${selector.charAt(0).toUpperCase() + selector.slice(1)} ${currentPageComponents.filter(c => (c.selector || (c as any).type) === selector).length + 1}`,
       visible: true,
-      isDeletable: !["header", "footer"].includes(type),
+      isDeletable: !["header", "footer"].includes(selector),
       variant: variantId,
       order,
       props: defaults,
     }
   }
 
-  const getSchemaDefaults = (type: string) => {
-    const schema = editorSchemas[type]
+  const getSchemaDefaults = (selector: string) => {
+    const schema = editorSchemas[selector]
     if (!schema) return {}
 
     const defaults: any = {}
@@ -188,9 +188,10 @@ export function WebBuilder() {
     if (idx === -1) return
 
     const comp = currentPageComponents[idx]
+    const selector = comp.selector || (comp as any).type
     const copy = {
       ...comp,
-      id: `${comp.type}-${Date.now()}`,
+      id: `${selector}-${Date.now()}`,
       name: `${comp.name} (Copy)`,
     }
 
@@ -224,11 +225,12 @@ export function WebBuilder() {
   }
 
   const handleSelectComponent = (comp: ComponentInstance) => {
+    const selector = comp.selector || (comp as any).type
     setSelectedComponent(comp)
     setSelectedElement({
-      "data-x-id": `${comp.type}_${comp.id}`,
-      type: comp.type,
-      schema: editorSchemas[comp.type] || { label: comp.name, tabs: [] },
+      "data-x-id": `${selector}_${comp.id}`,
+      selector: selector,
+      schema: editorSchemas[selector] || { label: comp.name, tabs: [] },
       props: comp.props,
     })
     setActivePanel("properties")
@@ -252,9 +254,9 @@ export function WebBuilder() {
       setGlobalConfig((prev: any) => {
         if (!prev) return prev
         const copy = { ...prev }
-        if (selectedComponent.type === "header") {
+        if (selectedComponent.selector === "header") {
           copy.header = { ...copy.header, props: element.props }
-        } else if (selectedComponent.type === "footer") {
+        } else if (selectedComponent.selector === "footer") {
           copy.footer = { ...copy.footer, props: element.props }
         }
         return copy
@@ -321,9 +323,9 @@ export function WebBuilder() {
                   {activePanel === "add-sections" && (
                     <AddSectionGallery
                       onAddComponent={handleAddComponent}
-                      onDragStart={(e, type) => {
+                      onDragStart={(e, selector) => {
                         e.dataTransfer.effectAllowed = "copy"
-                        e.dataTransfer.setData("componentType", type)
+                        e.dataTransfer.setData("componentType", selector)
                       }}
                     />
                   )}

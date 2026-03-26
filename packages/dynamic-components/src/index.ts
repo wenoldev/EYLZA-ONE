@@ -18,3 +18,4 @@ export type * from './types/MasonryGallerySection';
 export type * from './types/MediaTextSection';
 export type * from './types/ProductDetail';
 export type * from './types/ProductList';
+export type * from './types/CollectionGrid';

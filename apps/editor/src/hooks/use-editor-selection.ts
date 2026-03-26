@@ -19,8 +19,8 @@ export function useEditorSelection({
     (component: ComponentInstance) => {
       onSelectComponent(component)
       const element: EditorElement = {
-        "data-x-id": `${component.type}_${component.id}`,
-        type: component.type,
+        "data-x-id": `${component.selector}_${component.id}`,
+        selector: component.selector,
         schema: {
           label: component.name,
           tabs: [],

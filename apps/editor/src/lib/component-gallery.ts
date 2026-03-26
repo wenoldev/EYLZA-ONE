@@ -2,25 +2,25 @@ export interface ComponentVariant {
   id: string
   name: string
   thumbnail?: string
-  type: string
+  selector: string
   defaultProps: Record<string, any>
 }
 
 export interface ComponentGalleryItem {
-  type: string
+  selector: string
   label: string
   variants: ComponentVariant[]
 }
 
 export const componentGallery: ComponentGalleryItem[] = [
   {
-    type: "banner",
+    selector: "banner",
     label: "Banner",
     variants: [
       {
         id: "banner-hero-center",
         name: "Hero Centered",
-        type: "banner",
+        selector: "banner",
         thumbnail: "/hero-banner-centered.jpg",
         defaultProps: {
           variant: "centered",
@@ -31,7 +31,7 @@ export const componentGallery: ComponentGalleryItem[] = [
       {
         id: "banner-hero-split",
         name: "Hero Split",
-        type: "banner",
+        selector: "banner",
         thumbnail: "/hero-banner-split-image.jpg",
         defaultProps: {
           variant: "split",
@@ -42,7 +42,7 @@ export const componentGallery: ComponentGalleryItem[] = [
       {
         id: "banner-fullwidth",
         name: "Full Width",
-        type: "banner",
+        selector: "banner",
         thumbnail: "/full-width-banner.jpg",
         defaultProps: {
           variant: "fullWidth",
@@ -52,13 +52,13 @@ export const componentGallery: ComponentGalleryItem[] = [
     ],
   },
   {
-    type: "slider",
+    selector: "slider",
     label: "Image Slider",
     variants: [
       {
         id: "slider-auto",
         name: "Auto Play",
-        type: "slider",
+        selector: "slider",
         thumbnail: "/image-slider-carousel.jpg",
         defaultProps: {
           autoplay: true,
@@ -68,7 +68,7 @@ export const componentGallery: ComponentGalleryItem[] = [
       {
         id: "slider-manual",
         name: "Manual Control",
-        type: "slider",
+        selector: "slider",
         thumbnail: "/image-gallery.png",
         defaultProps: {
           autoplay: false,
@@ -79,7 +79,7 @@ export const componentGallery: ComponentGalleryItem[] = [
       {
         id: "slider-category-circles",
         name: "Category Circles (Premium)",
-        type: "slider",
+        selector: "slider",
         thumbnail: "/category-slider.png",
         defaultProps: {
           template: "category",
@@ -97,13 +97,13 @@ export const componentGallery: ComponentGalleryItem[] = [
     ],
   },
   {
-    type: "collectionGrid",
+    selector: "collectionGrid",
     label: "Collection Grid",
     variants: [
       {
         id: "collection-grid-masonry",
         name: "Masonry Collections",
-        type: "collectionGrid",
+        selector: "collectionGrid",
         thumbnail: "/collection-grid.png",
         defaultProps: {
           title: "Our Signature Styles",
@@ -117,13 +117,13 @@ export const componentGallery: ComponentGalleryItem[] = [
     ]
   },
   {
-    type: "carousel",
+    selector: "carousel",
     label: "Carousel",
     variants: [
       {
         id: "carousel-premium-fade",
         name: "Premium Fade Carousel",
-        type: "carousel",
+        selector: "carousel",
         thumbnail: "/carousel-premium.png",
         defaultProps: {
           items: [
@@ -156,13 +156,13 @@ export const componentGallery: ComponentGalleryItem[] = [
     ],
   },
   {
-    type: "grid",
+    selector: "grid",
     label: "Product Grid",
     variants: [
       {
         id: "grid-3col",
         name: "3 Columns",
-        type: "grid",
+        selector: "grid",
         thumbnail: "/product-grid-3-columns.jpg",
         defaultProps: {
           columns: 3,
@@ -172,7 +172,7 @@ export const componentGallery: ComponentGalleryItem[] = [
       {
         id: "grid-4col",
         name: "4 Columns",
-        type: "grid",
+        selector: "grid",
         thumbnail: "/product-grid-4-columns.jpg",
         defaultProps: {
           columns: 4,
@@ -182,13 +182,13 @@ export const componentGallery: ComponentGalleryItem[] = [
     ],
   },
   {
-    type: "productList",
+    selector: "productList",
     label: "Product List",
     variants: [
       {
         id: "product-list-standard",
         name: "Standard List",
-        type: "productList",
+        selector: "productList",
         thumbnail: "/product-list.png",
         defaultProps: {
           template: "product",
@@ -202,13 +202,13 @@ export const componentGallery: ComponentGalleryItem[] = [
     ]
   },
   {
-    type: "productDetail",
+    selector: "productDetail",
     label: "Product Detail",
     variants: [
       {
         id: "product-detail-split",
         name: "Standard Split",
-        type: "productDetail",
+        selector: "productDetail",
         thumbnail: "/product-detail.png",
         defaultProps: {
           layout: "split",
@@ -223,48 +223,48 @@ export const componentGallery: ComponentGalleryItem[] = [
     ]
   },
   {
-    type: "contact",
+    selector: "contact",
     label: "Contact",
     variants: [
-      { id: "contact-standard", name: "Standard Contact", type: "contact", thumbnail: "/contact.png", defaultProps: {} }
+      { id: "contact-standard", name: "Standard Contact", selector: "contact", thumbnail: "/contact.png", defaultProps: {} }
     ]
   },
   {
-    type: "login",
+    selector: "login",
     label: "Login",
     variants: [
-      { id: "login-standard", name: "Modern Login", type: "login", thumbnail: "/login.png", defaultProps: {} }
+      { id: "login-standard", name: "Modern Login", selector: "login", thumbnail: "/login.png", defaultProps: {} }
     ]
   },
   {
-    type: "cart",
+    selector: "cart",
     label: "Shopping Cart",
     variants: [
-      { id: "cart-standard", name: "Standard Cart", type: "cart", thumbnail: "/cart.png", defaultProps: {} }
+      { id: "cart-standard", name: "Standard Cart", selector: "cart", thumbnail: "/cart.png", defaultProps: {} }
     ]
   },
   {
-    type: "checkout",
+    selector: "checkout",
     label: "Checkout",
     variants: [
-      { id: "checkout-standard", name: "Standard Checkout", type: "checkout", thumbnail: "/checkout.png", defaultProps: {} }
+      { id: "checkout-standard", name: "Standard Checkout", selector: "checkout", thumbnail: "/checkout.png", defaultProps: {} }
     ]
   },
   {
-    type: "orders",
+    selector: "orders",
     label: "Orders",
     variants: [
-      { id: "orders-standard", name: "Standard Orders", type: "orders", thumbnail: "/orders.png", defaultProps: {} }
+      { id: "orders-standard", name: "Standard Orders", selector: "orders", thumbnail: "/orders.png", defaultProps: {} }
     ]
   },
   {
-    type: "text",
+    selector: "text",
     label: "Text Content",
     variants: [
       {
         id: "text-simple",
         name: "Simple Text",
-        type: "text",
+        selector: "text",
         thumbnail: "/text-content.png",
         defaultProps: {
           data: {

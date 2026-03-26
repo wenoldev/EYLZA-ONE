@@ -25,8 +25,8 @@ export function LayersPanelAdvanced({
   onToggleVisibility,
 }: LayersPanelProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
-  const isHeader = (comp: ComponentInstance) => comp.type === "header" && !comp.isDeletable
-  const isFooter = (comp: ComponentInstance) => comp.type === "footer" && !comp.isDeletable
+  const isHeader = (comp: ComponentInstance) => comp.selector === "header" && !comp.isDeletable
+  const isFooter = (comp: ComponentInstance) => comp.selector === "footer" && !comp.isDeletable
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
     const component = components[index]
@@ -68,7 +68,7 @@ export function LayersPanelAdvanced({
             const isLocked = isHeader(component) || isFooter(component)
 
             return (
-              <div key={component.id}>
+              <div key={component.id || `layer-${index}`}>
                 <div
                   draggable={!isLocked}
                   onDragStart={(e) => handleDragStart(e, index)}
@@ -127,7 +127,7 @@ export function LayersPanelAdvanced({
                             </DropdownMenu.Item>
 
                             <DropdownMenu.Item
-                              disabled={index <= 1 && components[0]?.type === "header"}
+                              disabled={index <= 1 && components[0]?.selector === "header"}
                               onClick={() => onReorderComponent(index, index - 1)}
                               className="flex items-center gap-2 px-3 py-2 outline-none hover:bg-muted cursor-pointer data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed"
                             >
@@ -136,7 +136,7 @@ export function LayersPanelAdvanced({
                             </DropdownMenu.Item>
 
                             <DropdownMenu.Item
-                              disabled={index >= components.length - 2 && components[components.length - 1]?.type === "footer"}
+                              disabled={index >= components.length - 2 && components[components.length - 1]?.selector === "footer"}
                               onClick={() => onReorderComponent(index, index + 1)}
                               className="flex items-center gap-2 px-3 py-2 outline-none hover:bg-muted cursor-pointer data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed"
                             >

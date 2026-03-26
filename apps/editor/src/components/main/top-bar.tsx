@@ -1,4 +1,4 @@
-import { Undo, Redo, Smartphone, Monitor, Maximize, Moon, Sun, PanelRight } from "lucide-react"
+import { Undo, Redo, Smartphone, Monitor, Maximize, Moon, Sun, PanelRight, Loader2 } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -6,15 +6,21 @@ import { useState, useEffect } from "react"
 import { useEditorStore } from "@/store/useEditorStore"
 
 export function TopBar() {
-  const {
-    storeData,
-    pages,
-    undo, redo, canUndo, canRedo,
-    viewportSize, setViewportSize,
-    currentPage, setCurrentPage,
-    saveChanges, hasChanges,
-    showRightPanel, setShowRightPanel
-  } = useEditorStore()
+  const storeData = useEditorStore(state => state.storeData)
+  const pages = useEditorStore(state => state.pages)
+  const undo = useEditorStore(state => state.undo)
+  const redo = useEditorStore(state => state.redo)
+  const canUndo = useEditorStore(state => state.canUndo)
+  const canRedo = useEditorStore(state => state.canRedo)
+  const viewportSize = useEditorStore(state => state.viewportSize)
+  const setViewportSize = useEditorStore(state => state.setViewportSize)
+  const currentPage = useEditorStore(state => state.currentPage)
+  const setCurrentPage = useEditorStore(state => state.setCurrentPage)
+  const saveChanges = useEditorStore(state => state.saveChanges)
+  const hasChanges = useEditorStore(state => state.hasChanges)
+  const showRightPanel = useEditorStore(state => state.showRightPanel)
+  const setShowRightPanel = useEditorStore(state => state.setShowRightPanel)
+  const isLoading = useEditorStore(state => state.isLoading)
 
   const [isDark, setIsDark] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -151,11 +157,11 @@ export function TopBar() {
 
           <Button
             size="sm"
-            className="hidden sm:flex"
+            className="hidden sm:flex min-w-[60px] justify-center"
             onClick={saveChanges}
-            disabled={!hasChanges()}
+            disabled={!hasChanges() || isLoading}
           >
-            Save
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
           </Button>
         </TooltipProvider>
       </div>

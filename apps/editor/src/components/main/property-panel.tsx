@@ -1,4 +1,4 @@
-
+import React, { useMemo } from "react"
 import type { ComponentInstance, EditorElement } from "@/types/editor"
 import { PropertyEditor } from "../editor/property-editor"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -45,6 +45,19 @@ export function PropertyPanel({ selectedElement, onUpdateElement }: PropertyPane
   // Determine default expanded items (all tabs)
   const defaultValues = schema.tabs.map(tab => tab.label)
 
+  // Merge default values from schema for condition checking
+  const allProps = useMemo(() => {
+    const defaults: Record<string, any> = {}
+    schema.tabs.forEach((tab) => {
+      tab.controls.forEach((control) => {
+        if (control.defaultValue !== undefined) {
+          defaults[control.property] = control.defaultValue
+        }
+      })
+    })
+    return { ...defaults, ...selectedElement.props }
+  }, [schema, selectedElement.props])
+
   return (
     <div className="flex h-full flex-col bg-card w-full overflow-auto">
       <ScrollArea className="flex-1 px-4 py-2">
@@ -62,7 +75,7 @@ export function PropertyPanel({ selectedElement, onUpdateElement }: PropertyPane
                         field={control}
                         value={get(selectedElement.props, control.property)}
                         onChange={(value) => handleFieldChange(control.property, value)}
-                        allProps={selectedElement.props}
+                        allProps={allProps}
                       />
                     </div>
                   ))}

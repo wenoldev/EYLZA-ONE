@@ -78,14 +78,15 @@ export const footerSchema: EditorSchema = {
           label: "Font Family",
           control: "select",
           options: [
-            { label: "System Default", value: "system-ui" },
-            { label: "Serif", value: "serif" },
-            { label: "Sans-serif", value: "sans-serif" },
-            { label: "Arial", value: "Arial" },
-            { label: "Helvetica", value: "Helvetica" },
-            { label: "Roboto", value: "Roboto" },
             { label: "Inter", value: "Inter" },
+            { label: "Roboto", value: "Roboto" },
+            { label: "Playfair Display", value: "'Playfair Display', serif" },
+            { label: "Montserrat", value: "Montserrat" },
+            { label: "Lora", value: "Lora" },
+            { label: "Oswald", value: "Oswald" },
             { label: "Poppins", value: "Poppins" },
+            { label: "Open Sans", value: "'Open Sans'" },
+            { label: "System Default", value: "system-ui" },
           ],
           defaultValue: "Inter",
         },
@@ -101,11 +102,11 @@ export const footerSchema: EditorSchema = {
           options: [
             { label: "None", value: "0" },
             { label: "Small", value: "2rem" },
-            { label: "Medium", value: "3rem" },
-            { label: "Large", value: "4rem" },
-            { label: "Extra Large", value: "6rem" },
+            { label: "Medium", value: "4rem" },
+            { label: "Large", value: "7rem" },
+            { label: "Extra Large", value: "10rem" },
           ],
-          defaultValue: "3rem",
+          defaultValue: "7rem",
         },
         {
           property: "general.paddingBottom",
@@ -125,28 +126,6 @@ export const footerSchema: EditorSchema = {
     {
       label: "Features",
       controls: [
-        {
-          property: "sections.showPaymentMethods",
-          label: "Show Payment Methods",
-          control: "switch",
-          defaultValue: true,
-        },
-        {
-          property: "sections.paymentMethodsStyle",
-          label: "Payment Methods Style",
-          control: "select",
-          options: [
-            { label: "Badges", value: "badges" },
-            { label: "Icons Only", value: "icons" },
-          ],
-          defaultValue: "badges",
-        },
-        {
-          property: "sections.showDividers",
-          label: "Show Section Dividers",
-          control: "switch",
-          defaultValue: true,
-        },
         {
           property: "sections.linksUnderline",
           label: "Underline Links on Hover",
@@ -192,33 +171,11 @@ export const footerSchema: EditorSchema = {
           defaultValue: "center",
         },
         {
-          property: "mobile.stackOrder",
-          label: "Section Stack Order",
-          control: "select",
-          options: [
-            { label: "Follow Desktop Order", value: "desktop" },
-            { label: "Brand First, Contact Last", value: "brand-first" },
-            { label: "Contact First, Brand Last", value: "contact-first" },
-          ],
-          defaultValue: "desktop",
-        },
-        {
           property: "mobile.collapseSections",
           label: "Collapsible Sections (Accordion)",
           control: "switch",
           defaultValue: false,
-        },
-        {
-          property: "mobile.hideSocialOnMobile",
-          label: "Hide Social Icons on Mobile",
-          control: "switch",
-          defaultValue: false,
-        },
-        {
-          property: "mobile.hidePaymentOnMobile",
-          label: "Hide Payment Methods on Mobile",
-          control: "switch",
-          defaultValue: false,
+          visibleWhen: { property: "mobile.layout", value: "accordion" }
         },
       ]
     },
@@ -234,12 +191,6 @@ export const footerSchema: EditorSchema = {
           defaultValue: "© 2025 ZARISHKA. All rights reserved.",
         },
         {
-          property: "content.showTagline",
-          label: "Show Tagline",
-          control: "switch",
-          defaultValue: false,
-        },
-        {
           property: "content.copyrightPosition",
           label: "Copyright Position",
           control: "select",
@@ -249,6 +200,7 @@ export const footerSchema: EditorSchema = {
             { label: "Right", value: "right" },
           ],
           defaultValue: "center",
+          visibleWhen: { property: "general.design", value: "design1" }
         },
       ]
     },

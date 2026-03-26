@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils"
 import { setCookie } from "@/utils/cookies"
 
 export function DraftSettings() {
-    const { storeData, activeThemeId, setActiveThemeId } = useEditorStore()
+    const storeData = useEditorStore(state => state.storeData)
+    const activeThemeId = useEditorStore(state => state.activeThemeId)
+    const setActiveThemeId = useEditorStore(state => state.setActiveThemeId)
     const [themes, setThemes] = useState<any[]>([])
     const [loading, setLoading] = useState(false)
     const [creating, setCreating] = useState(false)
