@@ -86,9 +86,7 @@ const MainBar = ({
     };
 
     return (
-        <motion.div
-            initial={{ y: -100 }}
-            animate={{ y: 0 }}
+        <div
             className={`w-full transition-all duration-500 border-b border-gray-100 ${config.general.behaviour === 'sticky' ? 'sticky top-0 z-[100]' : ''}`}
             style={{
                 backgroundColor: `${config.general.backgroundColor}f2`, // Subtle transparency
@@ -133,7 +131,7 @@ const MainBar = ({
                     </AnimatePresence>
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 };
 

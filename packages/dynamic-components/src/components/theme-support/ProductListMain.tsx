@@ -45,7 +45,8 @@ const ProductListMain: React.FC<ProductListConfig> = (config) => {
 
   if (!items || items.length === 0) return null;
 
-  const sectionId = `product-list-${title?.replace(/[^a-z0-9]/gi, '-').toLowerCase() || Math.random().toString(36).substr(2, 9)}`;
+  const generatedId = React.useId().replace(/:/g, '');
+  const sectionId = `product-list-${title?.replace(/[^a-z0-9]/gi, '-').toLowerCase() || generatedId}`;
 
   return (
     <section

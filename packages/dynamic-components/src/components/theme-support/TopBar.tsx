@@ -12,7 +12,7 @@ const TopBar = ({ config }: { config: HeaderConfig }) => {
             }}
         >
             <div className={`h-full px-6 flex items-center justify-center gap-8`}>
-                <span>{config.topBar.content}</span>
+                <div dangerouslySetInnerHTML={{ __html: config.topBar.content }} />
             </div>
         </div>
     );

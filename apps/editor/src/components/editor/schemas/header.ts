@@ -88,8 +88,7 @@ export const headerSchema: EditorSchema = {
         {
           property: "topBar.content",
           label: "Announcement / Text",
-          control: "input",
-          type: "text",
+          control: "textarea",
           placeholder: "Free shipping on orders over $50",
           defaultValue: "",
         },

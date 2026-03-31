@@ -1,6 +1,7 @@
 import { createStore } from 'zustand/vanilla';
 import { useStore } from 'zustand';
 import api from '@/lib/api';
+import { toast } from 'sonner';
 import type { ComponentInstance, EditorElement, ViewportSize, PanelType } from '@/types/editor';
 
 interface HistoryState {
@@ -36,6 +37,7 @@ interface EditorState {
   isLoading: boolean;
   isInitialLoading: boolean;
   loadProgress: number;
+  loadingPages: Set<string>; // Track in-flight or failed requests
 
   // History
   history: EditorHistory;
@@ -88,6 +90,7 @@ export const editorStore = createStore<EditorState>()((set, get) => ({
   isLoading: false,
   isInitialLoading: true,
   loadProgress: 0,
+  loadingPages: new Set(),
   history: { states: [], index: -1 },
 
   setStoreData: (data: any) => set({ storeData: data }),
@@ -128,10 +131,16 @@ export const editorStore = createStore<EditorState>()((set, get) => ({
   },
 
   fetchPageData: async (slug: string) => {
-    const { pagesData, storeData, activeThemeId, globalConfig, currentPage } = get();
-    if (pagesData[slug]) return;
+    const { pagesData, storeData, activeThemeId, globalConfig, currentPage, loadingPages } = get();
+    
+    // Don't fetch if already loaded or currently loading
+    if (pagesData[slug] || loadingPages.has(slug)) return;
 
-    set({ isLoading: true });
+    set((state) => ({ 
+      isLoading: true,
+      loadingPages: new Set(state.loadingPages).add(slug)
+    }));
+
     try {
       const response = await api.get(`/stores/${storeData.id}/themes/${activeThemeId}/pages/${slug}`);
       const { page } = response.data.data;
@@ -162,8 +171,17 @@ export const editorStore = createStore<EditorState>()((set, get) => ({
       });
     } catch (error) {
       console.error(`Failed to fetch page data for ${slug}:`, error);
+      // We keep the slug in loadingPages even on failure to prevent the infinite retry loop
+      // unless we want to allow retries later (e.g. on manual refresh)
     } finally {
-      set({ isLoading: false });
+      set((state) => {
+        const newLoadingPages = new Set(state.loadingPages);
+        newLoadingPages.delete(slug);
+        return { 
+          isLoading: false,
+          loadingPages: newLoadingPages
+        };
+      });
     }
   },
 
@@ -190,6 +208,13 @@ export const editorStore = createStore<EditorState>()((set, get) => ({
     // Don't push if state is identical to current index
     if (history.index >= 0) {
       const currentState = history.states[history.index];
+      // Quick check before expensive stringify
+      if (currentState.currentPage === currentPage && 
+          currentState.globalConfig === globalConfig && 
+          currentState.pagesData === pagesData) {
+        return;
+      }
+      
       if (JSON.stringify(currentState) === JSON.stringify(newState)) return;
     }
 
@@ -301,11 +326,11 @@ export const editorStore = createStore<EditorState>()((set, get) => ({
       }
 
       set({ isLoading: false });
-      alert("Changes saved successfully!");
+      toast.success("Changes saved successfully!");
     } catch (error) {
       console.error("Save failed:", error);
       set({ isLoading: false });
-      alert("Failed to save changes.");
+      toast.error("Failed to save changes.");
     }
   },
 
@@ -317,4 +342,4 @@ export const editorStore = createStore<EditorState>()((set, get) => ({
   }
 }));
 
-export const useEditorStore = () => useStore(editorStore);
+export const useEditorStore = <T>(selector: (state: EditorState) => T) => useStore(editorStore, selector);

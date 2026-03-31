@@ -62,7 +62,8 @@ export function NotificationSettings() {
         }
 
         try {
-            const registration = await navigator.serviceWorker.ready
+            const registration = await navigator.serviceWorker.register('/sw.js')
+            await navigator.serviceWorker.ready // Ensure it's active before interacting
             const subscription = await registration.pushManager.getSubscription()
             setIsPushEnabled(!!subscription)
         } catch (error) {
@@ -101,6 +102,11 @@ export function NotificationSettings() {
             return
         }
 
+        if (checked && Notification.permission === "denied") {
+            toast.error("Notifications are blocked by your browser. Please enable them in your browser settings (usually the lock icon next to the URL).")
+            return
+        }
+
         setIsPushLoading(true)
         try {
             if (checked) {
@@ -111,13 +117,21 @@ export function NotificationSettings() {
                     return
                 }
 
-                const registration = await navigator.serviceWorker.ready
-                const vapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY
+                const registration = await navigator.serviceWorker.register('/sw.js')
+                await navigator.serviceWorker.ready
+                const vapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY?.trim()
 
                 if (!vapidPublicKey) {
                     toast.error("VAPID Public Key not found. Please contact administrator.")
                     setIsPushLoading(false)
                     return
+                }
+
+                // Chrome will throw "Registration failed - push service error" 
+                // if there is an existing hidden subscription with a different VAPID key.
+                const existingSub = await registration.pushManager.getSubscription()
+                if (existingSub) {
+                    await existingSub.unsubscribe()
                 }
 
                 const subscription = await registration.pushManager.subscribe({
@@ -133,7 +147,8 @@ export function NotificationSettings() {
                 setIsPushEnabled(true)
                 toast.success("Push notifications enabled on this device")
             } else {
-                const registration = await navigator.serviceWorker.ready
+                const registration = await navigator.serviceWorker.register('/sw.js')
+                await navigator.serviceWorker.ready
                 const subscription = await registration.pushManager.getSubscription()
 
                 if (subscription) {
@@ -146,9 +161,10 @@ export function NotificationSettings() {
                 setIsPushEnabled(false)
                 toast.success("Push notifications disabled on this device")
             }
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Error toggling push notifications:", error)
-            toast.error("Failed to update push notification settings")
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            toast.error(`Failed to update push notification settings: ${errorMessage}`)
         } finally {
             setIsPushLoading(false)
         }

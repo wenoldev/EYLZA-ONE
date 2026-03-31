@@ -13,10 +13,12 @@ import { setCookie, getCookie } from "@/utils/cookies"
 export default function Entry() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const { setStoreData, storeData, setActiveThemeId } = useEditorStore()
+  const setStoreData = useEditorStore(state => state.setStoreData)
+  const storeData = useEditorStore(state => state.storeData)
+  const setActiveThemeId = useEditorStore(state => state.setActiveThemeId)
   const [state, setState] = useState("loading")
 
-  useEffect(() => {
+  useEffect(() => {    
     const token = searchParams.get("access_token")
     const refresh = searchParams.get("refresh_token")
     const expires = searchParams.get("expires_at")
@@ -46,7 +48,7 @@ export default function Entry() {
       try {
         const response = await api.get('/stores')
         const apiResponse = response.data
-
+        
         const stores = apiResponse.data?.stores
 
         if (!stores || stores.length === 0) {

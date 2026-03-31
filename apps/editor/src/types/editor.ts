@@ -81,6 +81,12 @@ export interface EditorControl {
   visibleWhen?: {
     property: string
     value: any
+    operator?: "==" | "!=" | ">" | "<" | ">=" | "<=" | "contains" | "in"
+  }
+  condition?: {
+    property: string
+    value: any
+    operator?: "==" | "!=" | ">" | "<" | ">=" | "<=" | "contains" | "in"
   }
   validation?: {
     required?: boolean
@@ -99,14 +105,14 @@ export interface EditorControl {
 
 export interface EditorElement {
   "data-x-id": string
-  type: string
+  selector: string
   schema: EditorSchema
   props: Record<string, any>
 }
 
 export interface ComponentInstance extends Record<string, any> {
   id: string
-  type: string
+  selector: string
   name: string
   props: Record<string, any>
   elements?: EditorElement[]

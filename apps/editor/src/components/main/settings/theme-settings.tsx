@@ -15,7 +15,10 @@ interface Theme {
 }
 
 export function ThemeSettings() {
-    const { storeData, activeThemeId, globalConfig, setGlobalConfig } = useEditorStore()
+    const storeData = useEditorStore(state => state.storeData)
+    const activeThemeId = useEditorStore(state => state.activeThemeId)
+    const globalConfig = useEditorStore(state => state.globalConfig)
+    const setGlobalConfig = useEditorStore(state => state.setGlobalConfig)
     const [themes, setThemes] = useState<Theme[]>([])
     const [loading, setLoading] = useState(false)
 
