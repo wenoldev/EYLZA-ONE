@@ -62,22 +62,31 @@ const ThemeForm = () => {
     if (!name) return;
     setLoading(true);
     try {
-      let parsedGlobalConfig = { global: {} };
+      let parsedJson: any = { global: {} };
       try {
-        parsedGlobalConfig = JSON.parse(globalConfigJson);
+        parsedJson = JSON.parse(globalConfigJson);
       } catch (e) {
-        toast.error('Invalid Global Config JSON');
+        toast.error('Invalid JSON');
         setLoading(false);
         return;
       }
 
+      // If the user pasted a full theme object, use its properties
+      const finalName = parsedJson.name || name;
+      const finalGlobalConfig = parsedJson.global_config || (parsedJson.global ? parsedJson : { global: parsedJson });
+      const finalIsPaid = parsedJson.ispaid !== undefined ? parsedJson.ispaid : !isFree;
+      const finalAmount = parsedJson.amount !== undefined ? parsedJson.amount : (isFree ? '0' : amount);
+      
+      // Use pages from JSON if present, otherwise use selected pages with empty content
+      const finalPages = parsedJson.pages || AVAILABLE_PAGES.filter(p => selectedPages.includes(p.slug))
+        .map(p => ({ ...p, content: [] }));
+
       const payload = {
-        name,
-        global_config: parsedGlobalConfig,
-        ispaid: !isFree,
-        amount: isFree ? '0' : amount,
-        pages: AVAILABLE_PAGES.filter(p => selectedPages.includes(p.slug))
-          .map(p => ({ ...p, content: [] }))
+        name: finalName,
+        global_config: finalGlobalConfig,
+        ispaid: finalIsPaid,
+        amount: finalAmount,
+        pages: finalPages
       };
 
       if (isEditing) {

@@ -74,7 +74,7 @@ const Slider: React.FC<SliderConfig> = (config) => {
                     >
                         {title && (
                             <h2
-                                className="text-3xl md:text-5xl lg:text-6xl font-serif tracking-tight leading-[1.1] mb-6"
+                                className={`text-3xl md:text-5xl lg:text-6xl tracking-tight leading-[1.1] mb-6 ${styles.fontFamily === 'serif' ? 'font-serif-premium' : 'font-serif'}`}
                                 style={{ color: styles.titleColor || '#111827' }}
                                 dangerouslySetInnerHTML={{ __html: title }}
                             />

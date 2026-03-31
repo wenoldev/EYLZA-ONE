@@ -15,8 +15,7 @@ export function AddSectionGallery({ onAddComponent, onDragStart }: AddSectionGal
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string | null>("all")
 
-  const gallery = componentGallery
-
+  const gallery = componentGallery.filter(item => !item.hidden)
   const filtered = gallery.filter((item) => item.label.toLowerCase().includes(searchTerm.toLowerCase()))
 
   return (

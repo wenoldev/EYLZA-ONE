@@ -11,6 +11,8 @@ import { collectionGridSchema } from "./collection-grid"
 import { 
   contactSchema, loginSchema, cartSchema, checkoutSchema, ordersSchema 
 } from "./page-sections"
+import { mediaTextSchema } from "./mediaText"
+import { textContentSchema } from "./textContent"
 
 export {
   headerSchema,
@@ -26,7 +28,9 @@ export {
   loginSchema,
   cartSchema,
   checkoutSchema,
-  ordersSchema
+  ordersSchema,
+  mediaTextSchema,
+  textContentSchema
 }
 
 export const editorSchemas: Record<string, EditorSchema> = {
@@ -43,5 +47,7 @@ export const editorSchemas: Record<string, EditorSchema> = {
   login: loginSchema,
   cart: cartSchema,
   checkout: checkoutSchema,
-  orders: ordersSchema
+  orders: ordersSchema,
+  mediaText: mediaTextSchema,
+  text: textContentSchema
 }

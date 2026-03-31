@@ -69,6 +69,7 @@ const CanvasItem = memo(({
         <Suspense fallback={<Loader />}>
           <Component
             config={component.props}
+            {...component.props}
             data-x-id={`${component.type}_${component.id}`}
             viewportSize={viewportSize}
           />

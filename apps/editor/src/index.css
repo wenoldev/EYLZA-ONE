@@ -10,6 +10,14 @@
   .golden {
     color: #c5a059;
   }
+
+  .bg-zarishka-sage {
+    background-color: #919672;
+  }
+
+  .text-zarishka-gold {
+    color: #b49b6b;
+  }
 }
 
 @custom-variant dark (&:is(.dark *));

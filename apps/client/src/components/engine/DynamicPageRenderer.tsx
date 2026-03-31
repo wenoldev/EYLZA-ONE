@@ -56,7 +56,7 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({ pageKey }) =>
 
           return (
             <Suspense key={component.id || index} fallback={<ShadeLoader />}>
-              <Component config={component.props} />
+              <Component config={component.props} {...component.props} />
             </Suspense>
           );
         })

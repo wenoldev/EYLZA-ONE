@@ -16,6 +16,8 @@ export const ComponentRegistry = {
     cart: lazy(() => import('../components/themes/CartSection')),
     checkout: lazy(() => import('../components/themes/CheckoutSection')),
     orders: lazy(() => import('../components/themes/OrdersSection')),
+    mediaText: lazy(() => import('../components/themes/MediaTextSection')),
+    text: lazy(() => import('../components/themes/TextContent')),
 };
 
 export type ComponentType = keyof typeof ComponentRegistry;

@@ -36,10 +36,11 @@ const ImageBanner: React.FC<ImageBannerConfig> = (props) => {
     bottom: 'justify-end'
   };
 
-  const buttonStyles: Record<string, string> = {
-    primary: 'bg-[#c5a059] text-white hover:bg-[#b08d4a] shadow-lg',
-    secondary: 'bg-gray-800 text-white hover:bg-gray-900',
-    outline: 'border-2 border-[#8b6e3f] text-[#8b6e3f] hover:bg-[#8b6e3f] hover:text-white'
+  const buttonStyles = {
+    primary: 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg',
+    secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border',
+    outline: 'border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white',
+    'boxed-outline': 'border border-current px-12 py-4 tracking-widest text-sm hover:bg-current hover:text-white transition-all duration-500'
   };
 
   const renderContent = () => {
@@ -57,7 +58,7 @@ const ImageBanner: React.FC<ImageBannerConfig> = (props) => {
       ),
       <h1
         key="title"
-        className={`text-5xl md:text-7xl lg:text-8xl font-serif-premium font-bold mb-8 leading-[1.1] text-gray-900 ${reverseOrder ? 'order-3' : 'order-2'}`}
+        className={`text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-[1.1] text-gray-900 ${styles.fontFamily === 'serif' ? 'font-serif-premium' : ''} ${reverseOrder ? 'order-3' : 'order-2'}`}
         style={{
           color: styles.titleColor,
           fontSize: styles.titleFontSize,

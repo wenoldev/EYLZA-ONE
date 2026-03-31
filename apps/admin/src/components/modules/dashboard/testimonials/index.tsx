@@ -77,11 +77,51 @@ const TestimonialPage = () => {
     const handleFormSubmit = async (formData: Partial<Testimonial>) => {
         if (!userStoreId) return;
         try {
-            // Convert string "true"/"false" back to boolean if it came from the select
+            let finalImageUrl = formData.profile_image;
+
+            // Handle image upload if it's a new file (object with fileContent)
+            if (formData.profile_image && typeof formData.profile_image === 'object' && (formData.profile_image as any).fileContent) {
+                const imgData = formData.profile_image as any;
+                
+                // Convert base64 to File object
+                const res = await fetch(imgData.fileContent);
+                const blob = await res.blob();
+                const file = new File([blob], imgData.fileName || 'profile.png', { type: blob.type });
+
+                const uploadFormData = new FormData();
+                uploadFormData.append('files', file);
+                uploadFormData.append('store_id', userStoreId);
+
+                const uploadResponse = await api.post('/api/v1/common/upload', uploadFormData);
+
+                if (uploadResponse.data?.data?.results?.[0]?.status === 'success') {
+                    finalImageUrl = uploadResponse.data.data.results[0].publicUrl;
+                } else {
+                    throw new Error("Failed to upload image");
+                }
+            }
+
+            // Extract metadata fields from form if they were added
+            const meta_data = {
+                ...(editingItem?.meta_data || {}),
+                visited_place: (formData as any).visited_place,
+                service_type: (formData as any).service_type,
+                trip_type: (formData as any).trip_type,
+                subtitle: (formData as any).subtitle,
+            };
+
             const formattedData = {
                 ...formData,
-                is_active: (formData as any).is_active === "true" || (formData as any).is_active === true
+                profile_image: finalImageUrl,
+                is_active: (formData as any).is_active === "true" || (formData as any).is_active === true,
+                meta_data
             };
+
+            // Remove temporary fields that should go into meta_data
+            delete (formattedData as any).visited_place;
+            delete (formattedData as any).service_type;
+            delete (formattedData as any).trip_type;
+            delete (formattedData as any).subtitle;
 
             if (editingItem) {
                 await updateTestimonial(editingItem.id, formattedData);
@@ -92,8 +132,9 @@ const TestimonialPage = () => {
             }
             setIsSheetOpen(false);
             setEditingItem(null);
-        } catch (err) {
+        } catch (err: any) {
             console.error("Submit error:", err);
+            toast.error(err.message || "Failed to save testimonial");
         }
     };
 
@@ -141,23 +182,25 @@ const TestimonialPage = () => {
             </div>
 
             {testimonials.length > 0 ? (
-                <DraggableContent
-                    data={testimonials}
-                    setData={(val) => {
-                        if (typeof val === 'function') {
-                            const updated = val(testimonials);
-                            handleReorder(updated);
-                        }
-                    }}
-                    component="testimonials"
-                    onEdit={(item) => { setEditingItem(item); setIsSheetOpen(true); }}
-                    onDelete={(id) => { setItemToDelete(id); setDeleteDialogOpen(true); }}
-                    onStatusChange={handleStatusChange}
-                    selectedRows={new Set()}
-                    toggleRowSelection={() => { }}
-                    showSelect={false}
-                    permissions={['view', 'edit', 'delete', 'drag']}
-                />
+                <div className="space-y-4">
+                    <DraggableContent
+                        data={testimonials}
+                        setData={(val) => {
+                            if (typeof val === 'function') {
+                                const updated = val(testimonials);
+                                handleReorder(updated);
+                            }
+                        }}
+                        component="testimonials"
+                        onEdit={(item) => { setEditingItem(item); setIsSheetOpen(true); }}
+                        onDelete={(id) => { setItemToDelete(id); setDeleteDialogOpen(true); }}
+                        onStatusChange={handleStatusChange}
+                        selectedRows={new Set()}
+                        toggleRowSelection={() => { }}
+                        showSelect={false}
+                        permissions={['view', 'edit', 'delete', 'drag']}
+                    />
+                </div>
             ) : (
                 <div className="text-center py-12">
                     <p className="text-gray-500">No testimonials found. Add your first one!</p>
@@ -169,14 +212,29 @@ const TestimonialPage = () => {
                 onOpenChange={setIsSheetOpen}
                 title={editingItem ? "Edit Testimonial" : "Add Testimonial"}
             >
-                <DynamicForm
-                    fields={formFields}
-                    onSubmit={handleFormSubmit}
-                    initialValues={editingItem ? {
-                        ...editingItem,
-                        is_active: editingItem.is_active?.toString()
-                    } : {}}
-                />
+                <div className="space-y-6">
+                    <DynamicForm
+                        fields={formFields}
+                        onSubmit={handleFormSubmit}
+                        initialValues={editingItem ? {
+                            ...editingItem,
+                            is_active: editingItem.is_active?.toString(),
+                            visited_place: editingItem.meta_data?.visited_place || "",
+                            service_type: editingItem.meta_data?.service_type || "",
+                            trip_type: editingItem.meta_data?.trip_type || "",
+                            subtitle: editingItem.meta_data?.subtitle || "",
+                        } : {}}
+                    />
+                    
+                    {editingItem?.meta_data && (
+                        <div className="mt-4 p-4 bg-muted rounded-lg">
+                            <h4 className="text-sm font-semibold mb-2">Metadata (Object View)</h4>
+                            <pre className="text-xs overflow-auto max-h-40 p-2 bg-black text-white rounded">
+                                {JSON.stringify(editingItem.meta_data, null, 2)}
+                            </pre>
+                        </div>
+                    )}
+                </div>
             </SideSheet>
 
             <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

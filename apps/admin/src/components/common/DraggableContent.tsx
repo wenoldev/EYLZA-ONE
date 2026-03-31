@@ -245,8 +245,30 @@ const DraggableContent = <T extends DraggableItem>({
                                         />
                                     </div>
                                     <div className="flex flex-col flex-grow space-y-1">
-                                        <h3 className="font-semibold text-lg">{item.name}</h3>
+                                        <div className="flex items-center gap-2">
+                                            <h3 className="font-semibold text-lg">{item.name}</h3>
+                                            {item.meta_data?.subtitle && (
+                                                <span className="text-xs text-gray-400 font-medium">({item.meta_data.subtitle})</span>
+                                            )}
+                                        </div>
                                         <p className="text-sm text-gray-600 italic">"{item.review}"</p>
+                                        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1">
+                                            {item.meta_data?.visited_place && (
+                                                <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-medium">
+                                                    📍 {item.meta_data.visited_place}
+                                                </span>
+                                            )}
+                                            {item.meta_data?.trip_type && (
+                                                <span className="text-[10px] bg-green-50 text-green-600 px-2 py-0.5 rounded font-medium">
+                                                    🎒 {item.meta_data.trip_type}
+                                                </span>
+                                            )}
+                                            {item.meta_data?.service_type && (
+                                                <span className="text-[10px] bg-orange-50 text-orange-600 px-2 py-0.5 rounded font-medium">
+                                                    🚗 {item.meta_data.service_type}
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             )}
