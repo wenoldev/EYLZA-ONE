@@ -44,3 +44,13 @@ export interface ImageData {
   image_url: ImageUrl | string
   isPrimary?: boolean
 }
+
+export interface VideoUrl {
+  fileName: string
+  fileContent: string
+}
+
+export interface VideoData {
+  video_url: VideoUrl | string
+  isPrimary?: boolean
+}

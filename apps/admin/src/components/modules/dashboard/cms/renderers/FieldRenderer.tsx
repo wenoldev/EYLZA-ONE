@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { UploadDialog } from "@/components/common/UploadImage";
-import { X, Plus, Trash2, Wand2 } from 'lucide-react';
+import { UploadVideoDialog } from "@/components/common/UploadVideo";
+import { X, Plus, Trash2, Wand2, Film } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -197,6 +198,39 @@ const FieldRenderer: React.FC<FieldProps> = ({ field, value, onChange, allValues
                     variant="destructive"
                     size="icon"
                     className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => onChange(null)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+           </div>
+        );
+
+      case 'video':
+        return (
+           <div className="space-y-4">
+              <UploadVideoDialog
+                multiple={false}
+                onVideosSelected={(videos) => {
+                  if (videos.length > 0) {
+                    onChange(videos[0].video_url); // Directly use the URL string
+                  }
+                }}
+                initialValues={value ? [{ video_url: value, isPrimary: true }] : []}
+              />
+              {value && (
+                <div className="relative w-full aspect-video group max-w-sm">
+                  <video
+                    src={value || ''}
+                    controls
+                    className="w-full h-full object-contain rounded-md border bg-black"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity z-10"
                     onClick={() => onChange(null)}
                   >
                     <X className="h-4 w-4" />
