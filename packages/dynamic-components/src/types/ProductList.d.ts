@@ -2,7 +2,12 @@ export interface ProductListConfig {
   title?: string;
   subtitle?: string;
   items: any[];
-  template: 'category' | 'product' | 'minimal';
+  template: 'category' | 'product' | 'minimal' | 'zarishka';
+  filterConfig?: {
+    showFilters?: boolean;
+    showSort?: boolean;
+    options?: ('availability' | 'price')[];
+  };
   layout: {
     desktop: number;
     tablet: number;

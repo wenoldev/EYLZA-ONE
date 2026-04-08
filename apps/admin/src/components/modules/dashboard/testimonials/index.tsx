@@ -11,6 +11,7 @@ import { Plus } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import Loader from '@/components/common/Loader';
 import { useStoreStore } from '@/stores/storeStore';
+import api from '@/lib/api';
 
 const TestimonialPage = () => {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -92,7 +93,7 @@ const TestimonialPage = () => {
                 uploadFormData.append('files', file);
                 uploadFormData.append('store_id', userStoreId);
 
-                const uploadResponse = await api.post('/api/v1/common/upload', uploadFormData);
+                const uploadResponse = await api.post('/api/v1/public/upload', uploadFormData);
 
                 if (uploadResponse.data?.data?.results?.[0]?.status === 'success') {
                     finalImageUrl = uploadResponse.data.data.results[0].publicUrl;

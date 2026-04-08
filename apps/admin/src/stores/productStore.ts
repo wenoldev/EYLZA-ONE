@@ -91,7 +91,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
         .map(([key, value]) => [key, String(value)])
     );
 
-      const response = await api.get(`/api/v1/products`, { params: queryParams });
+      const response = await api.get(`/api/v1/public/products`, { params: queryParams });
       const result = response.data;
 
       if (result.error) {
@@ -118,7 +118,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
     set({ isLoading: true, error: null });
     
     try {
-      const response = await api.get(`/api/v1/products/${id}`);
+      const response = await api.get(`/api/v1/public/products/${id}`);
       const result = response.data;
 
       if (result.error) {

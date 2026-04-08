@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode development --port 3003",
+    "dev": "vite --mode development --port 3004",
+    "prod": "vite --mode production --port 3004",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

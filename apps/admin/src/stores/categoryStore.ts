@@ -69,7 +69,7 @@ fetchCategories: async (filters?: CategoryFilters) => {
     );
 
     // ✅ Axios handles serialization automatically
-    const response = await api.get(`/api/v1/categories`, { params: cleanedFilters });
+    const response = await api.get(`/api/v1/public/categories`, { params: cleanedFilters });
     const result = response.data;
 
     if (result.error) {
@@ -95,7 +95,7 @@ fetchCategories: async (filters?: CategoryFilters) => {
         set({ isLoading: true, error: null });
         
         try {
-          const response = await api.get(`/api/v1/categories/${id}`);
+          const response = await api.get(`/api/v1/public/categories/${id}`);
           const result = response.data;
 
           if (result.error) {
