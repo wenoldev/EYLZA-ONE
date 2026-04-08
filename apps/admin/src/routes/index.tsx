@@ -9,6 +9,7 @@ import { Unauthorized } from '@/components/common/Unauthorized';
 import StoreSetupWizard from '@/components/modules/store-setup';
 import PricingPage from '@/components/modules/dashboard/billing/PricingPage';
 import {CheckoutPage} from '@/components/modules/dashboard/billing/CheckoutPage';
+import ErrorPage from '@/components/common/ErrorPage';
 
 // Lazy-load components
 const AuthPages = lazy(() => import('@/components/modules/auth/index'));
@@ -79,6 +80,10 @@ export const router = createBrowserRouter([
   {
     path: 'checkout',
     element: <CheckoutPage />
+  },
+  {
+    path: 'error',
+    element: <ErrorPage />
   },
   ...dashboardRoutes,
   ...adminRoutes,
