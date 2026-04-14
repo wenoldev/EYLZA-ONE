@@ -2,24 +2,25 @@ import React, { useState, useEffect } from 'react';
 import Slider from './Slider';
 import type { SliderConfig } from '../../types/Slider';
 import Loader from '../theme-support/Loader';
-// Note: getSliderItems should ideally be passed as a prop or moved to a common package
-// For now, we'll assume the consumer provides the data or we move the util later.
+import { getSliderItems } from '../../libs/fetchStoreProducts';
 
 const SliderAPI: React.FC<Omit<SliderConfig, 'items'>> = (config) => {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // @ts-ignore - getSliderItems is not defined here yet
-    if (typeof getSliderItems === 'function') {
-      // @ts-ignore
-      getSliderItems().then(data => {
+    const fetchItems = async () => {
+      try {
+        const data = await getSliderItems();
         setItems(data);
+      } catch (error) {
+        console.error('Failed to fetch slider items:', error);
+      } finally {
         setLoading(false);
-      });
-    } else {
-      setLoading(false);
-    }
+      }
+    };
+
+    fetchItems();
   }, []);
 
   if (loading) {

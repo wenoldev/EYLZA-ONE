@@ -1,4 +1,5 @@
-// MinimalTemplate.tsx
+import React from 'react';
+import { StoreLink } from '../../components/theme-support/StoreLink';
 
 const MinimalTemplate = ({ data, styles }: any) => {
   const {
@@ -13,7 +14,7 @@ const MinimalTemplate = ({ data, styles }: any) => {
   };
 
   return (
-    <div className={`flex flex-col ${alignmentClasses[textAlign]}`}>
+    <StoreLink to={data.href || '#'} className={`flex flex-col ${alignmentClasses[textAlign]} group cursor-pointer`}>
       <img
         src={data.imageUrl || data.image}
         alt={data.title}
@@ -24,7 +25,7 @@ const MinimalTemplate = ({ data, styles }: any) => {
         style={{ color: titleColor }}
         dangerouslySetInnerHTML={{ __html: data.title }}
       />
-    </div>
+    </StoreLink>
   );
 };
 

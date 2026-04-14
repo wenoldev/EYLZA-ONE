@@ -43,10 +43,10 @@ export interface ImageBannerConfig {
   imageFit?: 'cover' | 'contain';
   imageBorderRadius?: number;
   imagePadding?: number;
-  styles: {
+  styles?: {
     titleFontSize?: string;
     titleColor?: string;
-    titleWeight?: string;
+    titleWeight?: string | number;
     titleFontFamily?: string;
     titleLetterSpacing?: number;
     titleOpacity?: number;
@@ -59,5 +59,30 @@ export interface ImageBannerConfig {
     backgroundColor?: string;
     height?: string;
     borderRadius?: string;
+  };
+  style?: {
+    general?: {
+      height?: string;
+      backgroundColor?: string;
+      borderRadius?: string;
+    };
+    title?: {
+      color?: string;
+      fontSize?: string;
+      fontWeight?: string | number;
+      fontFamily?: string;
+      letterSpacing?: number;
+      opacity?: number;
+    };
+    subTitle?: {
+      color?: string;
+      fontSize?: string;
+      fontFamily?: string;
+      letterSpacing?: number;
+    };
+    description?: {
+      color?: string;
+      fontSize?: string;
+    };
   };
 }

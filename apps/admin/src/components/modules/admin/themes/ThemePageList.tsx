@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, ArrowLeft, FileJson } from 'lucide-react';
+import { Plus, ArrowLeft, FileJson, Laptop } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import Loader from '@/components/common/Loader';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useAuthStore } from '@/stores/authStore';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,6 +24,20 @@ const ThemePageList = () => {
   const navigate = useNavigate();
   const [theme, setTheme] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { user, session } = useAuthStore();
+
+  const navigateToVisualEditor = (pageSlug?: string) => {
+    if (!id) return;
+    const url = new URL(import.meta.env.VITE_EDITOR_URL);
+    url.searchParams.set("uid", user?.id ?? "");
+    url.searchParams.set("themeId", id);
+    url.searchParams.set("isAdminMode", "true");
+    if (pageSlug) url.searchParams.set("page", pageSlug);
+    url.searchParams.set("access_token", session?.access_token ?? "");
+    url.searchParams.set("refresh_token", session?.refresh_token ?? "");
+    url.searchParams.set("expires_at", session?.expires_at?.toString() ?? "");
+    window.open(url.toString(), "_blank");
+  };
 
   // For adding new page
   const [isAddPageDialogOpen, setIsAddPageDialogOpen] = useState(false);
@@ -115,6 +130,9 @@ const ThemePageList = () => {
                   <TableCell className="text-right">
                     <Button variant="secondary" size="sm" onClick={() => navigate(`edit/${page.id}`)}>
                       Edit JSON Content
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => navigateToVisualEditor(page.name)}>
+                      <Laptop className="mr-2 h-4 w-4" /> Visual Editor
                     </Button>
                   </TableCell>
                 </TableRow>

@@ -1,4 +1,5 @@
-import React from 'react';
+import { isEditorRuntime } from '../../utils/runtime';
+import { StoreLink } from '../../components/theme-support/StoreLink';
 
 const ZarishkaTemplate = ({ data, styles }: any) => {
     const {
@@ -9,9 +10,11 @@ const ZarishkaTemplate = ({ data, styles }: any) => {
 
     const isSale = data.oldPrice && data.price !== data.oldPrice;
     const isSoldOut = data.soldOut;
+    const isEditor = isEditorRuntime();
 
     return (
-        <div 
+        <StoreLink
+            to={data.href || '#'}
             className="flex flex-col group cursor-pointer"
             style={{ padding }}
         >
@@ -42,19 +45,19 @@ const ZarishkaTemplate = ({ data, styles }: any) => {
             {/* Product Details */}
             <div className={`flex flex-col ${textAlign === 'center' ? 'items-center' : textAlign === 'right' ? 'items-end' : 'items-start'}`}>
                 <h3 
-                    className="text-[13px] uppercase tracking-[0.15em] mb-1 font-medium text-[#1a1a1a] line-clamp-2"
+                    className="mb-1 line-clamp-2 text-[15px] font-medium text-[#1f1a17]"
                     style={{ fontFamily: "'Playfair Display', serif" }}
                 >
                     {data.title}
                 </h3>
                 
-                <div className="flex gap-2 items-center">
+                <div className="flex flex-wrap gap-2 items-center">
                     {isSale && (
                         <span className="text-[12px] text-[#888] line-through font-light">
                             {data.oldPrice}
                         </span>
                     )}
-                    <span className={`text-[13px] font-medium ${isSale ? 'text-[#8b0000]' : 'text-[#1a1a1a]'}`}>
+                    <span className={`text-[14px] font-medium ${isSale ? 'text-[#1f1a17]' : 'text-[#1a1a1a]'}`}>
                         {data.price || data.subtitle}
                     </span>
                 </div>
@@ -70,7 +73,7 @@ const ZarishkaTemplate = ({ data, styles }: any) => {
             <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
             `}</style>
-        </div>
+        </StoreLink>
     );
 };
 

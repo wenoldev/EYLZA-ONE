@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ImageBannerConfig } from '../../types/ImageBanner';
 import { ArrowRight } from 'lucide-react';
+import { StoreLink } from '../theme-support/StoreLink';
 
 const ImageBanner: React.FC<ImageBannerConfig> = (props) => {
   const isMobile = props.viewportSize
@@ -26,6 +27,7 @@ const ImageBanner: React.FC<ImageBannerConfig> = (props) => {
     ctaText,
     ctaLink,
     styles: directStyles = {},
+    style: nestedStyle = {},
     height: schemaHeight,
     backgroundColor: schemaBackgroundColor,
     template,
@@ -60,10 +62,30 @@ const ImageBanner: React.FC<ImageBannerConfig> = (props) => {
     ? directButtons 
     : (ctaText ? [{ label: ctaText, link: ctaLink || '#', style: 'primary', showArrow: true }] : []);
 
+  // Merge legacy flat styles with new nested style structure
   const styles = {
+    // 1. Legacy flat styles
     ...directStyles,
-    height: directStyles.height || (schemaHeight ? `${schemaHeight}px` : undefined),
-    backgroundColor: directStyles.backgroundColor || schemaBackgroundColor
+    
+    // 2. Map new nested style properties (overriding legacy)
+    height: nestedStyle.general?.height || directStyles.height || (schemaHeight ? `${schemaHeight}px` : undefined),
+    backgroundColor: nestedStyle.general?.backgroundColor || directStyles.backgroundColor || schemaBackgroundColor,
+    borderRadius: nestedStyle.general?.borderRadius || directStyles.borderRadius,
+    
+    titleColor: nestedStyle.title?.color || directStyles.titleColor,
+    titleFontSize: nestedStyle.title?.fontSize || directStyles.titleFontSize,
+    titleWeight: nestedStyle.title?.fontWeight || directStyles.titleWeight,
+    titleFontFamily: nestedStyle.title?.fontFamily || directStyles.titleFontFamily,
+    titleLetterSpacing: nestedStyle.title?.letterSpacing || directStyles.titleLetterSpacing,
+    titleOpacity: nestedStyle.title?.opacity || directStyles.titleOpacity,
+    
+    subTitleColor: nestedStyle.subTitle?.color || directStyles.subTitleColor,
+    subTitleFontSize: nestedStyle.subTitle?.fontSize || directStyles.subTitleFontSize,
+    subTitleFontFamily: nestedStyle.subTitle?.fontFamily || directStyles.subTitleFontFamily,
+    subTitleLetterSpacing: nestedStyle.subTitle?.letterSpacing || directStyles.subTitleLetterSpacing,
+    
+    descriptionColor: nestedStyle.description?.color || directStyles.descriptionColor,
+    descriptionFontSize: nestedStyle.description?.fontSize || directStyles.descriptionFontSize,
   };
 
   const alignmentClasses: Record<string, string> = {
@@ -82,7 +104,7 @@ const ImageBanner: React.FC<ImageBannerConfig> = (props) => {
     primary: 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg',
     secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border',
     outline: 'border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white',
-    'boxed-outline': 'border border-current px-12 py-4 tracking-widest text-sm hover:bg-current hover:text-white transition-all duration-500'
+    'boxed-outline': 'border border-current px-8 py-3 md:px-12 md:py-4 tracking-[0.2em] text-xs md:text-sm hover:bg-current hover:text-white transition-all duration-500 uppercase font-bold'
   };
 
   const renderContent = () => {
@@ -103,10 +125,10 @@ const ImageBanner: React.FC<ImageBannerConfig> = (props) => {
       showTitle && title && (
         <h1
           key="title"
-          className={`text-5xl md:text-7xl lg:text-8xl font-serif-premium font-bold mb-8 leading-[1.1] text-gray-900 ${reverseOrder ? 'order-3' : 'order-2'}`}
+          className={`text-3xl md:text-7xl lg:text-8xl font-serif-premium font-bold mb-8 leading-[1.2] md:leading-[1.1] ${reverseOrder ? 'order-3' : 'order-2'} ${isMobile ? 'text-white' : 'text-gray-900'}`}
           style={{
-            color: styles.titleColor,
-            fontSize: styles.titleFontSize,
+            color: isMobile && overlay?.show ? '#ffffff' : styles.titleColor,
+            fontSize: isMobile? '2.5rem' : styles.titleFontSize,
             fontWeight: styles.titleWeight,
             fontFamily: styles.titleFontFamily,
             letterSpacing: styles.titleLetterSpacing ? `${styles.titleLetterSpacing}px` : undefined,
@@ -118,9 +140,9 @@ const ImageBanner: React.FC<ImageBannerConfig> = (props) => {
       showDescription && description && description.replace(/<[^>]*>/g, '').trim() !== '' && (
         <p
           key="description"
-          className={`text-lg md:text-xl mb-10 text-gray-800 max-w-xl leading-relaxed ${reverseOrder ? 'order-2' : 'order-3'}`}
+          className={`text-base md:text-xl mb-10 max-w-xl leading-relaxed ${reverseOrder ? 'order-2' : 'order-3'} ${isMobile ? 'text-white/90' : 'text-gray-800'}`}
           style={{
-            color: styles.descriptionColor,
+            color: isMobile && overlay?.show ? '#ffffff' : styles.descriptionColor,
             fontSize: styles.descriptionFontSize
           }}
           dangerouslySetInnerHTML={{ __html: description }}
@@ -129,9 +151,9 @@ const ImageBanner: React.FC<ImageBannerConfig> = (props) => {
       buttons.length > 0 && (
         <div key="buttons" className="flex flex-wrap gap-4 mt-2 order-4">
           {buttons.map((btn, index) => (
-            <a
+            <StoreLink
               key={index}
-              href={btn.link}
+              to={btn.link}
               className={`group font-semibold transition-all duration-300 transform hover:scale-[1.02] flex items-center gap-2 ${buttonStyles[btn.style]}`}
               style={{
                 backgroundColor: btn.backgroundColor,
@@ -145,14 +167,14 @@ const ImageBanner: React.FC<ImageBannerConfig> = (props) => {
             >
               {btn.label}
               {btn.showArrow && <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />}
-            </a>
+            </StoreLink>
           ))}
         </div>
       )
     ];
 
     return (
-      <div className={`relative z-10 w-full p-8 md:p-20 flex flex-col ${alignmentClasses[textAlignment]} max-w-4xl animate-in fade-in slide-in-from-left-4 duration-1000`}>
+      <div className={`relative z-10 w-full p-6 md:p-20 flex flex-col ${isMobile ? 'items-center text-center' : alignmentClasses[textAlignment]} max-w-4xl animate-in fade-in slide-in-from-bottom-4 duration-1000`}>
         {content}
       </div>
     );
@@ -195,7 +217,7 @@ const ImageBanner: React.FC<ImageBannerConfig> = (props) => {
         className={`flex flex-col md:flex-row overflow-hidden ${fullWidth ? 'w-full' : 'container mx-auto rounded-3xl my-8 shadow-2xl'}`}
         style={{
           backgroundColor: styles.backgroundColor || '#fcfaf7',
-          minHeight: styles.height || '70vh'
+          minHeight:  styles.height || '70vh'
         }}
       >
         {!isMobile && position === 'left' ? (
@@ -232,7 +254,7 @@ const ImageBanner: React.FC<ImageBannerConfig> = (props) => {
       className={`relative overflow-hidden ${fullWidth ? 'w-full' : 'container mx-auto px-4 rounded-3xl my-8 shadow-2xl'} flex flex-col ${verticalClasses[verticalAlignment]} ${alignmentClasses[textAlignment].split(' ')[0]}`}
       style={{
         backgroundColor: styles.backgroundColor,
-        minHeight: styles.height || '80vh'
+        minHeight: isMobile ? '50vh' : (styles.height || '80vh')
       }}
     >
       <div className="absolute inset-0">
@@ -242,6 +264,9 @@ const ImageBanner: React.FC<ImageBannerConfig> = (props) => {
       {renderContent()}
     </section>
   );
+
+  // On mobile, we always prefer the background view for a premium look (centering content over image)
+  if (isMobile) return renderBackgroundView();
 
   // Return specific template view
   if (template === 'splitLeft') return renderSplit('left');

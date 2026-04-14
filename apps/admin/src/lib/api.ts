@@ -2,7 +2,7 @@ import axios, { type AxiosInstance } from 'axios';
 import axiosRetry from 'axios-retry';
 import { useAuthStore } from '@/stores/authStore';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+const API_BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
 const api: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,

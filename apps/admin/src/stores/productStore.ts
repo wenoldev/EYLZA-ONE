@@ -4,6 +4,7 @@ import { create } from 'zustand';
 
 export interface Product {
   id: string;
+  store_id: string;
   name: string;
   slug: string;
   description?: string;
@@ -71,8 +72,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
 
   fetchProducts: async (filters?: ProductFilters) => {
     set({ isLoading: true, error: null });
-    console.log({filters});
-    
+
     try {
     const currentFilters = {
       ...get().filters,

@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ChevronRight, Plus } from 'lucide-react';
+import { ChevronRight, Plus, Laptop } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import Loader from '@/components/common/Loader';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/stores/authStore';
 
 interface Theme {
   id: string;
@@ -19,7 +20,19 @@ interface Theme {
 const ThemeList = () => {
   const [themes, setThemes] = useState<Theme[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+   const navigate = useNavigate();
+   const { user, session } = useAuthStore();
+
+   const navigateToVisualEditor = (themeId: string) => {
+     const url = new URL(import.meta.env.VITE_EDITOR_URL);
+     url.searchParams.set("uid", user?.id ?? "");
+     url.searchParams.set("themeId", themeId);
+     url.searchParams.set("isAdminMode", "true");
+     url.searchParams.set("access_token", session?.access_token ?? "");
+     url.searchParams.set("refresh_token", session?.refresh_token ?? "");
+     url.searchParams.set("expires_at", session?.expires_at?.toString() ?? "");
+     window.open(url.toString(), "_blank");
+   };
 
   const fetchThemes = async () => {
     setLoading(true);
@@ -88,6 +101,9 @@ const ThemeList = () => {
                     </Button>
                     <Button variant="outline" size="sm" onClick={() => navigate(`pages/${theme.id}`)}>
                       Edit Pages <ChevronRight className="ml-2 h-4 w-4" />
+                    </Button>
+                    <Button variant="default" size="sm" onClick={() => navigateToVisualEditor(theme.id)}>
+                      <Laptop className="mr-2 h-4 w-4" /> Visual Editor
                     </Button>
                   </TableCell>
                 </TableRow>

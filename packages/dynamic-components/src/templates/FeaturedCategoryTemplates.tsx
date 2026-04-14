@@ -1,7 +1,5 @@
-// CategoryCard1.tsx
-import React from 'react';
-import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import { StoreLink } from '../components/theme-support/StoreLink';
 
 export const CategoryCard1 = ({ data, styles }: any) => {
     const {
@@ -25,8 +23,8 @@ export const CategoryCard1 = ({ data, styles }: any) => {
     };
 
     return (
-        <a 
-            href={data.link || '#'}
+        <StoreLink 
+            to={data.link || data.href || '#'}
             className={`flex flex-col ${alignmentClasses[textAlign]} group cursor-pointer w-full`}
         >
             <div
@@ -60,7 +58,7 @@ export const CategoryCard1 = ({ data, styles }: any) => {
                     </p>
                 )}
             </div>
-        </a>
+        </StoreLink>
     );
 };
 
@@ -72,8 +70,8 @@ export const CategoryCard2 = ({ data, styles }: any) => {
     } = styles;
 
     return (
-        <a 
-            href={data.link || '#'}
+        <StoreLink 
+            to={data.link || data.href || '#'}
             className="relative overflow-hidden group rounded-3xl cursor-pointer w-full"
             style={{ aspectRatio }}
         >
@@ -109,6 +107,6 @@ export const CategoryCard2 = ({ data, styles }: any) => {
                     </div>
                 </div>
             </div>
-        </a>
+        </StoreLink>
     );
 };

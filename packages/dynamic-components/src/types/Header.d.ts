@@ -29,6 +29,8 @@ export interface HeaderConfig {
         backgroundColor?: string;
         fontFamily?: FontFamily;
         logoText?: string;
+        showStoreLogo?: boolean;
+        storeLogo?: string;
         behaviour?: "static" | "sticky";
         borderColor?: string;
     };

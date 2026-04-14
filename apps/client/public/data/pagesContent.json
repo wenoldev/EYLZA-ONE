@@ -1,0 +1,508 @@
+{
+  "home": [
+    {
+      "id": "home-hero",
+      "selector": "banner",
+      "props": {
+        "template": "fullWidth",
+        "backgroundImage": "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&fit=crop&w=1800&q=80",
+        "mobileImageUrl": "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&fit=crop&w=900&q=80",
+        "title": "Wear Your Story.",
+        "subtitle": "PERSONALISED WITH LOVE",
+        "textAlignment": "center",
+        "verticalAlignment": "center",
+        "buttons": [
+          {
+            "label": "Shop all",
+            "link": "/products",
+            "style": "boxed-outline",
+            "showArrow": false,
+            "textColor": "#ffffff",
+            "padding": "0.9rem 2.4rem"
+          }
+        ],
+        "overlay": {
+          "show": true,
+          "color": "#6d644a",
+          "opacity": 0.18
+        },
+        "style": {
+          "general": {
+            "height": "320px"
+          },
+          "title": {
+            "color": "#ffffff",
+            "fontSize": "4.5rem",
+            "fontFamily": "'Playfair Display', serif",
+            "fontWeight": 400
+          },
+          "subTitle": {
+            "color": "#efe8db",
+            "fontSize": "0.9rem",
+            "letterSpacing": 6
+          }
+        }
+      }
+    },
+    {
+      "id": "home-featured-products",
+      "selector": "productList",
+      "props": {
+        "title": "Featured products",
+        "template": "zarishka",
+        "items": [
+          {
+            "id": "birthstone-necklace",
+            "title": "Personalised Birthstone Necklace",
+            "image": "https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=900&q=80",
+            "price": "From Rs. 1,499.00",
+            "oldPrice": "Rs. 2,299.00",
+            "href": "/product/hidden-message-curved-bar-bracelet"
+          },
+          {
+            "id": "rose-flower-necklace",
+            "title": "Rose Flower Necklace 18k Gold Plated",
+            "image": "https://images.unsplash.com/photo-1611652022440-4f8fdd9874a3?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,099.00",
+            "oldPrice": "Rs. 1,599.00",
+            "href": "/product/hidden-message-curved-bar-bracelet"
+          },
+          {
+            "id": "knot-bracelet",
+            "title": "Personalized Knot Bracelet with Birthstone",
+            "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,399.00",
+            "oldPrice": "Rs. 1,699.00",
+            "href": "/product/hidden-message-curved-bar-bracelet"
+          },
+          {
+            "id": "curved-bar-bracelet",
+            "title": "Hidden Message Curved Bar Bracelet",
+            "image": "https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,299.00",
+            "oldPrice": "Rs. 1,699.00",
+            "href": "/product/hidden-message-curved-bar-bracelet"
+          },
+          {
+            "id": "message-necklace",
+            "title": "Personalised Message Necklace",
+            "image": "https://images.unsplash.com/photo-1611085583191-a3b181a88401?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,499.00",
+            "href": "/product/hidden-message-curved-bar-bracelet"
+          },
+          {
+            "id": "initial-necklace",
+            "title": "Initials Birthstone Necklace",
+            "image": "https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=900&q=80",
+            "price": "From Rs. 1,499.00",
+            "href": "/product/hidden-message-curved-bar-bracelet"
+          }
+        ],
+        "layout": {
+          "desktop": 3,
+          "tablet": 2,
+          "mobile": 2
+        },
+        "styles": {
+          "backgroundColor": "#ffffff",
+          "containerWidth": 1240,
+          "paddingTop": 56,
+          "paddingBottom": 48,
+          "gap": 20,
+          "titleAlignment": "left",
+          "titleSize": 28,
+          "titleColor": "#1f1a17",
+          "showSubtitle": false,
+          "cardStyles": {
+            "aspectRatio": "1/1",
+            "textAlign": "left",
+            "showShadow": false,
+            "imageShape": "square"
+          }
+        }
+      }
+    },
+    {
+      "id": "home-about",
+      "selector": "text",
+      "props": {
+        "title": "About Us",
+        "content": "Zarishka is a renowned brand specializing in personalized jewellery that captures the essence of individuality and celebrates meaningful connections. We believe that every piece of jewellery should tell a unique story, and that is why we are dedicated to creating exquisite, one-of-a-kind pieces that reflect the personal style and sentiments of our customers.",
+        "alignment": "center",
+        "styles": {
+          "backgroundColor": "#ffffff",
+          "titleColor": "#1f1a17",
+          "textColor": "#5f584f",
+          "fontFamily": "serif",
+          "maxWidth": "920px",
+          "padding": "4rem 1rem 2rem"
+        }
+      }
+    },
+    {
+      "id": "home-feature-split",
+      "selector": "mediaText",
+      "props": {
+        "mediaType": "image",
+        "mediaUrl": "https://images.unsplash.com/photo-1602173574767-37ac01994b2a?auto=format&fit=crop&w=1200&q=80",
+        "mediaPosition": "left",
+        "sectionWidth": "boxed",
+        "title": "A Perfect Gift",
+        "subTitle": "EXCLUSIVE",
+        "description": "Express your love with this unique necklace. Envelope locket carries a pleasant surprise inside - a love letter worth a thousand emotions in form of words.",
+        "buttons": [
+          {
+            "label": "Shop now",
+            "link": "/products",
+            "style": "outline"
+          }
+        ],
+        "styles": {
+          "buttonAlignment": "left",
+          "backgroundColor": "#ffffff",
+          "textColor": "#1f1a17",
+          "aspectRatio": "4/3",
+          "roundedCorners": "0rem"
+        }
+      }
+    },
+    {
+      "id": "home-testimonials",
+      "selector": "testimonialGrid",
+      "props": {
+        "title": "What Customer says about us.",
+        "backgroundColor": "#ffffff",
+        "textColor": "#1f1a17",
+        "accentColor": "#6f6758",
+        "containerWidth": 1240,
+        "items": [
+          {
+            "author": "Ritika Sehgal",
+            "quote": "Lovely necklace - so cute. Had my daughters name put on it and she loves it! Had lots of compliments."
+          },
+          {
+            "author": "Deeksha Mawai",
+            "quote": "Beautiful necklace and presentably packaged. My order arrived in good time and in tact. Would definitely recommend."
+          },
+          {
+            "author": "Archit Jain",
+            "quote": "Beautiful gift, was very appreciated by the recipient and came beautifully packaged and presented. Would order again."
+          }
+        ]
+      }
+    }
+  ],
+  "products": [
+    {
+      "id": "products-grid",
+      "selector": "productList",
+      "props": {
+        "title": "Products",
+        "template": "zarishka",
+        "items": [
+          {
+            "id": "adjustable-ring",
+            "title": "Adjustable Ring",
+            "image": "https://images.unsplash.com/photo-1603561596112-db7e1982f2da?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,099.00"
+          },
+          {
+            "id": "curved-bar-bracelet",
+            "title": "Hidden Message Curved Bar Bracelet",
+            "image": "https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,299.00",
+            "oldPrice": "Rs. 1,699.00",
+            "href": "/product/hidden-message-curved-bar-bracelet"
+          },
+          {
+            "id": "initial-necklace",
+            "title": "Initials Birthstone Necklace",
+            "image": "https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=900&q=80",
+            "price": "From Rs. 1,499.00"
+          },
+          {
+            "id": "engraved-bracelet",
+            "title": "Name Engraved Bracelet",
+            "image": "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,499.00",
+            "oldPrice": "Rs. 1,999.00"
+          },
+          {
+            "id": "birthstone-necklace",
+            "title": "Personalised Birthstone Necklace",
+            "image": "https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=900&q=80",
+            "price": "From Rs. 1,499.00",
+            "oldPrice": "Rs. 2,299.00"
+          },
+          {
+            "id": "family-bracelet",
+            "title": "Personalised Family Birthstone Bracelet",
+            "image": "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,499.00",
+            "soldOut": true
+          },
+          {
+            "id": "message-necklace",
+            "title": "Personalised Message Necklace",
+            "image": "https://images.unsplash.com/photo-1611085583191-a3b181a88401?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,499.00"
+          },
+          {
+            "id": "pillar-necklace",
+            "title": "Personalised Pillar Bar Necklace",
+            "image": "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,299.00",
+            "oldPrice": "Rs. 1,699.00"
+          },
+          {
+            "id": "knot-bracelet",
+            "title": "Personalized Knot Bracelet with Birthstone",
+            "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,399.00",
+            "oldPrice": "Rs. 1,699.00"
+          },
+          {
+            "id": "rose-flower-necklace",
+            "title": "Rose Flower Necklace 18k Gold Plated",
+            "image": "https://images.unsplash.com/photo-1611652022440-4f8fdd9874a3?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,099.00",
+            "oldPrice": "Rs. 1,599.00"
+          },
+          {
+            "id": "link-name-necklace",
+            "title": "The Link Name Necklace",
+            "image": "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,599.00"
+          }
+        ],
+        "filterConfig": {
+          "showFilters": true,
+          "showSort": true,
+          "options": ["availability", "price"]
+        },
+        "layout": {
+          "desktop": 4,
+          "tablet": 2,
+          "mobile": 2
+        },
+        "styles": {
+          "backgroundColor": "#ffffff",
+          "containerWidth": 1240,
+          "paddingTop": 64,
+          "paddingBottom": 72,
+          "gap": 14,
+          "titleAlignment": "left",
+          "titleSize": 56,
+          "titleColor": "#1f1a17",
+          "showSubtitle": false,
+          "cardStyles": {
+            "aspectRatio": "1/1",
+            "textAlign": "left",
+            "showShadow": false,
+            "imageShape": "square"
+          }
+        }
+      }
+    }
+  ],
+  "product": [
+    {
+      "id": "product-main",
+      "selector": "productDetail",
+      "props": {
+        "template": "zarishka",
+        "layout": "split",
+        "gallery": {
+          "position": "left",
+          "showThumbnails": true,
+          "aspectRatio": "4/5",
+          "imageShape": "square"
+        },
+        "styles": {
+          "backgroundColor": "#ffffff",
+          "paddingTop": 48,
+          "paddingBottom": 40,
+          "containerWidth": 1240,
+          "titleColor": "#1f1a17",
+          "titleSize": 54,
+          "salePriceColor": "#1f1a17",
+          "buttonColor": "#ffffff",
+          "buttonTextColor": "#1f1a17",
+          "buttonText": "Add to cart",
+          "buttonShape": "square"
+        },
+        "product": {
+          "id": "hidden-message-curved-bar-bracelet",
+          "name": "Hidden Message Curved Bar Bracelet",
+          "price": 1299,
+          "originalPrice": 1699,
+          "badge": "Sale",
+          "label": "ZARISHKA",
+          "reviewCount": 2,
+          "rating": 5,
+          "stockText": "0 Sold in last 1 hour",
+          "description": "Sleek. Minimal. Meaningful.\n\nThis isn't just a bracelet - it's your story, discreetly engraved and worn close every day.\n\nCrafted from premium 316L grade stainless steel, our Personalised Hidden Message Bracelet combines timeless design with lasting durability. Each bracelet features your custom message engraved on the inside, making it a subtle and deeply personal piece.",
+          "images": [
+            "https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1602173574767-37ac01994b2a?auto=format&fit=crop&w=900&q=80",
+            "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&fit=crop&w=900&q=80",
+            "https://images.unsplash.com/photo-1611652022440-4f8fdd9874a3?auto=format&fit=crop&w=900&q=80"
+          ],
+          "options": [
+            {
+              "label": "Enter Your Message*",
+              "values": ["Type your message"]
+            },
+            {
+              "label": "Colour",
+              "values": ["Silver", "Timeless Gold", "Romantic Rose Gold"]
+            }
+          ],
+          "metadata": [
+            {
+              "label": "Your Words, Hidden Within",
+              "value": "Engrave a name, special date, coordinates, or a private message that stays just between you and the wearer."
+            },
+            {
+              "label": "Water-splash Proof",
+              "value": "Designed for everyday life - resistant to fading, rust, or water splashes."
+            },
+            {
+              "label": "Chain Length",
+              "value": "40+5cm"
+            },
+            {
+              "label": "Material",
+              "value": "316 L Medical grade stainless steel."
+            }
+          ]
+        },
+        "faqItems": [
+          {
+            "title": "Do You Offer Cash on Delivery ?",
+            "content": "Yes, COD is available on eligible orders and serviceable pincodes."
+          },
+          {
+            "title": "Can I use it daily ?",
+            "content": "Yes. It is designed for regular wear and crafted for everyday comfort."
+          },
+          {
+            "title": "How can I Return/Replace the product?",
+            "content": "Returns and replacements can be requested through support within the applicable policy window."
+          },
+          {
+            "title": "How to get the tracking details.",
+            "content": "Tracking details are shared by email and SMS as soon as your order ships."
+          }
+        ],
+        "reviewItems": [
+          {
+            "author": "Litha T.",
+            "meta": "Verified",
+            "body": "Excellent service",
+            "rating": 5
+          },
+          {
+            "author": "Sarah Q.",
+            "meta": "Verified",
+            "body": "It is super cute and looks very pretty on my mum's hand.",
+            "rating": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "product-related",
+      "selector": "productList",
+      "props": {
+        "title": "You may also like",
+        "template": "zarishka",
+        "items": [
+          {
+            "title": "Personalised Birthstone Necklace",
+            "image": "https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=900&q=80",
+            "price": "From Rs. 1,499.00",
+            "oldPrice": "Rs. 2,299.00"
+          },
+          {
+            "title": "Personalised Message Necklace",
+            "image": "https://images.unsplash.com/photo-1611085583191-a3b181a88401?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,499.00"
+          },
+          {
+            "title": "Personalized Knot Bracelet with Birthstone",
+            "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,399.00",
+            "oldPrice": "Rs. 1,699.00"
+          },
+          {
+            "title": "Name Engraved Bracelet",
+            "image": "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=900&q=80",
+            "price": "Rs. 1,499.00",
+            "oldPrice": "Rs. 1,999.00"
+          }
+        ],
+        "layout": {
+          "desktop": 4,
+          "tablet": 2,
+          "mobile": 2
+        },
+        "styles": {
+          "backgroundColor": "#ffffff",
+          "containerWidth": 1240,
+          "paddingTop": 16,
+          "paddingBottom": 72,
+          "gap": 18,
+          "titleAlignment": "left",
+          "titleSize": 30,
+          "titleColor": "#1f1a17",
+          "showSubtitle": false,
+          "cardStyles": {
+            "aspectRatio": "1/1",
+            "textAlign": "left",
+            "showShadow": false,
+            "imageShape": "square"
+          }
+        }
+      }
+    }
+  ],
+  "about": [
+    {
+      "id": "about-copy",
+      "selector": "text",
+      "props": {
+        "title": "About Zarishka",
+        "content": "We create jewellery that feels personal, timeless, and meaningful - modern gifting pieces designed to celebrate stories, milestones, and memory.",
+        "alignment": "center",
+        "styles": {
+          "backgroundColor": "#ffffff",
+          "titleColor": "#1f1a17",
+          "textColor": "#5f584f",
+          "fontFamily": "serif",
+          "maxWidth": "860px",
+          "padding": "6rem 1rem"
+        }
+      }
+    }
+  ],
+  "contact": [
+    {
+      "id": "contact-copy",
+      "selector": "text",
+      "props": {
+        "title": "Contact Us",
+        "content": "Need help with customization, gifting, shipping, or returns? Reach out and our team will guide you.<br/><br/>Email: hello@zarishka.com<br/>Phone: +91 90000 00000",
+        "alignment": "center",
+        "styles": {
+          "backgroundColor": "#ffffff",
+          "titleColor": "#1f1a17",
+          "textColor": "#5f584f",
+          "fontFamily": "serif",
+          "maxWidth": "760px",
+          "padding": "6rem 1rem"
+        }
+      }
+    }
+  ]
+}

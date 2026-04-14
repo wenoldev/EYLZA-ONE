@@ -1,4 +1,4 @@
-import { Undo, Redo, Smartphone, Monitor, Maximize, Moon, Sun, PanelRight, Loader2 } from "lucide-react"
+import { Undo, Redo, Smartphone, Monitor, Maximize, Moon, Sun, PanelRight, Loader2, Globe } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -137,6 +137,22 @@ export function TopBar() {
               </TooltipTrigger>
               <TooltipContent>{isDark ? "Light" : "Dark"} mode</TooltipContent>
             </Tooltip>
+
+            {storeData?.slug && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                    onClick={() => window.open(`${import.meta.env.VITE_CLIENT_URL}${storeData.slug}/home`, '_blank')}
+                  >
+                    <Globe className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>View Live Store</TooltipContent>
+              </Tooltip>
+            )}
 
             <div className="w-px h-4 bg-border mx-1 hidden sm:block" />
 

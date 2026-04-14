@@ -1,7 +1,6 @@
 export interface ProductListConfig {
   title?: string;
   subtitle?: string;
-  items: any[];
   template: 'category' | 'product' | 'minimal' | 'zarishka';
   filterConfig?: {
     showFilters?: boolean;

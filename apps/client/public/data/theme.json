@@ -1,0 +1,107 @@
+{
+  "theme": {
+    "id": "local-theme-id",
+    "store_id": "local-store-id",
+    "theme_id": "jewelry-premium",
+    "name": "Jewelry Premium Theme",
+    "config": {
+      "global": {
+        "colors": {
+          "primary": "#a7a07d",
+          "secondary": "#1f1a17",
+          "background": "#ffffff",
+          "fontFamily": "'Cormorant Garamond', serif"
+        }
+      },
+      "header": {
+        "selector":"primary-header",
+        "props": {
+          "general": {
+            "backgroundStyle": "fill",
+            "borderRadiusStyle": "sharpe",
+            "textColor": "#1f1a17",
+            "backgroundColor": "#ffffff",
+            "fontFamily": "'Cormorant Garamond', serif",
+            "logoText": "ZARISHKA",
+            "behaviour": "sticky",
+            "borderColor": "#e5e7eb"
+          },
+          "topBar": {
+            "show": true,
+            "content": "Free Shipping on all orders above 599.",
+            "showIcons": false,
+            "backgroundColor": "#a7a07d",
+            "textColor": "#ffffff"
+          },
+          "mainBar": {
+            "order": [
+              { "id": "logo", "visible": true },
+              { "id": "__gap__", "visible": true },
+              { "id": "navigation", "visible": true },
+              { "id": "__gap__", "visible": true },
+              { "id": "search", "visible": true },
+              { "id": "icons", "visible": true }
+            ],
+            "searchDesign": "icon"
+          },
+          "bottomBar": {
+            "show": false,
+            "alignment": "center"
+          }
+        }
+      },
+      "footer": {
+        "selector":"primary-footer",
+        "props": {
+          "general": {
+            "design": "design1",
+            "hideFooter": false,
+            "backgroundColor": "#a7a07d",
+            "textColor": "#ffffff",
+            "accentColor": "#ffffff",
+            "borderColor": "#c2bca0",
+            "fontFamily": "'Cormorant Garamond', serif",
+            "paddingTop": "5rem",
+            "paddingBottom": "3rem"
+          },
+          "sections": {
+            "menuOrder": [
+              { "id": "brand", "visible": false },
+              { "id": "quickLinks", "visible": true },
+              { "id": "supportLinks", "visible": false },
+              { "id": "policyLinks", "visible": true },
+              { "id": "social", "visible": false },
+              { "id": "contactInfo", "visible": true }
+            ],
+            "showPaymentMethods": false,
+            "paymentMethodsStyle": "badges",
+            "showDividers": false,
+            "linksUnderline": false,
+            "socialIconStyle": "plain"
+          },
+          "mobile": {
+            "layout": "accordion",
+            "collapseSections": true,
+            "textAlignment": "left",
+            "stackOrder": "contact-first",
+            "hideSocialOnMobile": true,
+            "hidePaymentOnMobile": true
+          },
+          "content": {
+            "copyrightText": "(c) 2026, Zarishka Powered by Shopify",
+            "showTagline": false,
+            "copyrightPosition": "left"
+          }
+        }
+      }
+    },
+    "status": "published",
+    "pages": [
+      { "id": "p1", "name": "Home", "slug": "home" },
+      { "id": "p2", "name": "About", "slug": "about" },
+      { "id": "p3", "name": "Contact", "slug": "contact" },
+      { "id": "p4", "name": "Products", "slug": "products" },
+      { "id": "p5", "name": "Product Details", "slug": "product" }
+    ]
+  }
+}

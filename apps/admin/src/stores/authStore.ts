@@ -226,11 +226,11 @@ export const useAuthIntegration = () => {
 
     if (!result.error) {
       const role = result.data.role;
-      if (role === 'vendor') {
+      if (role === 'vendor' || role === 'admin') {
         navigate('/');
       }
-      else if (role === 'admin') {
-        navigate('/admin')
+      else {
+        navigate('/login')
       }
     }
 

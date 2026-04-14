@@ -32,6 +32,7 @@ export const productListSchema: EditorSchema = {
                         { label: "Category Circles", value: "category" },
                         { label: "Product Cards", value: "product" },
                         { label: "Minimal List", value: "minimal" },
+                        { label: "Zarishka Grid", value: "zarishka" },
                     ],
                     defaultValue: "category",
                 }

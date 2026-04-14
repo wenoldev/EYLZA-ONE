@@ -1,7 +1,10 @@
 export * from './registry';
 export * from './libs/fetchStoreProducts';
 export * from './libs/utils';
+export * from './hooks/useStoreUrl';
 export * from './utils/cardConfigGenerator';
+export * from './utils/route';
+export * from './components/theme-support/StoreLink';
 export { default as Header } from './components/themes/Header';
 export { default as Footer } from './components/themes/Footer';
 export type * from './types/Footer';

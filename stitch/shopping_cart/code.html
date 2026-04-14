@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500;6..72,600&amp;family=Manrope:wght@200;300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#1f1c03",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#49473d",
+                        "surface-variant": "#e5e2dd",
+                        "on-secondary-container": "#73640e",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#cec79f",
+                        "secondary-container": "#f7e382",
+                        "on-tertiary-container": "#fefcf8",
+                        "on-background": "#1c1c19",
+                        "surface-container-highest": "#e5e2dd",
+                        "primary": "#615d3c",
+                        "surface-dim": "#dcdad5",
+                        "background": "#fcf9f4",
+                        "on-secondary-fixed": "#211b00",
+                        "on-secondary-fixed-variant": "#524700",
+                        "inverse-primary": "#cec79f",
+                        "tertiary-fixed": "#e4e2de",
+                        "on-tertiary-fixed": "#1b1c1a",
+                        "outline": "#7a776b",
+                        "surface": "#fcf9f4",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#eae4ba",
+                        "primary-container": "#7a7553",
+                        "secondary-fixed-dim": "#dac769",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#5c5c59",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#c8c6c3",
+                        "on-tertiary-fixed-variant": "#474744",
+                        "outline-variant": "#cbc6b9",
+                        "inverse-surface": "#31302d",
+                        "surface-tint": "#635f3e",
+                        "surface-container-low": "#f6f3ee",
+                        "on-primary-fixed-variant": "#4b4829",
+                        "surface-bright": "#fcf9f4",
+                        "on-primary-container": "#fffbff",
+                        "surface-container": "#f0ede9",
+                        "on-surface": "#1c1c19",
+                        "secondary-fixed": "#f7e382",
+                        "secondary": "#6c5e06",
+                        "inverse-on-surface": "#f3f0eb",
+                        "tertiary-container": "#757572",
+                        "surface-container-high": "#eae8e3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Newsreader"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+        h1, h2, h3, .serif { font-family: 'Newsreader', serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased">
+<nav class="fixed top-0 w-full z-50 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-xl flex justify-between items-center w-full px-12 py-6 max-w-full mx-auto">
+<div class="text-2xl font-serif tracking-[0.3em] text-stone-900 dark:text-stone-50">AURUM</div>
+<div class="hidden md:flex items-center space-x-12 font-serif tracking-widest uppercase text-xs">
+<a class="text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors" href="#">Collections</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors" href="#">High Jewelry</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors" href="#">Bespoke</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors" href="#">Heritage</a>
+</div>
+<div class="flex items-center space-x-6 text-stone-800 dark:text-stone-200">
+<button class="hover:opacity-70 transition-opacity duration-300">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="hover:opacity-70 transition-opacity duration-300 relative">
+<span class="material-symbols-outlined" data-icon="shopping_bag" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
+<span class="absolute -top-1 -right-1 bg-primary text-[8px] text-white w-3 h-3 flex items-center justify-center">2</span>
+</button>
+<button class="hover:opacity-70 transition-opacity duration-300">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+</div>
+</nav>
+<main class="pt-32 pb-20 px-6 md:px-12 max-w-7xl mx-auto min-h-screen">
+<header class="mb-16">
+<h1 class="text-5xl md:text-6xl font-light tracking-tight text-on-surface mb-4">Your Bag</h1>
+<p class="text-on-surface-variant font-body uppercase tracking-[0.2em] text-[10px]">Review your selected treasures</p>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+<div class="lg:col-span-8 space-y-12">
+<div class="group relative flex flex-col md:flex-row gap-8 bg-surface-container-lowest p-6 md:p-0">
+<div class="w-full md:w-64 aspect-[4/5] overflow-hidden bg-surface-container-low">
+<img alt="The Verdant Heirloom Necklace" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Close-up of an intricate gold necklace with emerald pendants resting on a soft cream silk fabric under natural sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXlbm8VNgGQmHdUoCQDLFlkzp9d8GPEwnM3brCJ0d_VD4DaZiX9Il3PEc3dlLcH3ko9I_wrtyfAaDOM9pXcIPnnevMf9-EIbj_Xqsh6ViE_dUAHsChWAVUZnBC_hoZBpgtRNFV-syM8TMj4ReMEUcVHRcxFXi-h5kNbcs_zl42IUUR3Z_MtLPgYbFzz449bqabZrTVDWJVQgM6sp_uc4FHsV0N-YKx31-YdEzgljCH8khGDNTS_-SJ6qTMtl22deC7XX18uPoai_A"/>
+</div>
+<div class="flex flex-col flex-1 py-4">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-2xl font-serif mb-1">The Verdant Heirloom</h3>
+<p class="text-xs uppercase tracking-widest text-on-surface-variant">18k Yellow Gold &amp; Emerald</p>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="close">close</span>
+</button>
+</div>
+<div class="mt-auto flex flex-wrap gap-8 items-end justify-between">
+<div class="space-y-4">
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant">Quantity</div>
+<div class="flex items-center border border-outline-variant/30 w-fit">
+<button class="px-3 py-2 hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-xs">remove</span></button>
+<span class="px-4 py-2 text-sm font-medium">1</span>
+<button class="px-3 py-2 hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-xs">add</span></button>
+</div>
+</div>
+<div class="text-xl font-serif">$12,400.00</div>
+</div>
+</div>
+</div>
+<div class="group relative flex flex-col md:flex-row gap-8 bg-surface-container-lowest p-6 md:p-0">
+<div class="w-full md:w-64 aspect-[4/5] overflow-hidden bg-surface-container-low">
+<img alt="Solstice Band No. IV" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Minimalist gold architectural ring set with a single pear-cut diamond, photographed on a textured stone surface with deep shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNsIHmKK6ckZGODufmnkVyV90VYf4ra0lGsyyn4wZvUMWF40e6_C9a3gSaau2pITkv-QhnTkfDCBBUlhbrklFku_u1p0Cb6yrQ5GvDWkSld9bumYdNkm2F69aNpeFmTrqY_5Hdf7tiX0S3fSGa6jE-mSokJ1OesmrPXsgyazaHXa2yrhNbr2TlLMTSlUpazKhqwHhSlZhsjjkb77Lb_3045JATm4pOwSD1u29Eh6Ll8MMWgxqIui6ay1IXzlVDQdYrkLLUdCOZ0xI"/>
+</div>
+<div class="flex flex-col flex-1 py-4">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-2xl font-serif mb-1">Solstice Band No. IV</h3>
+<p class="text-xs uppercase tracking-widest text-on-surface-variant">White Gold &amp; Pear Diamond</p>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="close">close</span>
+</button>
+</div>
+<div class="mt-auto flex flex-wrap gap-8 items-end justify-between">
+<div class="space-y-4">
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant">Quantity</div>
+<div class="flex items-center border border-outline-variant/30 w-fit">
+<button class="px-3 py-2 hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-xs">remove</span></button>
+<span class="px-4 py-2 text-sm font-medium">1</span>
+<button class="px-3 py-2 hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-xs">add</span></button>
+</div>
+</div>
+<div class="text-xl font-serif">$4,850.00</div>
+</div>
+</div>
+</div>
+<div class="pt-8 space-y-4">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">local_shipping</span>
+<span class="text-xs uppercase tracking-wider">Complimentary White-Glove Shipping included</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">verified</span>
+<span class="text-xs uppercase tracking-wider">Lifetime Authenticity &amp; Care Guarantee</span>
+</div>
+</div>
+</div>
+<aside class="lg:col-span-4">
+<div class="bg-surface-container-low p-8 md:p-10 sticky top-32">
+<h2 class="text-3xl font-serif mb-8 italic">Order Summary</h2>
+<div class="space-y-6 mb-10">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant uppercase tracking-widest">Subtotal</span>
+<span class="font-serif">$17,250.00</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant uppercase tracking-widest">Shipping</span>
+<span class="text-[10px] uppercase tracking-widest">Complimentary</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant uppercase tracking-widest">Tax</span>
+<span class="font-serif text-xs">Calculated at checkout</span>
+</div>
+<div class="pt-6 border-t border-outline-variant/20 flex justify-between items-end">
+<span class="text-sm font-bold uppercase tracking-widest">Total</span>
+<span class="text-3xl font-serif">$17,250.00</span>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary py-5 px-8 uppercase tracking-[0.3em] text-xs font-bold hover:bg-primary-container transition-all duration-300 mb-6">
+                        Proceed to Checkout
+                    </button>
+<div class="space-y-4">
+<p class="text-[10px] text-center text-on-surface-variant uppercase tracking-widest leading-relaxed">
+                            Secure payment options available via major credit cards, wire transfer, or artisanal financing.
+                        </p>
+<div class="flex justify-center gap-4 opacity-40">
+<span class="material-symbols-outlined text-xl">payments</span>
+<span class="material-symbols-outlined text-xl">credit_card</span>
+<span class="material-symbols-outlined text-xl">account_balance</span>
+</div>
+</div>
+</div>
+<div class="mt-8 p-6 bg-surface-container-lowest border border-outline-variant/10">
+<p class="text-xs italic serif leading-relaxed text-on-surface-variant mb-4">
+                        "Each piece from our Atelier is handcrafted to order. Please allow 14 days for the final meticulous inspection before dispatch."
+                    </p>
+<a class="text-[10px] font-bold uppercase tracking-widest border-b border-primary pb-1" href="#">Contact a Curator</a>
+</div>
+</aside>
+</div>
+<section class="mt-32">
+<h2 class="text-3xl font-serif mb-12 text-center italic">May we suggest</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+<div class="group cursor-pointer">
+<div class="aspect-[3/4] bg-surface-container-low mb-4 overflow-hidden">
+<img alt="Starlight Drop Earrings" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" data-alt="Exquisite diamond drop earrings catching the light, arranged on a neutral grey velvet display stand" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVRWPyIhGNg8C_y7eOuMipAgqBKLO6GnGJDVq6EnMV3w_xG-eSFgujJwMdwGBiO2d-rDXMNbrvD7WBaxT7WmUUuQfh6q_yBjV-4_jeiK3cfadGipe5wyzoTAswtpD3yKsn9jlJCuNw-0m_gPbyw7wqONMUje1RLPxs3X3s4yr-ur8QSfAqyWsKaCL-1zcGTI0h3z6Ueg1txdLYwXns-xZhzbclQTSYLMxWTjvNiCRO8tUHi4ZFe3jxvQKevjqVL1zX-sL1udSJang"/>
+</div>
+<h4 class="text-xs uppercase tracking-widest mb-1">Starlight Drops</h4>
+<p class="text-sm font-serif">$3,200.00</p>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-[3/4] bg-surface-container-low mb-4 overflow-hidden">
+<img alt="Aurelian Cuff" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" data-alt="Artistic shot of a gold textured cuff bracelet sitting on an open art book with atmospheric lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyBpwwhHHvb0Ap6hb6gKSBgacASet0IlNXC_bo-iQQXoJIX0SfI4xdDCP9WAVkYip_9CLAI9D5T5s1_KpsyJD89_WyERzt5fnvd3R2nXBCmdzc4J57AtxRHhAbdQnWgjbQTfl30NgHitpci6zqNtV3-uhScz9LYNW-mT27k7wMHwwZj5bCJW3Qo9eJrmo26MFIcr-mUo0p2NSToIDksebdzjf6IG_v2lmEK-kp4ZIXT_v-228nn9H4Fx1xLZolMI_LD158p6hgP78"/>
+</div>
+<h4 class="text-xs uppercase tracking-widest mb-1">Aurelian Cuff</h4>
+<p class="text-sm font-serif">$5,800.00</p>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-[3/4] bg-surface-container-low mb-4 overflow-hidden">
+<img alt="Celestial Band" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" data-alt="A collection of delicate gold stacking rings with various textures and tiny diamonds on a light linen surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFy72DF_o-NlKACBQQoZglvMKw7TXAeIYw0ri8YNiwXMqeG-BNpoT0PPdFkrVRrXsARCYRy9unbUu4Yfz43pl4u7e2Z4CI6dN6-_VXVnugXXwFO1JzafmV9IB8xwXM1roAVEESoLBarVbaFiBarP7FU3Ln_V5j8HnQ9lS31mq_Xj6Ji8uWY7kkjG47Y90a92_nwS2kzYz1V3zsUn9hqZSSMD3rV_yeSTxuZ9EpqdhWeOGjHINEY4VlRVNsNLbsQ2t_n9hPE4vdKUY"/>
+</div>
+<h4 class="text-xs uppercase tracking-widest mb-1">Celestial Band</h4>
+<p class="text-sm font-serif">$1,950.00</p>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-[3/4] bg-surface-container-low mb-4 overflow-hidden">
+<img alt="Azure Pendant" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" data-alt="Close up detail of a high-end designer jewelry box open to reveal a sapphire pendant necklace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpu39jvJQWSgJ6DRcf7UEvKyuTh2L0hN4oaB2EfOdISUx-lGTZhNDeQuzw_YkEm1MVpHPL6scAoWeDstiml6_lvEWmAAJq67FhdXZ60yuv4Z_8JmTcrJUhrBoZQB4Cbs0XLtk86zRWBKE0HsV6AxW5JbM-B9lPkr9gbVXi9HlNgCL0ueo9Ku1w5GK79efe7G8Reb5IgMXK6IJWFkYqNoj22QOi2WQknxza5zJdCcVV2YEQd6kSfLoSA5LFu6_q_l_pMxqznqW-m54"/>
+</div>
+<h4 class="text-xs uppercase tracking-widest mb-1">Azure Pendant</h4>
+<p class="text-sm font-serif">$7,400.00</p>
+</div>
+</div>
+</section>
+</main>
+<footer class="w-full mt-20 bg-stone-100 dark:bg-stone-900 grid grid-cols-1 md:grid-cols-4 gap-12 px-12 py-16 max-w-full">
+<div class="space-y-6">
+<div class="text-lg font-serif tracking-[0.2em] text-stone-900 dark:text-stone-50">AURUM ATELIER</div>
+<p class="font-sans text-xs tracking-wider text-stone-500 uppercase leading-relaxed">Defining modern heritage through the lens of timeless gold and exceptional gemstones.</p>
+</div>
+<div class="space-y-4">
+<h4 class="font-sans text-xs tracking-widest uppercase font-bold text-stone-800 dark:text-stone-200">The Studio</h4>
+<div class="flex flex-col space-y-2">
+<a class="font-sans text-xs tracking-wider uppercase text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors duration-200" href="#">Sustainability</a>
+<a class="font-sans text-xs tracking-wider uppercase text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors duration-200" href="#">Shipping &amp; Returns</a>
+<a class="font-sans text-xs tracking-wider uppercase text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors duration-200" href="#">Care Guide</a>
+</div>
+</div>
+<div class="space-y-4">
+<h4 class="font-sans text-xs tracking-widest uppercase font-bold text-stone-800 dark:text-stone-200">Legal</h4>
+<div class="flex flex-col space-y-2">
+<a class="font-sans text-xs tracking-wider uppercase text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="font-sans text-xs tracking-wider uppercase text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-50 transition-colors duration-200" href="#">Contact</a>
+</div>
+</div>
+<div class="space-y-6">
+<h4 class="font-sans text-xs tracking-widest uppercase font-bold text-stone-800 dark:text-stone-200">Newsletter</h4>
+<div class="border-b border-stone-300 dark:border-stone-700 pb-2">
+<input class="bg-transparent border-none p-0 text-[10px] w-full focus:ring-0 uppercase tracking-widest" placeholder="YOUR EMAIL" type="email"/>
+</div>
+<p class="text-[10px] text-stone-400 uppercase tracking-widest">© 2024 AURUM ATELIER. ALL RIGHTS RESERVED.</p>
+</div>
+</footer>
+</body></html>

@@ -13,6 +13,19 @@ interface FooterSettingsProps {
 export function FooterSettings({ footer, onChange }: FooterSettingsProps) {
   if (!footer) return null
 
+  const updateSectionVisibility = (id: string, visible: boolean) => {
+    const currentOrder = Array.isArray(footer.props?.sections?.menuOrder)
+      ? footer.props.sections.menuOrder
+      : []
+
+    const existing = currentOrder.find((item: { id: string; visible: boolean }) => item.id === id)
+    const nextOrder = existing
+      ? currentOrder.map((item: { id: string; visible: boolean }) => item.id === id ? { ...item, visible } : item)
+      : [...currentOrder, { id, visible }]
+
+    onChange("props.sections.menuOrder", nextOrder)
+  }
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
@@ -52,15 +65,15 @@ export function FooterSettings({ footer, onChange }: FooterSettingsProps) {
         <div className="flex items-center justify-between">
           <Label className="text-xs">Hide Footer</Label>
           <Switch
-            checked={footer.props?.sections?.hideFooter}
-            onCheckedChange={(val: boolean) => onChange("props.sections.hideFooter", val)}
+            checked={footer.props?.general?.hideFooter || false}
+            onCheckedChange={(val: boolean) => onChange("props.general.hideFooter", val)}
           />
         </div>
         <div className="flex items-center justify-between">
           <Label className="text-xs">Show Social Icons</Label>
           <Switch
-            checked={footer.props?.sections?.showSocialIcons}
-            onCheckedChange={(val: boolean) => onChange("props.sections.showSocialIcons", val)}
+            checked={footer.props?.sections?.menuOrder?.find((item: { id: string; visible: boolean }) => item.id === "social")?.visible ?? true}
+            onCheckedChange={(val: boolean) => updateSectionVisibility("social", val)}
           />
         </div>
         <div className="flex items-center justify-between">

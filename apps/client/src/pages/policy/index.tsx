@@ -16,6 +16,9 @@ export default function PolicyPage() {
             if (!store?.id || !policyId) return;
 
             setLoading(true);
+            setError(null);
+            setPolicy(null);
+            
             try {
                 // Map readable URL slugs to backend policy names if necessary
                 // For now assuming policyId matches backend 'name' (e.g. privacy-policy)

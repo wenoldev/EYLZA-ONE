@@ -1,22 +1,22 @@
 import { useState, useEffect } from 'react';
 import type { FooterConfig, FooterMenus, FooterCompanyInfo } from '../../types/Footer';
 import { FooterMain } from '../theme-support/FooterMain';
+import { mergeFooterSocialLinks, normalizeFooterConfig } from '../../utils/normalizeFooterConfig';
 
 const MOCK_MENUS: FooterMenus = {
   quickLinks: [
-    { label: 'Search', href: '/search' },
-    { label: 'Privacy Policy', href: '/privacy' },
-    { label: 'Terms of Service', href: '/terms' },
+    { label: 'Products', href: '/products' },
+    { label: 'About Us', href: '/about' },
+    { label: 'Contact', href: '/contact' },
   ],
   supportLinks: [
-    { label: 'Contact Us', href: '/contact' },
-    { label: 'FAQs', href: '/faqs' },
+    { label: 'Contact', href: '/contact' },
     { label: 'Shipping', href: '/shipping' },
   ],
   policyLinks: [
-    { label: 'Refund Policy', href: '/refund' },
-    { label: 'Terms & Conditions', href: '/terms-conditions' },
-    { label: 'Privacy Policy', href: '/privacy-policy' },
+    { label: 'Privacy', href: '/policy/privacy-policy' },
+    { label: 'Terms and Condition', href: '/policy/terms-conditions' },
+    { label: 'Refund Policy', href: '/policy/refund-policy' },
   ],
 };
 
@@ -42,6 +42,7 @@ const MOCK_COMPANY_INFO: FooterCompanyInfo = {
 const Footer = ({ config, viewportSize }: { config: FooterConfig, viewportSize?: 'mobile' | 'tablet' }) => {
   const [$footerMenus, setFooterMenus] = useState<FooterMenus | null>(null);
   const [$footerCompanyInfo, setFooterCompanyInfo] = useState<FooterCompanyInfo | null>(null);
+  const normalizedConfig = normalizeFooterConfig(config);
 
   useEffect(() => {
     // @ts-ignore
@@ -62,7 +63,14 @@ const Footer = ({ config, viewportSize }: { config: FooterConfig, viewportSize?:
 
   if (!$footerMenus || !$footerCompanyInfo) return null;
 
-  return <FooterMain config={config} menus={$footerMenus} contactInfo={$footerCompanyInfo} viewportSize={viewportSize} />;
+  return (
+    <FooterMain
+      config={normalizedConfig}
+      menus={$footerMenus}
+      contactInfo={mergeFooterSocialLinks($footerCompanyInfo, config)}
+      viewportSize={viewportSize}
+    />
+  );
 };
 
 export default Footer;

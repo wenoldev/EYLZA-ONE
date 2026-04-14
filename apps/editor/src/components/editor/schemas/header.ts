@@ -59,6 +59,18 @@ export const headerSchema: EditorSchema = {
           defaultValue: "ZARISHKA",
         },
         {
+          property: "general.showStoreLogo",
+          label: "Show Image Logo",
+          control: "switch",
+          defaultValue: false,
+        },
+        {
+          property: "general.storeLogo",
+          label: "Store Logo Image",
+          control: "image",
+          defaultValue: "",
+        },
+        {
           property: "general.fontFamily",
           label: "Font Family",
           control: "select",

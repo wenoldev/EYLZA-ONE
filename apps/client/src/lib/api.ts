@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Cookies from 'js-cookie';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '') + '/api/v1';
 
 interface ApiRequestOptions extends RequestInit {
     params?: Record<string, string>;
@@ -56,7 +57,8 @@ async function refreshToken() {
 async function request(path: string, options: ApiRequestOptions = {}) {
     const { params, headers, ...rest } = options;
 
-    let url = `${API_BASE_URL}${path}`;
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+    let url = `${API_BASE_URL}${normalizedPath}`;
     if (params) {
         const searchParams = new URLSearchParams(params);
         url += `?${searchParams.toString()}`;

@@ -7,13 +7,13 @@ export interface StoreTheme {
     store_id: string;
     theme_id: string;
     name: string;
-    global_config: {
+    config: {
         global?: {
             colors?: Record<string, string>;
             typography?: unknown;
         };
-        header?: { props: HeaderConfig };
-        footer?: { props: FooterConfig };
+        header?: { props: HeaderConfig,selector: string };
+        footer?: { props: FooterConfig, selector: string };
         [key: string]: unknown;
     };
     status: string;
@@ -65,16 +65,26 @@ export const useStore = create<StoreState>()((set, get) => ({
     pagesContent: {},
 
     setStoreId: (id: string | null) => {
-        set({ storeId: id });
-        setApiStoreId(id);
+        const currentStoreId = get().storeId;
+        if (currentStoreId !== id) {
+            set({ 
+                storeId: id,
+                themeData: null,
+                store: null,
+                pagesContent: {}
+            });
+            setApiStoreId(id);
+            (globalThis as any).__EYLZA_STORE_ID__ = id;
+        }
     },
 
     fetchStoreId: async (slug: string) => {
         set({ isLoading: true, error: null });
         try {
             const data = await api.get('/public/store-id', { slug });
-            if (data?.storeId) {
-                get().setStoreId(data.storeId);
+            if (data?.store) {
+                set({ store: data.store });
+                get().setStoreId(data.store.id);
                 await get().fetchTheme();
             } else {
                 set({ error: "Store not found", isLoading: false });
@@ -88,6 +98,33 @@ export const useStore = create<StoreState>()((set, get) => ({
     fetchTheme: async () => {
         set({ isLoading: true, error: null });
         try {
+            const useLocalData = import.meta.env.VITE_USE_LOCAL_DATA === 'true';
+            
+            if (useLocalData) {
+                console.log("Loading theme from local JSON...");
+                const response = await fetch('/data/theme.json');
+                const data = await response.json();
+                
+                if (data?.theme) {
+                    const themeData = data.theme as StoreTheme;
+                    
+                    set({ themeData });
+                    
+                    // Apply global styles
+                    const config = themeData.config;
+                    if (config?.global?.colors) {
+                        const root = document.documentElement;
+                        const colors = config.global.colors;
+                        if (colors.primary) root.style.setProperty('--client-primary', colors.primary);
+                        if (colors.secondary) root.style.setProperty('--client-secondary', colors.secondary);
+                        if (colors.background) root.style.setProperty('--client-background', colors.background);
+                        if (colors.fontFamily) root.style.setProperty('--client-font-family', colors.fontFamily);
+                    }
+                }
+                set({ isLoading: false });
+                return;
+            }
+
             const data = await api.get('/public/store-theme', { storeId: get().storeId || '' });
             if (data?.theme) {
                 const themeData = data.theme as StoreTheme;
@@ -104,7 +141,7 @@ export const useStore = create<StoreState>()((set, get) => ({
                 }
 
                 // Apply global styles
-                const config = themeData.global_config;
+                const config = themeData.config;
                 if (config?.global?.colors) {
                     const root = document.documentElement;
                     const colors = config.global.colors;
@@ -131,6 +168,24 @@ export const useStore = create<StoreState>()((set, get) => ({
 
         set({ isLoading: true });
         try {
+            const useLocalData = import.meta.env.VITE_USE_LOCAL_DATA === 'true';
+
+            if (useLocalData) {
+                console.log(`Loading page content for ${slug} from local JSON...`);
+                const response = await fetch('/data/pagesContent.json');
+                const data = await response.json();
+                
+                const content = data?.[slug] || [];
+                set((state) => ({
+                    pagesContent: {
+                        ...state.pagesContent,
+                        [slug]: content
+                    },
+                    isLoading: false
+                }));
+                return;
+            }
+
             const data = await api.get(`/public/store-pages/${slug}`, { storeId: storeId || '' });
             if (data?.page) {
                 set((state) => ({

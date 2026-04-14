@@ -39,6 +39,9 @@ interface EditorState {
   loadProgress: number;
   loadingPages: Set<string>; // Track in-flight or failed requests
 
+  // Admin Mode
+  isAdminMode: boolean;
+
   // History
   history: EditorHistory;
 
@@ -91,6 +94,7 @@ export const editorStore = createStore<EditorState>()((set, get) => ({
   isInitialLoading: true,
   loadProgress: 0,
   loadingPages: new Set(),
+  isAdminMode: false,
   history: { states: [], index: -1 },
 
   setStoreData: (data: any) => set({ storeData: data }),
@@ -142,9 +146,23 @@ export const editorStore = createStore<EditorState>()((set, get) => ({
     }));
 
     try {
-      const response = await api.get(`/stores/${storeData.id}/themes/${activeThemeId}/pages/${slug}`);
-      const { page } = response.data.data;
-      const content = page.content || [];
+      let content = [];
+      if (get().isAdminMode) {
+        // Special case for Admin Mode: pages are already preloaded in 'pages' array
+        // We look for the page in the state
+        const foundPage = get().pages.find(p => p.slug === slug);
+        if (foundPage) {
+          content = foundPage.content || [];
+        } else {
+          // If not found in preloaded pages, try to fetch (though Admin API usually returns all)
+          const response = await api.get(`/admin/themes/${activeThemeId}/pages/${slug}`);
+          content = response.data.data.page.content || [];
+        }
+      } else {
+        const response = await api.get(`/stores/${storeData.id}/themes/${activeThemeId}/pages/${slug}`);
+        const { page } = response.data.data;
+        content = page.content || [];
+      }
 
       set((state: EditorState) => {
         const newPagesData = { ...state.pagesData, [slug]: content };
@@ -295,15 +313,25 @@ export const editorStore = createStore<EditorState>()((set, get) => ({
     set({ isLoading: true, loadProgress: 0 });
 
     try {
-      if (!storeData?.id || !activeThemeId) {
+      const { isAdminMode } = get();
+
+      if (!isAdminMode && (!storeData?.id || !activeThemeId)) {
         throw new Error("Missing storeId or themeId");
+      }
+
+      if (isAdminMode && !activeThemeId) {
+         throw new Error("Missing themeId");
       }
 
       const initialGlobalConfig = get().initialGlobalConfig;
       const hasGlobalChanges = JSON.stringify(globalConfig) !== JSON.stringify(initialGlobalConfig);
 
       if (hasGlobalChanges) {
-        await api.patch(`/stores/${storeData.id}/themes/${activeThemeId}`, {
+        const updateUrl = isAdminMode 
+          ? `/admin/themes/${activeThemeId}` 
+          : `/stores/${storeData.id}/themes/${activeThemeId}`;
+          
+        await api.patch(updateUrl, {
           global_config: globalConfig
         });
         set({ initialGlobalConfig: JSON.parse(JSON.stringify(globalConfig)) });
@@ -314,9 +342,15 @@ export const editorStore = createStore<EditorState>()((set, get) => ({
       );
 
       for (const slug of changedPages) {
-        await api.patch(`/stores/${storeData.id}/themes/${activeThemeId}/pages/${slug}`, {
-          content: pagesData[slug]
-        });
+        const pageUpdateUrl = isAdminMode
+          ? `/admin/themes/${activeThemeId}` // Admin API combined pages in theme patch
+          : `/stores/${storeData.id}/themes/${activeThemeId}/pages/${slug}`;
+        
+        const payload = isAdminMode 
+          ? { pages: [{ slug, content: pagesData[slug] }] } // Update only this page
+          : { content: pagesData[slug] };
+
+        await api.patch(pageUpdateUrl, payload);
         set((state: EditorState) => ({
           initialPagesData: {
             ...state.initialPagesData,

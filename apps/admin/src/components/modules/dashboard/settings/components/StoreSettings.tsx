@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Store, Loader2, Globe, Mail, Phone, MapPin, Clock, Tag } from "lucide-react"
 import { useStoreStore } from "@/stores/storeStore"
 import { toast } from "sonner"
+import { UploadDialog } from "@/components/common/UploadImage"
+import { X } from "lucide-react"
 
 const countries = [
   { value: "US", label: "United States" },
@@ -50,6 +52,7 @@ export function StoreSettings() {
         currency: "",
         city: "",
         timezone: "",
+        logo_url: "",
     })
 
     useEffect(() => {
@@ -70,6 +73,7 @@ export function StoreSettings() {
                 currency: currentStore.currency || "INR",
                 city: currentStore.city || "",
                 timezone: currentStore.timezone || "Asia/Kolkata",
+                logo_url: currentStore.logo_url || "",
             })
         }
     }, [currentStore])
@@ -112,6 +116,58 @@ export function StoreSettings() {
             <div>
                 <h3 className="text-2xl font-bold text-gray-900">Store Settings</h3>
                 <p className="text-sm text-gray-500">Manage your store's identity and regional settings</p>
+            </div>
+
+            {/* Logo Upload Section */}
+            <div className="bg-white p-6 rounded-xl border space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                    <Store className="w-5 h-5 text-blue-600" />
+                    <h4 className="font-semibold text-gray-900">Store Logo</h4>
+                </div>
+                
+                <div className="flex items-start gap-6">
+                    <div className="relative group">
+                        <div className="w-32 h-32 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden bg-gray-50 transition-colors group-hover:border-blue-400">
+                            {formData.logo_url ? (
+                                <img 
+                                    src={formData.logo_url} 
+                                    alt="Logo Preview" 
+                                    className="w-full h-full object-contain p-2"
+                                />
+                            ) : (
+                                <div className="text-center p-4">
+                                    <Store className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                                    <p className="text-[10px] text-gray-400">No logo uploaded</p>
+                                </div>
+                            )}
+                        </div>
+                        {formData.logo_url && (
+                            <button 
+                                onClick={() => setFormData(prev => ({ ...prev, logo_url: "" }))}
+                                className="absolute -top-2 -right-2 p-1 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition-colors shadow-sm"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        )}
+                    </div>
+                    
+                    <div className="flex-1 space-y-3">
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                            Upload your store logo. This logo will be used in your storefront header, emails, and invoices.
+                            Recommended size: 200x200px. Max size: 2MB.
+                        </p>
+                        <UploadDialog 
+                            multiple={false}
+                            onImagesSelected={(images) => {
+                                if (images.length > 0) {
+                                    const img = images[0]
+                                    handleSelectChange("logo_url", typeof img.image_url === 'string' ? img.image_url : img.image_url.fileContent)
+                                }
+                            }}
+                            initialValues={formData.logo_url ? [{ image_url: formData.logo_url, isPrimary: true }] : []}
+                        />
+                    </div>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

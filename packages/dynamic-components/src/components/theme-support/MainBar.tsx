@@ -40,13 +40,21 @@ const MainBar = ({
 
     const elements: Record<string, React.ReactNode> = {
         logo: !isSearchExpanded && (
-            <div className="flex items-center group cursor-pointer overflow-hidden">
-                <h1 className="text-2xl md:text-3xl font-black tracking-tighter transition-transform duration-500 group-hover:scale-105" style={{
-                    fontFamily: (config.general?.fontFamily as string) === 'serif' ? 'serif' : 'sans-serif',
-                    color: config.general.textColor
-                }}>
-                    {config.general.logoText || 'LOGO'}
-                </h1>
+            <div className="flex items-center group cursor-pointer h-full">
+                {config.general.showStoreLogo && config.general.storeLogo ? (
+                    <img 
+                        src={config.general.storeLogo} 
+                        alt={config.general.logoText || 'Logo'} 
+                        className="h-7 md:h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-105"
+                    />
+                ) : (
+                    <h1 className="text-xl md:text-3xl font-black tracking-tighter transition-transform duration-500 group-hover:scale-105" style={{
+                        fontFamily: (config.general?.fontFamily as string) === 'serif' ? 'serif' : 'sans-serif',
+                        color: config.general.textColor
+                    }}>
+                        {config.general.logoText || 'LOGO'}
+                    </h1>
+                )}
             </div>
         ),
         search: (
@@ -95,8 +103,8 @@ const MainBar = ({
                 boxShadow: config.general.behaviour === 'sticky' ? '0 10px 30px -10px rgba(0,0,0,0.05)' : 'none'
             }}
         >
-            <div className={`max-w-[1920px] mx-auto transition-all duration-300 ${isMobile ? 'py-4 px-4' : 'py-6 px-10 lg:px-16'}`}>
-                <div className="flex items-center justify-between gap-8 h-full">
+            <div className={`max-w-[1920px] mx-auto transition-all duration-300 ${isMobile ? 'py-3 px-3' : 'py-6 px-10 lg:px-16'}`}>
+                <div className={`flex items-center justify-between h-full ${isMobile ? 'gap-3' : 'gap-8'}`}>
                     <AnimatePresence mode="wait">
                         {isSearchExpanded ? (
                             <motion.div 

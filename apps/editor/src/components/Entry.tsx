@@ -7,7 +7,7 @@ import TokenInvalidScreen from "./common/token-invalid"
 import { WebBuilder } from "./main/web-builder"
 import StoreInactiveScreen from "./common/store-inactive"
 import api from "@/lib/api"
-import { useEditorStore } from "@/store/useEditorStore"
+import { useEditorStore, editorStore } from "@/store/useEditorStore"
 import { setCookie, getCookie } from "@/utils/cookies"
 
 export default function Entry() {
@@ -24,6 +24,8 @@ export default function Entry() {
     const expires = searchParams.get("expires_at")
     const uid = searchParams.get("uid")
     const themeId = searchParams.get("themeId") || searchParams.get("draftId")
+    const isAdminMode = searchParams.get("isAdminMode") === "true"
+    const targetPage = searchParams.get("page")
 
     // If params exist → set cookies
     if (token || refresh || expires) {
@@ -36,6 +38,11 @@ export default function Entry() {
         setActiveThemeId(themeId)
       }
 
+      if (isAdminMode) {
+        editorStore.setState({ isAdminMode: true })
+        if (targetPage) editorStore.setState({ currentPage: targetPage })
+      }
+
       // Remove params from URL instantly
       navigate(window.location.pathname, { replace: true })
     } else {
@@ -46,6 +53,11 @@ export default function Entry() {
 
     const fetchStoreData = async () => {
       try {
+        if (isAdminMode) {
+          setStoreData({ id: 'admin', name: 'Master Template Editor', slug: '' })
+          setState("success")
+          return
+        }
         const response = await api.get('/stores')
         const apiResponse = response.data
         

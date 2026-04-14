@@ -3,9 +3,12 @@ import {
     Facebook, Twitter, Instagram, 
     MapPin, Mail, ChevronDown
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useStoreUrl } from '../../hooks/useStoreUrl';
 import type { LucideIcon } from 'lucide-react';
 import type { FooterConfig, FooterMenus, FooterCompanyInfo } from '../../types/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
+import { normalizeFooterConfig } from '../../utils/normalizeFooterConfig';
 
 /* -------------------- Types -------------------- */
 interface FooterProps {
@@ -86,6 +89,8 @@ const SectionHeader = ({ title, isOpen, onToggle, isMobile, showAccordion }: {
 
 /* -------------------- Footer -------------------- */
 export const FooterMain = ({ config, menus, contactInfo, viewportSize }: FooterProps) => {
+    const { getStoreUrl } = useStoreUrl();
+    const normalizedConfig = normalizeFooterConfig(config);
     const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
     const [isMobile, setIsMobile] = useState(() => {
         if (typeof window === 'undefined') return false;
@@ -106,15 +111,18 @@ export const FooterMain = ({ config, menus, contactInfo, viewportSize }: FooterP
         return () => window.removeEventListener('resize', checkMobile);
     }, [viewportSize]);
 
-    if (!config || config?.general?.hideFooter) return null;
+    if (normalizedConfig.general.hideFooter) return null;
 
-    const { general, content: footerContent, mobile, sections } = config;
-    const design = general.design || 'design1';
-    const accentColor = general.accentColor || '#111';
-    const textColor = general.textColor || '#111';
-    const borderColor = general.borderColor || '#e5e7eb';
-    const showAccordion = isMobile && (mobile?.layout === 'accordion' || mobile?.collapseSections);
-    const textAlignment = isMobile ? (mobile?.textAlignment || 'center') : 'left';
+    const general = normalizedConfig.general;
+    const footerContent = normalizedConfig.content ?? { copyrightText: '', showTagline: false, copyrightPosition: 'center' };
+    const mobile = normalizedConfig.mobile ?? { textAlignment: 'center', stackOrder: 'brand-first', layout: 'accordion', collapseSections: false, hideSocialOnMobile: false, hidePaymentOnMobile: false };
+    const sections = normalizedConfig.sections ?? { menuOrder: [], showPaymentMethods: false, paymentMethodsStyle: 'badges', showDividers: true, linksUnderline: false, socialIconStyle: 'circle' };
+    const design = general.design;
+    const accentColor = general.accentColor;
+    const textColor = general.textColor;
+    const borderColor = general.borderColor;
+    const showAccordion = isMobile && mobile.layout === 'accordion' && !!mobile.collapseSections;
+    const textAlignment = isMobile ? mobile.textAlignment : 'left';
 
     const toggleSection = (section: string) => {
         setOpenSections(prev => ({
@@ -127,12 +135,12 @@ export const FooterMain = ({ config, menus, contactInfo, viewportSize }: FooterP
         <ul className={`space-y-4 pb-4 ${textAlignment === 'center' && isMobile ? 'flex flex-col items-center' : ''}`}>
             {(links || []).map(l => (
                 <li key={l.href}>
-                    <a 
-                        href={l.href} 
+                    <Link 
+                        to={getStoreUrl(l.href)} 
                         className={`text-sm opacity-50 hover:opacity-100 transition-all inline-block underline-offset-4 ${linksUnderline ? 'hover:underline' : ''}`}
                     >
                         {l.label}
-                    </a>
+                    </Link>
                 </li>
             ))}
         </ul>
@@ -236,11 +244,11 @@ export const FooterMain = ({ config, menus, contactInfo, viewportSize }: FooterP
                     title="Contact" 
                     isMobile={isMobile} 
                     showAccordion={showAccordion}
-                    isOpen={openSections['contact']}
-                    onToggle={() => toggleSection('contact')}
+                    isOpen={openSections['contactInfo']}
+                    onToggle={() => toggleSection('contactInfo')}
                 />
                 <AnimatePresence>
-                    {(!showAccordion || openSections['contact']) && (
+                    {(!showAccordion || openSections['contactInfo']) && (
                         <motion.div
                             initial={showAccordion ? { height: 0, opacity: 0 } : false}
                             animate={{ height: 'auto', opacity: 1 }}
@@ -248,14 +256,18 @@ export const FooterMain = ({ config, menus, contactInfo, viewportSize }: FooterP
                             className="overflow-hidden"
                         >
                             <div className={`space-y-3 text-sm opacity-60 font-light ${textAlignment === 'center' && isMobile ? 'flex flex-col items-center' : ''}`}>
-                                <div className="flex gap-4 items-start">
-                                    <MapPin size={16} className="shrink-0 mt-1" />
-                                    <span className={textAlignment === 'center' && isMobile ? 'text-center' : ''}>{contactInfo.companyInfo.address}</span>
-                                </div>
-                                <div className="flex gap-4 items-center">
-                                    <Mail size={16} className="shrink-0" />
-                                    <a href={`mailto:${contactInfo.companyInfo.email}`} className="hover:underline">{contactInfo.companyInfo.email}</a>
-                                </div>
+                                {contactInfo.companyInfo.address && (
+                                    <div className="flex gap-4 items-start">
+                                        <MapPin size={16} className="shrink-0 mt-1" />
+                                        <span className={textAlignment === 'center' && isMobile ? 'text-center' : ''}>{contactInfo.companyInfo.address}</span>
+                                    </div>
+                                )}
+                                {contactInfo.companyInfo.email && (
+                                    <div className="flex gap-4 items-center">
+                                        <Mail size={16} className="shrink-0" />
+                                        <a href={`mailto:${contactInfo.companyInfo.email}`} className="hover:underline">{contactInfo.companyInfo.email}</a>
+                                    </div>
+                                )}
                             </div>
                         </motion.div>
                     )}
@@ -264,17 +276,43 @@ export const FooterMain = ({ config, menus, contactInfo, viewportSize }: FooterP
         )
     };
 
-    const orderedSections = (sections.menuOrder || [
+    const baseSections = (sections.menuOrder || [
         { id: "brand", visible: true },
         { id: "quickLinks", visible: true },
         { id: "supportLinks", visible: true },
+        { id: "policyLinks", visible: true },
+        { id: "social", visible: true },
         { id: "contactInfo", visible: true },
-    ]).filter(s => s.visible).map(s => ({ id: s.id, node: sectionComponents[s.id] }));
+    ]).filter(s => s.visible);
+
+    const visibleSections = isMobile && mobile.hideSocialOnMobile
+        ? baseSections.filter(s => s.id !== 'social')
+        : baseSections;
+
+    const orderedSections = (() => {
+        if (!isMobile || mobile.stackOrder === 'desktop') {
+            return visibleSections.map(s => ({ id: s.id, node: sectionComponents[s.id] }));
+        }
+
+        if (mobile.stackOrder === 'contact-first') {
+            const prioritized = ['contactInfo', 'brand'];
+
+            return [
+                ...prioritized
+                    .map(id => visibleSections.find(section => section.id === id))
+                    .filter((section): section is typeof visibleSections[number] => Boolean(section)),
+                ...visibleSections.filter(section => !prioritized.includes(section.id))
+            ].map(section => ({ id: section.id, node: sectionComponents[section.id] }));
+        }
+
+        return visibleSections.map(s => ({ id: s.id, node: sectionComponents[s.id] }));
+    })();
 
     const renderDesign1 = () => {
         const brandSection = orderedSections.find(s => s.id === 'brand');
         const socialSection = orderedSections.find(s => s.id === 'social');
         const otherSections = orderedSections.filter(s => s.id !== 'brand' && s.id !== 'social');
+        const mobileColumnClass = isMobile && mobile.layout === 'grid-2' ? 'grid-cols-2' : 'grid-cols-1';
 
         return (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-20">
@@ -282,7 +320,7 @@ export const FooterMain = ({ config, menus, contactInfo, viewportSize }: FooterP
                     {brandSection?.node}
                     {socialSection?.node}
                 </div>
-                <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className={`lg:col-span-8 grid ${mobileColumnClass} md:grid-cols-2 lg:grid-cols-3 gap-8`}>
                     {otherSections.map(s => s.node)}
                 </div>
             </div>
@@ -297,7 +335,7 @@ export const FooterMain = ({ config, menus, contactInfo, viewportSize }: FooterP
                     {(s.id === 'quickLinks' || s.id === 'supportLinks' || s.id === 'policyLinks') && (
                         <div className="flex flex-wrap justify-center gap-x-8 gap-y-4">
                             {(s.id === 'quickLinks' ? menus.quickLinks : s.id === 'supportLinks' ? menus.supportLinks : menus.policyLinks).map(l => (
-                                <a key={l.href} href={l.href} className="text-sm opacity-60 hover:opacity-100 transition-opacity">{l.label}</a>
+                                <Link key={l.href} to={getStoreUrl(l.href)} className="text-sm opacity-60 hover:opacity-100 transition-opacity">{l.label}</Link>
                             ))}
                         </div>
                     )}
@@ -317,7 +355,7 @@ export const FooterMain = ({ config, menus, contactInfo, viewportSize }: FooterP
                          {(s.id === 'quickLinks' || s.id === 'supportLinks' || s.id === 'policyLinks') && (
                              <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
                                  {(s.id === 'quickLinks' ? menus.quickLinks : s.id === 'supportLinks' ? menus.supportLinks : menus.policyLinks).map(l => (
-                                     <a key={l.href} href={l.href} className="text-sm opacity-60 hover:opacity-100 transition-opacity">{l.label}</a>
+                                     <Link key={l.href} to={getStoreUrl(l.href)} className="text-sm opacity-60 hover:opacity-100 transition-opacity">{l.label}</Link>
                                  ))}
                              </div>
                          )}
@@ -342,9 +380,9 @@ export const FooterMain = ({ config, menus, contactInfo, viewportSize }: FooterP
             style={{
                 backgroundColor: general.backgroundColor,
                 color: textColor,
-                fontFamily: general.fontFamily || 'Inter',
-                paddingTop: isMobile ? '3rem' : (general.paddingTop || '7rem'),
-                paddingBottom: general.paddingBottom || '3rem',
+                fontFamily: general.fontFamily,
+                paddingTop: isMobile ? '3rem' : general.paddingTop,
+                paddingBottom: general.paddingBottom,
                 borderTop: `1px solid ${borderColor}`
             }}
             className="px-6 md:px-12 lg:px-20"
@@ -357,18 +395,11 @@ export const FooterMain = ({ config, menus, contactInfo, viewportSize }: FooterP
                 {/* Bottom Bar */}
                 <div 
                     style={{ borderColor: borderColor }} 
-                    className={`mt-12 lg:mt-20 pt-10 border-t flex flex-col ${footerContent.copyrightPosition === 'center' ? 'items-center' : 'md:flex-row justify-between items-center'} gap-6`}
+                    className={`mt-12 lg:mt-20 pt-10 border-t flex flex-col ${footerContent.copyrightPosition === 'center' ? 'items-center text-center' : 'md:flex-row justify-between items-center'} gap-6`}
                 >
                     <p className={`${textAlignment === 'center' ? 'text-center' : 'text-left'} text-[10px] uppercase tracking-widest opacity-40`}>
-                        {footerContent.copyrightText || `© ${new Date().getFullYear()} ${contactInfo.companyInfo.name}. All rights reserved.`}
+                        {footerContent.copyrightText || `(c) ${new Date().getFullYear()} ${contactInfo.companyInfo.name}. All rights reserved.`}
                     </p>
-                    <div className={`flex items-center gap-6 opacity-40 flex-wrap justify-center`}>
-                        {menus.policyLinks.map(l => (
-                            <a key={l.href} href={l.href} className="text-[10px] uppercase tracking-widest hover:opacity-100 transition-opacity whitespace-nowrap">
-                                {l.label}
-                            </a>
-                        ))}
-                    </div>
                 </div>
             </div>
         </footer>

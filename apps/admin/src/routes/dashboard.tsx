@@ -38,12 +38,12 @@ const dashboardRoutes = [
     ),
     children: [
       {
-        path: 'main',
-        element: <DashboardPage />
-      },
-      {
         path: '',
         element: <Navigate to="main" replace />
+      },
+      {
+        path: 'main',
+        element: <DashboardPage />
       },
       {
         path: 'cms',

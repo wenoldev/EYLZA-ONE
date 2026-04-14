@@ -1,4 +1,5 @@
-// ProductTemplate.tsx
+import React from 'react';
+import { StoreLink } from '../../components/theme-support/StoreLink';
 
 const ProductTemplate = ({ data, styles }: any) => {
   const {
@@ -24,8 +25,9 @@ const ProductTemplate = ({ data, styles }: any) => {
   };
 
   return (
-    <div
-      className={`flex flex-col ${alignmentClasses[textAlign]} group rounded-xl overflow-hidden transition-all duration-300`}
+    <StoreLink
+      to={data.href || '#'}
+      className={`flex flex-col ${alignmentClasses[textAlign]} group rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg cursor-pointer`}
       style={{
         backgroundColor,
         padding,
@@ -56,7 +58,7 @@ const ProductTemplate = ({ data, styles }: any) => {
       <button className="w-full py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-black transition-colors">
         Add to Cart
       </button>
-    </div>
+    </StoreLink>
   );
 };
 

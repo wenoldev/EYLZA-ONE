@@ -9,6 +9,16 @@ export const productDetailSchema: EditorSchema = {
             label: "Layout",
             controls: [
                 {
+                    property: "template",
+                    label: "Template",
+                    control: "select",
+                    options: [
+                        { label: "Default", value: "default" },
+                        { label: "Zarishka Style", value: "zarishka" },
+                    ],
+                    defaultValue: "default",
+                },
+                {
                     property: "layout",
                     label: "Page Layout",
                     control: "select",

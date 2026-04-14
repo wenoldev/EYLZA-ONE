@@ -5,7 +5,7 @@ import { Separator } from '@/components/ui/separator'
 import { NavProfile } from './navbar/nav-profile'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Bell } from 'lucide-react'
+import { Bell, Globe } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { Breadcrumbs } from './navbar/nav-breadcrumbs'
@@ -36,7 +36,10 @@ const Dashboard = () => {
 
   const unreadCount = notifications.filter(n => n.unread).length;
 
-  const { activeStoreId } = useStoreStore();
+  const { activeStoreId, stores } = useStoreStore();
+  const activeStore = stores?.find(s => s.id === activeStoreId);
+  const storefrontUrl = activeStore ? `${import.meta.env.VITE_CLIENT_URL}/${activeStore.slug}/home` : null;
+  
   const [billingInfo, setBillingInfo] = useState<any>(null);
 
   useEffect(() => {
@@ -100,6 +103,19 @@ const Dashboard = () => {
             )}
             {/* Theme Toggle */}
             <ThemeSwitcher />
+            {/* View Store */}
+            {storefrontUrl && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 w-9 p-0"
+                onClick={() => window.open(storefrontUrl, '_blank')}
+                title="View Live Store"
+              >
+                <Globe className="h-4 w-4" />
+                <span className="sr-only">View Store</span>
+              </Button>
+            )}
             {/* Notifications */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

@@ -1,4 +1,6 @@
+import React from 'react';
 import { motion } from 'framer-motion';
+import { StoreLink } from '../../components/theme-support/StoreLink';
 
 const CategoryTemplate = ({ data, styles }: any) => {
     const {
@@ -23,8 +25,8 @@ const CategoryTemplate = ({ data, styles }: any) => {
     };
 
     return (
-        <a 
-            href={data.link || '#'}
+        <StoreLink 
+            to={data.link || data.href || '#'}
             className={`flex flex-col ${alignmentClasses[textAlign]} group cursor-pointer`}
         >
             <div
@@ -62,7 +64,7 @@ const CategoryTemplate = ({ data, styles }: any) => {
                     </p>
                 )}
             </div>
-        </a>
+        </StoreLink>
     );
 };
 

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#1f1c03",
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#49473d",
+                    "surface-variant": "#e5e2dd",
+                    "on-secondary-container": "#73640e",
+                    "on-error": "#ffffff",
+                    "primary-fixed-dim": "#cec79f",
+                    "secondary-container": "#f7e382",
+                    "on-tertiary-container": "#fefcf8",
+                    "on-background": "#1c1c19",
+                    "surface-container-highest": "#e5e2dd",
+                    "primary": "#615d3c",
+                    "surface-dim": "#dcdad5",
+                    "background": "#fcf9f4",
+                    "on-secondary-fixed": "#211b00",
+                    "on-secondary-fixed-variant": "#524700",
+                    "inverse-primary": "#cec79f",
+                    "tertiary-fixed": "#e4e2de",
+                    "on-tertiary-fixed": "#1b1c1a",
+                    "outline": "#7a776b",
+                    "surface": "#fcf9f4",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#eae4ba",
+                    "primary-container": "#7a7553",
+                    "secondary-fixed-dim": "#dac769",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#5c5c59",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed-dim": "#c8c6c3",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "outline-variant": "#cbc6b9",
+                    "inverse-surface": "#31302d",
+                    "surface-tint": "#635f3e",
+                    "surface-container-low": "#f6f3ee",
+                    "on-primary-fixed-variant": "#4b4829",
+                    "surface-bright": "#fcf9f4",
+                    "on-primary-container": "#fffbff",
+                    "surface-container": "#f0ede9",
+                    "on-surface": "#1c1c19",
+                    "secondary-fixed": "#f7e382",
+                    "secondary": "#6c5e06",
+                    "inverse-on-surface": "#f3f0eb",
+                    "tertiary-container": "#757572",
+                    "surface-container-high": "#eae8e3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+        h1, h2, h3, .font-serif { font-family: 'Newsreader', serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background selection:bg-primary/20">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-xl">
+<div class="flex justify-between items-center w-full px-12 py-6 max-w-full mx-auto">
+<div class="flex items-center gap-12">
+<a class="text-2xl font-serif tracking-[0.3em] text-stone-900 dark:text-stone-50" href="#">AURUM</a>
+<div class="hidden md:flex gap-8 items-center font-serif tracking-widest uppercase text-xs">
+<a class="text-stone-900 dark:text-white border-b border-stone-400 dark:border-stone-600 pb-1" href="#">Collections</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors" href="#">High Jewelry</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors" href="#">Bespoke</a>
+<a class="text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors" href="#">Heritage</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="hover:opacity-70 transition-opacity duration-300">
+<span class="material-symbols-outlined text-stone-800 dark:text-stone-200">search</span>
+</button>
+<button class="hover:opacity-70 transition-opacity duration-300">
+<span class="material-symbols-outlined text-stone-800 dark:text-stone-200">shopping_bag</span>
+</button>
+<button class="hover:opacity-70 transition-opacity duration-300">
+<span class="material-symbols-outlined text-stone-800 dark:text-stone-200">person</span>
+</button>
+</div>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<section class="relative h-screen flex items-center justify-center overflow-hidden pt-20">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover" data-alt="Close-up of a sophisticated woman wearing layered gold necklaces and rings, soft sunlight filtering through an atelier window, warm olive tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbndfZmT_g_P3YJAKoQ4Dh2xYC8l6nc5RQ3t8cdXsd2ng34xD8y8Ftm1sa5gTNNibm_DAJXoq1dEt2pWnfFd2jJSoXzIp7-azRQadwIPo1z6u7bbudoCsQkqB6Wcp5EqsTKvdGd24g6gbkUus1uN2XiVDdN9ghXg9Q-TBkzp5zowhYskpPt5Nej0o1RYo-T9LqaDGqmKfgpOOi3hACXuXRd_lkJwRHKUFTZ4K-i9rzhUunEAUg17ZJrlSMmAhoOvQY109ji8AVxkE"/>
+<div class="absolute inset-0 bg-stone-900/10"></div>
+</div>
+<div class="relative z-10 text-center px-6">
+<span class="font-label uppercase tracking-[0.4em] text-xs text-on-surface-variant mb-6 block">Est. 1924 • Atelier Aurum</span>
+<h1 class="text-6xl md:text-8xl font-headline italic font-light tracking-tight text-on-surface mb-8 max-w-4xl mx-auto leading-[0.9]">
+                    The Art of <br/> Permanent Radiance
+                </h1>
+<div class="flex flex-col md:flex-row gap-4 justify-center items-center mt-12">
+<button class="bg-primary text-on-primary px-12 py-4 uppercase tracking-widest text-xs font-label hover:bg-primary-container transition-all duration-300">
+                        Explore Collection
+                    </button>
+<button class="bg-transparent border border-outline-variant/30 text-on-surface px-12 py-4 uppercase tracking-widest text-xs font-label hover:bg-surface-container-low transition-all duration-300 backdrop-blur-sm">
+                        Our Heritage
+                    </button>
+</div>
+</div>
+</section>
+<!-- Featured Collections - Asymmetric Layout -->
+<section class="py-32 px-12 bg-surface">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-end mb-20">
+<div class="max-w-xl">
+<h2 class="text-4xl md:text-5xl font-headline mb-6">Curated Collections</h2>
+<p class="text-on-surface-variant leading-relaxed font-body">Selected pieces from our latest archives, highlighting the intersection of raw geological beauty and refined gold smithery.</p>
+</div>
+<a class="mt-8 md:mt-0 font-label uppercase tracking-widest text-xs border-b border-primary text-primary pb-1" href="#">View All Collections</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
+<!-- Large Feature Card -->
+<div class="md:col-span-7 group cursor-pointer">
+<div class="aspect-[4/5] overflow-hidden mb-6 bg-surface-container-low">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Editorial shot of a minimalist gold ring set with a clear diamond on a rough stone surface, high fashion lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEnRgfUC0e40YAP4HGxtif9A7ftSC5Q0zZMuBIeVMRhG6Vx6JWbDLLuttMUTwdhYpVueDFcU1ICy2ousEL7_VsXgbrF8RQRnHUGgsGI836LOy9rInvOOEsOodaoOKpRT1dMoJgO-ZnkUay3IckoPCVkBoGsVt-DDzOmub1IRklaoP_QgS3Npe_lVpR57PXPWR7MJ_xhx8E6qfHS8N_KhBPe9DakPIWO0e36lkH9Pb-33PYcJtzpO6JK6rJZj7GpnFcxw7wnnJPJik"/>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-2xl font-headline italic">The Terra Series</h3>
+<p class="text-on-surface-variant text-sm mt-2">Organic textures meet precise engineering.</p>
+</div>
+<span class="material-symbols-outlined text-primary">arrow_forward</span>
+</div>
+</div>
+<!-- Offset Column -->
+<div class="md:col-span-5 flex flex-col gap-16 md:mt-24">
+<div class="group cursor-pointer">
+<div class="aspect-square overflow-hidden mb-6 bg-surface-container-low">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Close-up of dangling diamond earrings against a soft beige silk background, ethereal and delicate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaWclJrWRSem0O7_w6PFYKVnHTzay7ZNd-RgEq4cmb9fw2XzanrB0yZzJXquZBCbuAeKdWnk3qnx5tzGs46us99esaB-zERADisNX_YO9gfxvtwwFjf0IEbCuFq56rrv7qVwBjglgBmHT_sF52i8D4xEpjhjDE6MqRiUeAclhQchKzlcP4zl0AgK9sRMDKPtv5BZvkmOWo0L1jtbvab5MTkBim_ntKwXT-LLFfso50usswsoc_3uEiY0UtSd20uaI_C0UbcMR6Fw8"/>
+</div>
+<h3 class="text-xl font-headline italic">Ethereal Drops</h3>
+<p class="text-on-surface-variant text-sm mt-2">Lightweight movement, profound impact.</p>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-[3/2] overflow-hidden mb-6 bg-surface-container-low">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Collection of heavy gold link bracelets arranged on a dark marble slab, dramatic shadows and high contrast." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhEYHm8YIyt3c3DSLg5aET0MHi_gDWCY7Gk2iFycfqGXqRo-TsAjtEDef0v5cuzjJXMLpWiEqvD5iFTUaCdS8IMJGqUqzdZzPkUnsYvvDOsOh87LkX4Ur1eIQ0eBJn6qwlhG0ddiT5vhoC0-fi6EHGcOIyEoYWEntd1y_sx0JK6opVxFAEXZeQ23zxyPvdzrfj9_Rp0grvYtQxSlpq5CS_xytp4pCVlzFwco82dpk_bxhbFTX_TqDZN5rfNKBAVMN9IsXO8ZQ2qzI"/>
+</div>
+<h3 class="text-xl font-headline italic">Chained Heritage</h3>
+<p class="text-on-surface-variant text-sm mt-2">Bold silhouettes for the modern icon.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Our Story / Craftsmanship Section -->
+<section class="bg-surface-container-low py-32 px-12 overflow-hidden">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+<div class="relative">
+<div class="aspect-[4/5] bg-stone-200 overflow-hidden relative z-10">
+<img class="w-full h-full object-cover" data-alt="Hands of an artisan jeweler carefully working on a gold setting with a loupe and precision tools in a sunlit workshop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBM10BvZPlAk-eBvddUKi-UG-CpkbgF_eTq1ZQcObgCd6zBOBbtsyD0soRwx1dktKT61ER6umzh9kWWzuWz9EFUeHfm3n9imFiZAjynI2reB-bG9JyhAJNfgMZIirEcWEZAmy4Cvz7fZEjNX7vi9PI1aQjf8hwK6JlPi90CQFxgHXid99o8n_ry0MSUe5X7HsAQ9vYBKqQ5vu2_gEqvjAOLv-zUp0unHrEFrNrH711W_kgk-tyho1eu6gTedRawOgAqs2118-be1QQ"/>
+</div>
+<!-- Decorative Element -->
+<div class="absolute -bottom-10 -right-10 w-64 h-64 border-l border-t border-primary/20 hidden md:block z-0"></div>
+</div>
+<div>
+<span class="font-label uppercase tracking-widest text-xs text-primary mb-6 block">Uncompromising Mastery</span>
+<h2 class="text-5xl font-headline leading-tight mb-8">Forged in Silence, <br/> Worn with Intention.</h2>
+<div class="space-y-6 text-on-surface-variant leading-relaxed font-body">
+<p>At Aurum Atelier, we believe jewelry is more than an accessory—it is an archival record of a moment. Our masters spend hundreds of hours on a single piece, ensuring every facet reflects our century-long commitment to excellence.</p>
+<p>Every stone is ethically sourced, every ounce of gold is reclaimed, and every design begins as a hand-drawn sketch in our Milan studio. We don't just craft jewelry; we curate legacy.</p>
+</div>
+<div class="mt-12 pt-12 border-t border-outline-variant/30 flex gap-12">
+<div>
+<span class="block text-2xl font-headline italic text-on-surface">100+</span>
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant">Years of Heritage</span>
+</div>
+<div>
+<span class="block text-2xl font-headline italic text-on-surface"> Milan</span>
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant">Design Origin</span>
+</div>
+<div>
+<span class="block text-2xl font-headline italic text-on-surface">Zero</span>
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant">Carbon Footprint</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Product Spotlight - Glassmorphism -->
+<section class="py-32 px-12 relative">
+<div class="absolute top-0 left-0 w-full h-1/2 bg-surface"></div>
+<div class="absolute bottom-0 left-0 w-full h-1/2 bg-surface-container"></div>
+<div class="max-w-7xl mx-auto relative z-10">
+<div class="bg-surface-container-lowest/40 backdrop-blur-3xl border border-white/10 p-12 md:p-24 shadow-2xl shadow-stone-900/5 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+<div>
+<img class="w-full h-auto object-cover shadow-2xl" data-alt="A singular, exquisite diamond necklace resting on a velvet cushion, focused lighting highlighting the brilliance of the stones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUVGhvB6B80fv46vU2fY0osFuRDBe-Ky4_7ggJAYMP4vAxA-VOzv9KduS3fx8WLqATksrkFzTrTilmj48kZGlgtF2kQb2CrGvrrLmyaZyQ-pKnjaOPznbE39RNVotcMXh_Omj4zxZyLQITMfJ_-FsobJ404QIMEyQgr8reursbRPXiEVvYrpehwzwA1Gw3HuQtQnB63UyeG6bWrLV71kiYHA-L-ozVYA0vwRpF3le4JWSdqJrcRLesnlS3StFh8ZZJFf3slXJmY8A"/>
+</div>
+<div>
+<h2 class="text-3xl font-headline italic mb-2">The Solstice Pendant</h2>
+<p class="text-xs uppercase tracking-widest text-primary font-label mb-8">Limited Edition • 12 Pieces</p>
+<p class="text-on-surface-variant mb-10 leading-relaxed">Inspired by the winter sun, this 18k yellow gold pendant features a 2.4-carat pear-cut diamond suspended within a hand-hammered halo.</p>
+<button class="bg-primary text-on-primary px-12 py-4 uppercase tracking-widest text-xs font-label hover:bg-primary-container transition-all">
+                            Enquire for Price
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Newsletter / Journal -->
+<section class="py-32 bg-surface-container-highest">
+<div class="max-w-3xl mx-auto text-center px-6">
+<h2 class="text-4xl font-headline italic mb-6">The Aurum Journal</h2>
+<p class="text-on-surface-variant mb-12 font-body">Subscribe to receive private invitations to collection previews and stories from the workshop.</p>
+<form class="flex flex-col md:flex-row gap-0 border-b border-outline">
+<input class="bg-transparent border-none w-full py-4 px-0 focus:ring-0 placeholder:text-stone-400 text-xs tracking-widest font-label uppercase" placeholder="YOUR EMAIL ADDRESS" type="email"/>
+<button class="py-4 px-8 text-xs tracking-widest font-label uppercase text-primary font-bold" type="submit">Join</button>
+</form>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full mt-20 bg-stone-100 dark:bg-stone-900">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 px-12 py-16 max-w-full">
+<div class="col-span-1 md:col-span-1">
+<a class="text-lg font-serif tracking-[0.2em] text-stone-900 dark:text-stone-50" href="#">AURUM</a>
+<p class="mt-6 text-xs text-stone-500 tracking-wider font-sans leading-relaxed">Elevating the human spirit through the art of fine jewelry since 1924.</p>
+</div>
+<div>
+<h4 class="font-sans text-xs tracking-wider uppercase text-stone-900 dark:text-stone-50 mb-6 font-bold">Boutique</h4>
+<ul class="space-y-4 font-sans text-xs tracking-wider uppercase text-stone-500 dark:text-stone-400">
+<li><a class="hover:text-stone-900 dark:hover:text-stone-50 transition-colors" href="#">Collections</a></li>
+<li><a class="hover:text-stone-900 dark:hover:text-stone-50 transition-colors" href="#">High Jewelry</a></li>
+<li><a class="hover:text-stone-900 dark:hover:text-stone-50 transition-colors" href="#">Bespoke Services</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-sans text-xs tracking-wider uppercase text-stone-900 dark:text-stone-50 mb-6 font-bold">House</h4>
+<ul class="space-y-4 font-sans text-xs tracking-wider uppercase text-stone-500 dark:text-stone-400">
+<li><a class="hover:text-stone-900 dark:hover:text-stone-50 transition-colors" href="#">Sustainability</a></li>
+<li><a class="hover:text-stone-900 dark:hover:text-stone-50 transition-colors" href="#">Shipping &amp; Returns</a></li>
+<li><a class="hover:text-stone-900 dark:hover:text-stone-50 transition-colors" href="#">Care Guide</a></li>
+<li><a class="hover:text-stone-900 dark:hover:text-stone-50 transition-colors" href="#">Privacy Policy</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-sans text-xs tracking-wider uppercase text-stone-900 dark:text-stone-50 mb-6 font-bold">Contact</h4>
+<ul class="space-y-4 font-sans text-xs tracking-wider uppercase text-stone-500 dark:text-stone-400">
+<li><a class="hover:text-stone-900 dark:hover:text-stone-50 transition-colors" href="#">Atelier Milan</a></li>
+<li><a class="hover:text-stone-900 dark:hover:text-stone-50 transition-colors" href="#">Concierge</a></li>
+<li><a class="hover:text-stone-900 dark:hover:text-stone-50 transition-colors" href="#">Instagram</a></li>
+</ul>
+</div>
+</div>
+<div class="px-12 py-8 border-t border-stone-200 dark:border-stone-800 flex justify-between items-center">
+<span class="font-sans text-[10px] tracking-wider uppercase text-stone-500">© 2024 AURUM ATELIER. ALL RIGHTS RESERVED.</span>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-stone-400 text-sm">public</span>
+<span class="font-sans text-[10px] tracking-wider uppercase text-stone-500">Global / English</span>
+</div>
+</div>
+</footer>
+</body></html>

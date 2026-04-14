@@ -1,5 +1,6 @@
 import { ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useStoreUrl } from '../../hooks/useStoreUrl';
 import type { HeaderMenus } from '../../types/Header';
 
 interface NavigationComponentProps {
@@ -9,6 +10,7 @@ interface NavigationComponentProps {
 }
 
 const NavigationComponent = ({ menus, activeDropdown, setActiveDropdown }: NavigationComponentProps) => {
+    const { getStoreUrl } = useStoreUrl();
 
     const spacing = 'gap-6';
 
@@ -26,7 +28,7 @@ const NavigationComponent = ({ menus, activeDropdown, setActiveDropdown }: Navig
                     onMouseLeave={() => setActiveDropdown(null)}
                 >
                     <Link
-                        to={item.link || '#'}
+                        to={getStoreUrl(item.link || '#')}
                         className={`flex items-center gap-1 text-[14px] font-semibold transition-colors py-2 ${getHighlightClass(activeDropdown === item.title)}`}
                     >
                         {item.title}
@@ -42,7 +44,7 @@ const NavigationComponent = ({ menus, activeDropdown, setActiveDropdown }: Navig
                                 {item.subMenu.map((child) => (
                                     <Link
                                         key={child.title}
-                                        to={child.link || '#'}
+                                        to={getStoreUrl(child.link || '#')}
                                         className="block w-full text-left px-6 py-3 text-sm font-medium hover:bg-gray-50 text-gray-700 hover:text-black transition-colors"
                                     >
                                         {child.title}

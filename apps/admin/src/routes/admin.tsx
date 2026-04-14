@@ -1,6 +1,7 @@
 import Loader from '@/components/common/Loader';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { lazy, Suspense } from 'react';
+import { Navigate } from 'react-router-dom';
 
 // Lazy-load the Admin Layout and Pages
 const AdminLayout = lazy(() => import('@/components/modules/admin/layout'));
@@ -29,6 +30,10 @@ const adminRoutes = [
       </ProtectedRoute>
     ),
     children: [
+      {
+        path: '',
+        element: <Navigate to="stores" replace />
+      },
       {
         path: 'stores',
         element: (

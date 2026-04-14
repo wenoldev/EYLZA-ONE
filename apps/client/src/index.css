@@ -1,29 +1,96 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
-
-@layer utilities {
-  .font-serif-premium {
-    font-family: "Playfair Display", serif;
-  }
-
-  .golden {
-    color: #c5a059;
-  }
-}
+@source "../../packages/dynamic-components/src";
 
 @theme {
-  --color-primary: var(--client-primary, #3b82f6);
-  --color-secondary: var(--client-secondary, #f3f4f6);
-  --color-background: var(--client-background, #ffffff);
+  /* Aurelian Theme Colors */
+  --color-primary: #615d3c;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #7a7553;
+  --color-on-primary-container: #fffbff;
+  
+  --color-secondary: #6c5e06;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #f7e382;
+  --color-on-secondary-container: #73640e;
+  
+  --color-tertiary: #5c5c59;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #757572;
+  --color-on-tertiary-container: #fefcf8;
+  
+  --color-background: #fcf9f4;
+  --color-on-background: #1c1c19;
+  
+  --color-surface: #fcf9f4;
+  --color-on-surface: #1c1c19;
+  --color-surface-variant: #e5e2dd;
+  --color-on-surface-variant: #49473d;
+  
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f6f3ee;
+  --color-surface-container: #f0ede9;
+  --color-surface-container-high: #eae8e3;
+  --color-surface-container-highest: #e5e2dd;
+  
+  --color-outline: #7a776b;
+  --color-outline-variant: #cbc6b9;
+  
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* Typography */
+  --font-serif: "Newsreader", serif;
+  --font-sans: "Manrope", sans-serif;
 }
 
 :root {
-  --client-primary: #3b82f6;
-  --client-secondary: #f3f4f6;
-  --client-background: #ffffff;
+  background-color: #fcf9f4;
+  color: #1c1c19;
+  font-family: "Manrope", sans-serif;
 }
 
 body {
+  margin: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-background);
+}
+
+h1, h2, h3, .font-serif {
+  font-family: "Newsreader", serif;
+}
+
+.client-bg{
   background-color: var(--client-background);
-  color: #1a1a1a;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  font-size: 24px;
+}
+
+@layer base {
+  * {
+    @apply border-stone-200/50;
+  }
+}
+
+/* Custom Scrollbar for Luxury Feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fcf9f4;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e5e2dd;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7a776b;
 }

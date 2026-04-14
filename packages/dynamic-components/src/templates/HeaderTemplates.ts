@@ -8,6 +8,8 @@ export const design1: HeaderConfig = {
         textColor: "#000000",
         fontFamily: "Inter",
         logoText: "ZARISHKA",
+        showStoreLogo: false,
+        storeLogo: "",
         behaviour: "sticky"
     },
     topBar: {
@@ -42,6 +44,8 @@ export const design2: HeaderConfig = {
         textColor: "#ffffff",
         fontFamily: "serif",
         logoText: "MINIMAL",
+        showStoreLogo: false,
+        storeLogo: "",
         behaviour: "static"
     },
     topBar: {

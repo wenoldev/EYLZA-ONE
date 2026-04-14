@@ -195,7 +195,8 @@ const ProductsPage = () => {
         toast.success("Product updated successfully");
       } else {
         await createProduct({
-          ...formData
+          ...formData,
+          store_id: userStoreId
         });
         toast.success("Product created successfully");
       }
@@ -484,6 +485,7 @@ const ProductsPage = () => {
         onOpenChange={setIsSheetOpen}
         title={editingItem ? "Edit Product" : "Add Product"}
         description={editingItem ? "Update product details" : "Provide details to create a new product"}
+        resizable={true}
       >
         <DynamicForm
           fields={formFields}

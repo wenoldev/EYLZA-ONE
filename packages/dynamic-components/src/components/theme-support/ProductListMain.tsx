@@ -3,18 +3,9 @@ import type { ProductListConfig } from '../../types/ProductList';
 import TemplateRenderer from './TemplateRenderer';
 import ProductFilters from './ProductFilters';
 
-const DEFAULT_ITEMS = [
-  { title: "Men", image: "https://images.unsplash.com/photo-1490515124029-79a061803761?w=800&auto=format&fit=crop", subtitle: "Shop Men's", price: "Rs. 1,299.00", oldPrice: "Rs. 1,599.00" },
-  { title: "Women", image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop", subtitle: "Shop Women's", price: "Rs. 1,499.00" },
-  { title: "Kids", image: "https://images.unsplash.com/photo-1514066558159-fc8c737ef259?w=800&auto=format&fit=crop", subtitle: "Shop Kids'", price: "Rs. 1,099.00" },
-  { title: "Accessories", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop", subtitle: "Shop Now", price: "Rs. 899.00", soldOut: true }
-];
-
-const ProductListMain: React.FC<ProductListConfig> = (config) => {
+const ProductListMain: React.FC<{config:ProductListConfig,items:any[]}> = ({config,items}) => {
   const [currentSort, setCurrentSort] = useState('alphabetical-az');
   const [filters, setFilters] = useState({ availability: [], priceRange: { min: 0, max: 10000 } });
-
-  const items = config.items || DEFAULT_ITEMS;
   const template = config.template || 'category';
   
   const filteredAndSortedItems = useMemo(() => {
@@ -45,7 +36,7 @@ const ProductListMain: React.FC<ProductListConfig> = (config) => {
   const layout = {
     desktop: config.layout?.desktop ?? 4,
     tablet: config.layout?.tablet ?? 2,
-    mobile: config.layout?.mobile ?? 1
+    mobile: config.layout?.mobile ?? (template === 'zarishka' ? 2 : 1)
   };
 
   const styles = {
@@ -73,7 +64,7 @@ const ProductListMain: React.FC<ProductListConfig> = (config) => {
 
   const { title, subtitle } = config;
 
-  if (!items || items.length === 0) return null;
+
 
   const generatedId = React.useId().replace(/:/g, '');
   const sectionId = `product-list-${title?.replace(/[^a-z0-9]/gi, '-').toLowerCase() || generatedId}`;
@@ -137,23 +128,35 @@ const ProductListMain: React.FC<ProductListConfig> = (config) => {
         )}
 
         {/* Grid Container */}
-        <div
-          className="product-grid"
-          style={{
-            display: 'grid',
-            gap: `${styles.gap}px`,
-            gridTemplateColumns: `repeat(${layout.desktop}, minmax(0, 1fr))`
-          }}
-        >
-          {filteredAndSortedItems.map((item, index) => (
-            <TemplateRenderer
-              key={index}
-              template={template}
-              data={item}
-              styles={styles.cardStyles}
-            />
-          ))}
-        </div>
+        {filteredAndSortedItems.length > 0 ? (
+          <div
+            className="product-grid"
+            style={{
+              display: 'grid',
+              gap: `${styles.gap}px`,
+              gridTemplateColumns: `repeat(${layout.desktop}, minmax(0, 1fr))`
+            }}
+          >
+            {filteredAndSortedItems.map((item, index) => (
+              <TemplateRenderer
+                key={index}
+                template={template}
+                data={item}
+                styles={styles.cardStyles}
+              />
+            ))}
+          </div>
+        ) : (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '100px 0', 
+            color: '#9ca3af', 
+            fontSize: '18px',
+            fontWeight: 300 
+          }}>
+            No products available
+          </div>
+        )}
       </div>
 
       {/* Responsive Grid CSS */}
@@ -171,9 +174,17 @@ const ProductListMain: React.FC<ProductListConfig> = (config) => {
                 @media (max-width: 640px) {
                     #${sectionId} .product-grid {
                         grid-template-columns: repeat(${layout.mobile}, minmax(0, 1fr)) !important;
+                        gap: ${layout.mobile > 1 ? Math.min(styles.gap, 12) : styles.gap}px !important;
                     }
                     #${sectionId} h2 {
                         font-size: ${Math.max(styles.titleSize * 0.7, 24)}px !important;
+                    }
+                    /* Scale down font sizes for card content in 2-column mode */
+                    #${sectionId} .product-card-title {
+                        font-size: ${layout.mobile > 1 ? '0.85rem' : 'inherit'} !important;
+                    }
+                    #${sectionId} .product-card-price {
+                        font-size: ${layout.mobile > 1 ? '0.85rem' : 'inherit'} !important;
                     }
                 }
             `}</style>

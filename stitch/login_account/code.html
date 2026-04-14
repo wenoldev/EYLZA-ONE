@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,600&amp;family=Manrope:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#1f1c03",
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#49473d",
+                    "surface-variant": "#e5e2dd",
+                    "on-secondary-container": "#73640e",
+                    "on-error": "#ffffff",
+                    "primary-fixed-dim": "#cec79f",
+                    "secondary-container": "#f7e382",
+                    "on-tertiary-container": "#fefcf8",
+                    "on-background": "#1c1c19",
+                    "surface-container-highest": "#e5e2dd",
+                    "primary": "#615d3c",
+                    "surface-dim": "#dcdad5",
+                    "background": "#fcf9f4",
+                    "on-secondary-fixed": "#211b00",
+                    "on-secondary-fixed-variant": "#524700",
+                    "inverse-primary": "#cec79f",
+                    "tertiary-fixed": "#e4e2de",
+                    "on-tertiary-fixed": "#1b1c1a",
+                    "outline": "#7a776b",
+                    "surface": "#fcf9f4",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#eae4ba",
+                    "primary-container": "#7a7553",
+                    "secondary-fixed-dim": "#dac769",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#5c5c59",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed-dim": "#c8c6c3",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "outline-variant": "#cbc6b9",
+                    "inverse-surface": "#31302d",
+                    "surface-tint": "#635f3e",
+                    "surface-container-low": "#f6f3ee",
+                    "on-primary-fixed-variant": "#4b4829",
+                    "surface-bright": "#fcf9f4",
+                    "on-primary-container": "#fffbff",
+                    "surface-container": "#f0ede9",
+                    "on-surface": "#1c1c19",
+                    "secondary-fixed": "#f7e382",
+                    "secondary": "#6c5e06",
+                    "inverse-on-surface": "#f3f0eb",
+                    "tertiary-container": "#757572",
+                    "surface-container-high": "#eae8e3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #fcf9f4;
+        }
+        h1, h2, h3 {
+            font-family: 'Newsreader', serif;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<header class="fixed top-0 w-full z-50 bg-stone-50/80 backdrop-blur-xl">
+<nav class="flex justify-between items-center w-full px-12 py-8 max-w-full mx-auto">
+<div class="flex-1 hidden md:flex gap-8">
+<a class="text-stone-500 font-sans text-xs tracking-widest uppercase hover:text-stone-900 transition-colors" href="#">Collections</a>
+<a class="text-stone-500 font-sans text-xs tracking-widest uppercase hover:text-stone-900 transition-colors" href="#">High Jewelry</a>
+</div>
+<div class="text-2xl font-serif tracking-[0.3em] text-stone-900 text-center">
+                AURUM
+            </div>
+<div class="flex-1 flex justify-end items-center gap-6">
+<button class="hover:opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="hover:opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+</button>
+<button class="hover:opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+</button>
+</div>
+</nav>
+</header>
+<main class="min-h-screen pt-32 flex items-center justify-center px-6">
+<div class="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 bg-surface-container-lowest overflow-hidden">
+<div class="hidden md:block relative overflow-hidden group">
+<img alt="AURUM Atelier" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Close-up of a high-end gold ring with intricate details resting on a textured cream velvet fabric in soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApW-MFsw7_HCjoRB3bDkvUCUvGAkOrua8Z9EZVL6HsollyAJkP8w-fDOXYbgAJMKgEimZ4yR4vMcvTq0m2E1Z8uSTFwZw7T1rxpF2v3biL9BxpBsQOy2RjcMWWSaBM21oyrUT3A5knS8kmJf-ywILCKK30JkAL494svKEmOci1oUZLgQ5vdmnUShTsK9T4TeRRASxGA4JNZHFR440MvHwhEL0pQUsJSEm816b4Y0X3F1uB11Dt0Cr-pLIwPzemYAIdq3NlHrd3QnI"/>
+<div class="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
+<div class="absolute bottom-12 left-12 right-12">
+<p class="font-headline text-3xl text-white leading-relaxed tracking-tight">
+                        "Jewelry is the archival memory of human emotion."
+                    </p>
+<p class="mt-4 text-xs font-label text-white/80 uppercase tracking-widest">Aurum Heritage Series</p>
+</div>
+</div>
+<div class="p-12 md:p-20 flex flex-col justify-center">
+<div class="max-w-md mx-auto w-full">
+<h2 class="text-4xl font-headline text-on-surface mb-2">Welcome Back</h2>
+<p class="text-on-surface-variant font-label text-sm mb-12 tracking-wide">Enter your details to access your atelier account.</p>
+<form class="space-y-8">
+<div class="space-y-1">
+<label class="text-[10px] font-label font-bold uppercase tracking-[0.2em] text-stone-400">Email Address</label>
+<input class="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 focus:ring-0 focus:border-primary text-sm font-label placeholder:text-stone-300 transition-colors" placeholder="curator@aurum.com" type="email"/>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between items-end">
+<label class="text-[10px] font-label font-bold uppercase tracking-[0.2em] text-stone-400">Password</label>
+<a class="text-[10px] font-label uppercase tracking-widest text-primary hover:text-primary-container transition-colors" href="#">Forgot?</a>
+</div>
+<input class="w-full bg-transparent border-0 border-b border-outline-variant py-3 px-0 focus:ring-0 focus:border-primary text-sm font-label placeholder:text-stone-300 transition-colors" placeholder="••••••••" type="password"/>
+</div>
+<div class="pt-6 space-y-4">
+<button class="w-full bg-primary text-on-primary py-5 text-xs font-label uppercase tracking-[0.3em] hover:bg-primary-container transition-colors duration-300" type="submit">
+                                Sign In
+                            </button>
+<div class="flex items-center gap-4 py-4">
+<div class="h-[1px] flex-1 bg-outline-variant/30"></div>
+<span class="text-[10px] font-label uppercase tracking-widest text-stone-400">OR</span>
+<div class="h-[1px] flex-1 bg-outline-variant/30"></div>
+</div>
+<button class="w-full border border-outline-variant/50 py-5 text-xs font-label uppercase tracking-[0.3em] hover:bg-surface-container-low transition-colors duration-300" type="button">
+                                Create Account
+                            </button>
+</div>
+</form>
+<div class="mt-16 flex items-center gap-2">
+<span class="material-symbols-outlined text-stone-400" data-icon="verified_user">verified_user</span>
+<p class="text-[10px] font-label uppercase tracking-widest text-stone-400">Secure Encrypted Session</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="w-full mt-20 bg-stone-100">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 px-12 py-16 max-w-full">
+<div class="space-y-6">
+<div class="text-lg font-serif tracking-[0.2em] text-stone-900">AURUM</div>
+<p class="text-xs font-label text-stone-500 leading-loose max-w-xs">
+                    Crafting timeless artifacts that celebrate the intersection of human history and artisan jewelry.
+                </p>
+</div>
+<div class="space-y-4">
+<h4 class="text-[10px] font-label font-bold uppercase tracking-widest text-stone-900">Information</h4>
+<ul class="space-y-2">
+<li><a class="font-label text-xs tracking-wider uppercase text-stone-500 hover:text-stone-900 transition-colors" href="#">Sustainability</a></li>
+<li><a class="font-label text-xs tracking-wider uppercase text-stone-500 hover:text-stone-900 transition-colors" href="#">Shipping &amp; Returns</a></li>
+<li><a class="font-label text-xs tracking-wider uppercase text-stone-500 hover:text-stone-900 transition-colors" href="#">Care Guide</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<h4 class="text-[10px] font-label font-bold uppercase tracking-widest text-stone-900">Contact</h4>
+<ul class="space-y-2">
+<li><a class="font-label text-xs tracking-wider uppercase text-stone-500 hover:text-stone-900 transition-colors" href="#">Atelier Appointments</a></li>
+<li><a class="font-label text-xs tracking-wider uppercase text-stone-500 hover:text-stone-900 transition-colors" href="#">Bespoke Inquiries</a></li>
+<li><a class="font-label text-xs tracking-wider uppercase text-stone-500 hover:text-stone-900 transition-colors" href="#">Contact</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<h4 class="text-[10px] font-label font-bold uppercase tracking-widest text-stone-900">Follow</h4>
+<div class="flex gap-4">
+<a class="text-stone-500 hover:text-stone-900 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="photo_camera">photo_camera</span>
+</a>
+<a class="text-stone-500 hover:text-stone-900 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="movie">movie</span>
+</a>
+</div>
+</div>
+</div>
+<div class="px-12 py-8 border-t border-stone-200/50 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="font-sans text-xs tracking-wider uppercase text-stone-400">© 2024 AURUM ATELIER. ALL RIGHTS RESERVED.</p>
+<div class="flex gap-8">
+<a class="font-label text-xs tracking-wider uppercase text-stone-400 hover:text-stone-900" href="#">Privacy Policy</a>
+<a class="font-label text-xs tracking-wider uppercase text-stone-400 hover:text-stone-900" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+</body></html>

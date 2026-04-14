@@ -23,6 +23,7 @@ import api from "@/lib/api"
 export function WebBuilder() {
   const storeData = useEditorStore(state => state.storeData)
   const activeThemeId = useEditorStore(state => state.activeThemeId)
+  const isAdminMode = useEditorStore(state => state.isAdminMode)
   const currentPage = useEditorStore(state => state.currentPage)
   const globalConfig = useEditorStore(state => state.globalConfig)
   const setGlobalConfig = useEditorStore(state => state.setGlobalConfig)
@@ -49,10 +50,16 @@ export function WebBuilder() {
 
   useEffect(() => {
     const loadAll = async () => {
-      if (!storeData?.id || !activeThemeId) return
+      if (!activeThemeId) return
+      if (!isAdminMode && !storeData?.id) return
+      
       setIsInitialLoading(true)
       try {
-        const response = await api.get(`/stores/${storeData.id}/themes/${activeThemeId}`)
+        const fetchUrl = isAdminMode 
+          ? `/admin/themes/${activeThemeId}` 
+          : `/stores/${storeData.id}/themes/${activeThemeId}`;
+          
+        const response = await api.get(fetchUrl)
         const { theme } = response.data.data
 
         const global = theme.global_config || {}

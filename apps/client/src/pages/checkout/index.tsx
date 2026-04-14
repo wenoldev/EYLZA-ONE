@@ -1,53 +1,98 @@
-import { useState } from "react"
-import { ChevronRight, ShoppingCart, Tag, Info, ShieldCheck } from "lucide-react"
-
-const cartItems = [
-  {
-    id: 1,
-    name: "Initials Birthstone Necklace",
-    price: 1499,
-    image: "/images/image.png",
-    color: "Silver",
-    birthstone: "January - Garnet (6 mm)",
-    initials: "A",
-    quantity: 1,
-  },
-]
+import { useState, useEffect } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { ChevronRight, ShoppingCart, Tag, Info, ShieldCheck, CheckCircle2 } from "lucide-react"
+import { useCartStore } from "@/store/useCartStore"
+import { useUserStore } from "@/store/useUserStore"
+import { useStore } from "@/store/useStore"
 
 export default function Checkout() {
+  const { items, getSubtotal, clearCart } = useCartStore()
+  const { user, isAuthenticated } = useUserStore()
+  const { store } = useStore()
+  const navigate = useNavigate()
+
   const [paymentMethod, setPaymentMethod] = useState("razorpay")
   const [billingAddress, setBillingAddress] = useState("same")
-  const [shippingAddress, setShippingAddress] = useState("")
   const [discountCode, setDiscountCode] = useState("")
+  const [showSummaryMobile, setShowSummaryMobile] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    email: user?.email || "",
+    firstName: user?.name?.split(' ')[0] || "",
+    lastName: user?.name?.split(' ').slice(1).join(' ') || "",
+    address: "",
+    apartment: "",
+    city: "",
+    state: "MH",
+    pinCode: "",
+    phone: user?.phone || ""
+  })
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const subtotal = getSubtotal()
   const tax = Math.round(subtotal * 0.1)
   const total = subtotal + tax
+
+  useEffect(() => {
+    if (items.length === 0 && !isProcessing) {
+      navigate('/cart')
+    }
+  }, [items, navigate, isProcessing])
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { id, value } = e.target
+    setFormData(prev => ({ ...prev, [id]: value }))
+  }
+
+  const handleCompleteOrder = async () => {
+    setIsProcessing(true)
+    // Mocking order creation
+    setTimeout(() => {
+      console.log("Order placed:", { items, total, formData, paymentMethod })
+      clearCart()
+      // In a real app, redirect to success page
+      // navigate('/order-success')
+      setIsProcessing(false)
+      alert("Order placed successfully! (Mock)")
+      navigate('/')
+    }, 2000)
+  }
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900">
       {/* Mobile Header with Order Summary Toggle */}
       <div className="lg:hidden border-b border-gray-200 bg-gray-50 py-4 px-4 sticky top-0 z-50">
-        <button className="flex items-center justify-between w-full text-blue-600">
+        <button 
+          onClick={() => setShowSummaryMobile(!showSummaryMobile)}
+          className="flex items-center justify-between w-full text-primary"
+        >
           <div className="flex items-center gap-2">
             <ShoppingCart className="w-5 h-5" />
-            <span className="text-sm font-medium">Show order summary</span>
+            <span className="text-sm font-medium">{showSummaryMobile ? 'Hide' : 'Show'} order summary</span>
           </div>
           <span className="font-bold text-lg text-gray-900">₹{total.toLocaleString()}</span>
         </button>
+        {showSummaryMobile && (
+           <div className="mt-4 pt-4 border-t border-gray-200 animate-in fade-in slide-in-from-top-4">
+              <OrderSummary items={items} subtotal={subtotal} tax={tax} total={total} discountCode={discountCode} setDiscountCode={setDiscountCode} />
+           </div>
+        )}
       </div>
 
       <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row min-h-screen">
         {/* Left Side: Checkout Form */}
         <div className="w-full lg:w-[58%] px-4 py-8 lg:py-12 lg:pr-12">
-          {/* Logo/Brand (Optional placeholder) */}
+          {/* Logo/Brand */}
           <div className="mb-8">
-            <h1 className="text-2xl font-serif-premium font-bold tracking-tight">EYLZA</h1>
+            <h1 className="text-2xl font-serif font-bold tracking-tight text-primary uppercase italic">
+              {store?.name || 'EYLZA'}
+            </h1>
           </div>
 
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-xs text-gray-500 mb-8 overflow-x-auto whitespace-nowrap">
-            <span className="text-blue-600 font-medium">Cart</span>
+            <Link to="/cart" className="text-primary font-medium">Cart</Link>
             <ChevronRight className="w-3 h-3 flex-shrink-0" />
             <span className="text-gray-900 font-medium">Information</span>
             <ChevronRight className="w-3 h-3 flex-shrink-0" />
@@ -61,9 +106,11 @@ export default function Checkout() {
             <section>
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-medium tracking-tight">Contact</h2>
-                <div className="text-xs text-gray-600">
-                  Already have an account? <button className="text-blue-600 underline">Log in</button>
-                </div>
+                {!isAuthenticated && (
+                  <div className="text-xs text-gray-600">
+                    Already have an account? <Link to="/login" className="text-primary underline font-bold">Log in</Link>
+                  </div>
+                )}
               </div>
               <div className="space-y-4">
                 <div className="relative group">
@@ -71,7 +118,9 @@ export default function Checkout() {
                     type="email"
                     id="email"
                     placeholder="Email"
-                    className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all peer placeholder-transparent"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all peer placeholder-transparent"
                   />
                   <label 
                     htmlFor="email"
@@ -81,7 +130,7 @@ export default function Checkout() {
                   </label>
                 </div>
                 <div className="flex items-center gap-2 mt-3">
-                  <input type="checkbox" id="newsletter" className="w-4 h-4 rounded text-blue-600" />
+                  <input type="checkbox" id="newsletter" className="w-4 h-4 rounded text-primary border-gray-300 focus:ring-primary" />
                   <label htmlFor="newsletter" className="text-sm text-gray-600 cursor-pointer">Email me with news and offers</label>
                 </div>
               </div>
@@ -92,7 +141,7 @@ export default function Checkout() {
               <h2 className="text-lg font-medium mb-4">Delivery</h2>
               <div className="space-y-4">
                 <div className="relative group">
-                  <select className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all peer bg-white appearance-none">
+                  <select className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all peer bg-white appearance-none cursor-pointer">
                     <option value="IN">India</option>
                   </select>
                   <label className="absolute left-4 top-1.5 text-[10px] uppercase font-bold text-gray-500">
@@ -104,12 +153,14 @@ export default function Checkout() {
                   <div className="relative">
                     <input
                       type="text"
-                      id="first_name"
+                      id="firstName"
                       placeholder="First name"
-                      className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all peer placeholder-transparent"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all peer placeholder-transparent"
                     />
                     <label 
-                      htmlFor="first_name"
+                      htmlFor="firstName"
                       className="absolute left-4 top-1.5 text-[10px] uppercase font-bold text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:font-normal peer-focus:top-1.5 peer-focus:text-[10px] peer-focus:font-bold pointer-events-none"
                     >
                       First name
@@ -118,12 +169,14 @@ export default function Checkout() {
                   <div className="relative">
                     <input
                       type="text"
-                      id="last_name"
+                      id="lastName"
                       placeholder="Last name"
-                      className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all peer placeholder-transparent"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all peer placeholder-transparent"
                     />
                     <label 
-                      htmlFor="last_name"
+                      htmlFor="lastName"
                       className="absolute left-4 top-1.5 text-[10px] uppercase font-bold text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:font-normal peer-focus:top-1.5 peer-focus:text-[10px] peer-focus:font-bold pointer-events-none"
                     >
                       Last name
@@ -136,7 +189,9 @@ export default function Checkout() {
                     type="text"
                     id="address"
                     placeholder="Address"
-                    className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all peer placeholder-transparent"
+                    value={formData.address}
+                    onChange={handleInputChange}
+                    className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all peer placeholder-transparent"
                   />
                   <label 
                     htmlFor="address"
@@ -151,7 +206,9 @@ export default function Checkout() {
                     type="text"
                     id="apartment"
                     placeholder="Apartment, suite, etc. (optional)"
-                    className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all peer placeholder-transparent"
+                    value={formData.apartment}
+                    onChange={handleInputChange}
+                    className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all peer placeholder-transparent"
                   />
                   <label 
                     htmlFor="apartment"
@@ -167,7 +224,9 @@ export default function Checkout() {
                       type="text"
                       id="city"
                       placeholder="City"
-                      className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all peer placeholder-transparent"
+                      value={formData.city}
+                      onChange={handleInputChange}
+                      className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all peer placeholder-transparent"
                     />
                     <label 
                       htmlFor="city"
@@ -177,8 +236,15 @@ export default function Checkout() {
                     </label>
                   </div>
                   <div className="relative col-span-1">
-                    <select className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all peer bg-white appearance-none">
+                    <select 
+                      id="state" 
+                      value={formData.state} 
+                      onChange={handleInputChange} 
+                      className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all peer bg-white appearance-none"
+                    >
                       <option value="MH">Maharashtra</option>
+                      <option value="DL">Delhi</option>
+                      <option value="KA">Karnataka</option>
                     </select>
                     <label className="absolute left-4 top-1.5 text-[10px] uppercase font-bold text-gray-500">
                       State
@@ -187,12 +253,14 @@ export default function Checkout() {
                   <div className="relative col-span-1">
                     <input
                       type="text"
-                      id="pin"
+                      id="pinCode"
                       placeholder="PIN code"
-                      className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all peer placeholder-transparent"
+                      value={formData.pinCode}
+                      onChange={handleInputChange}
+                      className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all peer placeholder-transparent"
                     />
                     <label 
-                      htmlFor="pin"
+                      htmlFor="pinCode"
                       className="absolute left-4 top-1.5 text-[10px] uppercase font-bold text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:font-normal peer-focus:top-1.5 peer-focus:text-[10px] peer-focus:font-bold pointer-events-none"
                     >
                       PIN code
@@ -205,7 +273,9 @@ export default function Checkout() {
                     type="tel"
                     id="phone"
                     placeholder="Phone"
-                    className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all peer placeholder-transparent"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full px-4 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all peer placeholder-transparent"
                   />
                   <label 
                     htmlFor="phone"
@@ -219,55 +289,42 @@ export default function Checkout() {
                 </div>
 
                 <div className="flex items-center gap-2 mt-3">
-                  <input type="checkbox" id="save_info" className="w-4 h-4 rounded text-blue-600" />
+                  <input type="checkbox" id="save_info" className="w-4 h-4 rounded text-primary border-gray-300 focus:ring-primary" />
                   <label htmlFor="save_info" className="text-sm text-gray-600 cursor-pointer">Save this information for next time</label>
                 </div>
               </div>
             </section>
 
-            {/* Shipping Method (Simplified placeholder) */}
-            <section>
-              <h2 className="text-lg font-medium mb-4">Shipping method</h2>
-              <div className="bg-gray-50 border border-gray-200 rounded p-4 flex justify-between items-center">
-                <span className="text-sm text-gray-600">Enter your shipping address to view available shipping methods.</span>
-              </div>
-            </section>
-
-            {/* Payment (Shopify style) */}
+            {/* Payment Section */}
             <section>
               <h2 className="text-lg font-medium mb-1 tracking-tight">Payment</h2>
               <p className="text-[13px] text-gray-500 mb-4">All transactions are secure and encrypted.</p>
               
-              <div className="border border-gray-200 rounded-lg overflow-hidden">
+              <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                 {/* Razorpay Option */}
                 <div 
-                  className={`p-4 cursor-pointer transition-colors ${paymentMethod === "razorpay" ? "bg-blue-50/50" : "bg-white hover:bg-gray-50/80"}`}
+                  className={`p-4 cursor-pointer transition-all ${paymentMethod === "razorpay" ? "bg-primary/5" : "bg-white hover:bg-gray-50"}`}
                   onClick={() => setPaymentMethod("razorpay")}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-4 h-4 rounded-full border border-gray-400 flex items-center justify-center bg-white">
-                      {paymentMethod === "razorpay" && <div className="w-2 h-2 rounded-full bg-blue-600" />}
+                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center bg-white transition-all ${paymentMethod === "razorpay" ? "border-primary" : "border-gray-300"}`}>
+                      {paymentMethod === "razorpay" && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                     </div>
                     <div className="flex-1 flex items-center justify-between">
-                      <span className="text-sm font-medium">Razorpay Secure (UPI, Cards, Int'l Cards, Wallets)</span>
-                      <div className="flex gap-1">
-                        <div className="w-8 h-5 bg-gray-100 rounded border border-gray-200" />
-                        <div className="w-8 h-5 bg-gray-100 rounded border border-gray-200" />
-                        <div className="w-8 h-5 bg-gray-100 rounded border border-gray-200" />
+                      <span className="text-sm font-bold">Razorpay Secure (UPI, Cards, Wallets)</span>
+                      <div className="flex gap-1.5">
+                         <div className="w-8 h-5 bg-white rounded border border-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-400">UPI</div>
+                         <div className="w-8 h-5 bg-white rounded border border-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-400">VISA</div>
+                         <div className="w-8 h-5 bg-white rounded border border-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-400">MC</div>
                       </div>
                     </div>
                   </div>
                   {paymentMethod === "razorpay" && (
-                    <div className="mt-4 pt-4 border-t border-gray-200 text-center py-10 bg-gray-50/50 rounded-b-lg">
+                    <div className="mt-4 p-6 bg-accent/20 rounded-lg text-center animate-in zoom-in-95 duration-200">
                       <div className="flex flex-col items-center">
-                        <div className="w-16 h-16 text-gray-300 mb-4">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-                            <rect x="3" y="4" width="18" height="16" rx="2" />
-                            <path d="M3 10h18" />
-                          </svg>
-                        </div>
+                        <CheckCircle2 className="w-10 h-10 text-primary/40 mb-3" />
                         <p className="text-sm text-gray-600 max-w-xs mx-auto">
-                          After clicking \"Complete order\", you will be redirected to Razorpay Secure to complete your purchase securely.
+                          After clicking "Complete order", you will be redirected to Razorpay Secure to complete your purchase safely.
                         </p>
                       </div>
                     </div>
@@ -276,43 +333,14 @@ export default function Checkout() {
 
                 {/* COD Option */}
                 <div 
-                  className={`p-4 border-t border-gray-200 cursor-pointer transition-colors ${paymentMethod === "cod" ? "bg-blue-50/50" : "bg-white hover:bg-gray-50/80"}`}
+                  className={`p-4 border-t border-gray-200 cursor-pointer transition-all ${paymentMethod === "cod" ? "bg-primary/5" : "bg-white hover:bg-gray-50"}`}
                   onClick={() => setPaymentMethod("cod")}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-4 h-4 rounded-full border border-gray-400 flex items-center justify-center bg-white">
-                      {paymentMethod === "cod" && <div className="w-2 h-2 rounded-full bg-blue-600" />}
+                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center bg-white transition-all ${paymentMethod === "cod" ? "border-primary" : "border-gray-300"}`}>
+                      {paymentMethod === "cod" && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                     </div>
-                    <span className="text-sm font-medium">Cash on Delivery (COD)</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Billing Address Section */}
-            <section>
-              <h2 className="text-lg font-medium mb-4 tracking-tight">Billing address</h2>
-              <div className="border border-gray-200 rounded-lg overflow-hidden">
-                <div 
-                  className={`p-4 cursor-pointer transition-colors ${billingAddress === "same" ? "bg-blue-50/50" : "bg-white hover:bg-gray-50/80"}`}
-                  onClick={() => setBillingAddress("same")}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-4 h-4 rounded-full border border-gray-400 flex items-center justify-center bg-white">
-                      {billingAddress === "same" && <div className="w-2 h-2 rounded-full bg-blue-600" />}
-                    </div>
-                    <span className="text-sm font-medium">Same as shipping address</span>
-                  </div>
-                </div>
-                <div 
-                  className={`p-4 border-t border-gray-200 cursor-pointer transition-colors ${billingAddress === "different" ? "bg-blue-50/50" : "bg-white hover:bg-gray-50/80"}`}
-                  onClick={() => setBillingAddress("different")}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-4 h-4 rounded-full border border-gray-400 flex items-center justify-center bg-white">
-                      {billingAddress === "different" && <div className="w-2 h-2 rounded-full bg-blue-600" />}
-                    </div>
-                    <span className="text-sm font-medium">Use a different billing address</span>
+                    <span className="text-sm font-bold">Cash on Delivery (COD)</span>
                   </div>
                 </div>
               </div>
@@ -320,44 +348,79 @@ export default function Checkout() {
 
             {/* Actions */}
             <div className="pt-4">
-              <button className="w-full bg-gray-900 hover:bg-black text-white font-bold py-5 rounded-lg transition-all text-sm tracking-wide uppercase">
-                Complete order
+              <button 
+                onClick={handleCompleteOrder}
+                disabled={isProcessing}
+                className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-5 rounded-xl transition-all text-sm tracking-widest uppercase shadow-lg shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {isProcessing ? (
+                   <span className="flex items-center justify-center gap-2">
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Processing...
+                   </span>
+                ) : 'Complete order'}
               </button>
-              <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 justify-center border-t border-gray-200 pt-6">
-                <button className="text-[10px] uppercase font-bold text-blue-600 underline">Refund policy</button>
-                <button className="text-[10px] uppercase font-bold text-blue-600 underline">Shipping policy</button>
-                <button className="text-[10px] uppercase font-bold text-blue-600 underline">Privacy policy</button>
-                <button className="text-[10px] uppercase font-bold text-blue-600 underline">Terms of service</button>
+              <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 justify-center border-t border-gray-100 pt-8">
+                <Link to="/policy/refund" className="text-[10px] uppercase font-bold text-primary hover:underline">Refund policy</Link>
+                <Link to="/policy/shipping" className="text-[10px] uppercase font-bold text-primary hover:underline">Shipping policy</Link>
+                <Link to="/policy/privacy" className="text-[10px] uppercase font-bold text-primary hover:underline">Privacy policy</Link>
+                <Link to="/policy/tos" className="text-[10px] uppercase font-bold text-primary hover:underline">Terms of service</Link>
               </div>
             </div>
           </div>
         </div>
 
         {/* Right Side: Order Summary (Sticky Sidebar) */}
-        <div className="w-full lg:w-[42%] bg-gray-50 lg:border-l border-gray-200 px-4 py-8 lg:py-12 lg:pl-12">
+        <div className="hidden lg:block w-full lg:w-[42%] bg-gray-50 lg:border-l border-gray-200 px-4 py-8 lg:py-12 lg:pl-12">
           <div className="lg:sticky lg:top-12 space-y-8">
+            <OrderSummary items={items} subtotal={subtotal} tax={tax} total={total} discountCode={discountCode} setDiscountCode={setDiscountCode} />
+            
+            {/* Trust Badges */}
+            <div className="pt-10 flex items-center justify-center gap-10 text-gray-400">
+              <div className="flex flex-col items-center gap-1.5 group">
+                <ShieldCheck className="w-6 h-6 group-hover:text-primary transition-colors" />
+                <span className="text-[9px] uppercase font-bold tracking-widest group-hover:text-gray-600">Secure Checkout</span>
+              </div>
+              <div className="flex flex-col items-center gap-1.5 group">
+                <CheckCircle2 className="w-6 h-6 group-hover:text-primary transition-colors" />
+                <span className="text-[9px] uppercase font-bold tracking-widest group-hover:text-gray-600">Verified Quality</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function OrderSummary({ items, subtotal, tax, total, discountCode, setDiscountCode }: any) {
+    return (
+        <div className="space-y-8">
             {/* Cart Items */}
-            <div className="space-y-6">
-              {cartItems.map((item) => (
+            <div className="space-y-5">
+              {items.map((item: any) => (
                 <div key={item.id} className="flex gap-4 items-center">
                   <div className="relative">
-                    <div className="w-16 h-16 rounded-lg border border-gray-200 bg-white overflow-hidden flex-shrink-0">
+                    <div className="w-16 h-20 rounded-lg border border-gray-200 bg-white overflow-hidden flex-shrink-0 shadow-sm">
                       <img
                         src={item.image || "/placeholder.svg"}
                         alt={item.name}
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <span className="absolute -top-2 -right-2 bg-gray-500 text-white rounded-full min-w-[20px] h-5 px-1 flex items-center justify-center text-[11px] font-medium z-10">
+                    <span className="absolute -top-2 -right-2 bg-primary text-white rounded-full min-w-[20px] h-5 px-1 flex items-center justify-center text-[10px] font-bold z-10 shadow-sm">
                       {item.quantity}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-medium text-gray-900 truncate">{item.name}</h3>
-                    <p className="text-xs text-gray-500 mb-0.5">{item.color} / {item.birthstone}</p>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-wider">Initials: {item.initials}</p>
+                    <h3 className="text-sm font-bold text-gray-900 truncate leading-tight mb-0.5">{item.name}</h3>
+                    {item.attributes && (
+                       <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">
+                         {Object.values(item.attributes).join(' / ')}
+                       </p>
+                    )}
                   </div>
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-bold text-gray-900 tabular-nums">
                     ₹{item.price.toLocaleString()}
                   </div>
                 </div>
@@ -366,59 +429,56 @@ export default function Checkout() {
 
             {/* Discount Form */}
             <div className="flex gap-3 pt-6 border-t border-gray-200">
-              <input
-                type="text"
-                placeholder="Discount code or gift card"
-                value={discountCode}
-                onChange={(e) => setDiscountCode(e.target.value)}
-                className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 outline-none text-sm"
-              />
-              <button className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded text-sm font-bold transition-colors disabled:opacity-50" disabled={!discountCode}>
+              <div className="relative flex-1">
+                 <input
+                    type="text"
+                    placeholder="Discount code or gift card"
+                    value={discountCode}
+                    onChange={(e) => setDiscountCode(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none text-sm transition-all"
+                 />
+                 <Tag className="absolute left-3.5 top-3.5 w-4 h-4 text-gray-400" />
+              </div>
+              <button 
+                 className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg text-sm font-bold transition-all disabled:opacity-50" 
+                 disabled={!discountCode}
+              >
                 Apply
               </button>
             </div>
 
             {/* Pricing Details */}
-            <div className="space-y-3 pt-6 text-[13px]">
+            <div className="space-y-3 pt-6 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium">₹{subtotal.toLocaleString()}</span>
+                <span className="text-gray-500">Subtotal</span>
+                <span className="font-bold tabular-nums">₹{subtotal.toLocaleString()}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 flex items-center gap-1.5">
-                  Shipping 
+                <span className="text-gray-500 flex items-center gap-1.5">
+                  Estimated taxes
                   <Info className="w-3.5 h-3.5 text-gray-400 cursor-help" />
                 </span>
-                <span className="text-gray-400">Calculated at next step</span>
+                <span className="font-bold tabular-nums">₹{tax.toLocaleString()}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Estimated taxes</span>
-                <span className="font-medium">₹{tax.toLocaleString()}</span>
+              <div className="flex justify-between items-center bg-primary/5 p-3 rounded-lg border border-primary/10">
+                <span className="text-primary font-bold text-xs uppercase tracking-wider">Shipping</span>
+                <span className="text-[10px] font-bold text-primary uppercase bg-primary/20 px-2 py-0.5 rounded tracking-tighter">
+                   Free shipping applied
+                </span>
               </div>
             </div>
 
             {/* Total */}
             <div className="pt-6 border-t border-gray-200">
               <div className="flex justify-between items-baseline mb-1">
-                <span className="text-base font-bold">Total</span>
+                <span className="text-lg font-serif font-bold italic">Total</span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-xs text-gray-500 font-medium">INR</span>
-                  <span className="text-xl font-bold tracking-tight">₹{total.toLocaleString()}</span>
+                  <span className="text-[10px] text-gray-400 font-bold tracking-widest">INR</span>
+                  <span className="text-2xl font-serif font-bold tracking-tight text-primary tabular-nums">₹{total.toLocaleString()}</span>
                 </div>
               </div>
-              <p className="text-[11px] text-gray-500 text-right">Including ₹{tax.toLocaleString()} in taxes</p>
+              <p className="text-[10px] text-gray-500 text-right opacity-60">Including ₹{tax.toLocaleString()} in taxes</p>
             </div>
-
-            {/* Trust Badges */}
-            <div className="pt-10 flex items-center justify-center gap-6 text-gray-400">
-              <div className="flex flex-col items-center gap-1.5">
-                <ShieldCheck className="w-6 h-6" />
-                <span className="text-[10px] uppercase font-bold tracking-widest">Secure Checkout</span>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-  )
+    )
 }

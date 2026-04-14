@@ -1,5 +1,37 @@
 export interface ProductDetailConfig {
+    template?: 'default' | 'zarishka';
     layout: 'split' | 'stacked' | 'grid';
+    product?: {
+        id: string;
+        name: string;
+        price: number;
+        originalPrice?: number;
+        badge?: string;
+        label?: string;
+        reviewCount?: number;
+        rating?: number;
+        stockText?: string;
+        description?: string;
+        images?: string[];
+        options?: {
+            label: string;
+            values: string[];
+        }[];
+        metadata?: {
+            label: string;
+            value: string;
+        }[];
+    };
+    faqItems?: {
+        title: string;
+        content: string;
+    }[];
+    reviewItems?: {
+        author: string;
+        body: string;
+        rating?: number;
+        meta?: string;
+    }[];
     gallery: {
         position: 'left' | 'right' | 'top';
         showThumbnails: boolean;

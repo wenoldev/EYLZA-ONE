@@ -16,12 +16,12 @@ interface IconsComponentProps {
 }
 
 const IconsComponent = ({ config, isSearchExpanded, setIsSearchExpanded, onToggleLoginDialog, onToggleCart, onToggleWishlist, onToggleMobileMenu, isMobileMenuOpen, cartCount, isSearchInputDesign, viewportSize }: IconsComponentProps) => {
+    const isMobile = viewportSize ? (viewportSize === 'mobile' || viewportSize === 'tablet') : (typeof window !== 'undefined' && window.innerWidth < 1024);
     const accentColor = config.general.textColor || '#1f2937';
-    const iconSize = 24;
+    const iconSize = isMobile ? 20 : 24;
     const strokeWidth = 2;
 
-    const iconWrapperClass = "p-1 hover:opacity-70 transition-opacity";
-    const isMobile = viewportSize ? (viewportSize === 'mobile' || viewportSize === 'tablet') : (typeof window !== 'undefined' && window.innerWidth < 1024);
+    const iconWrapperClass = "p-1.5 hover:opacity-70 transition-opacity";
     const showSearchIcon = (config.mainBar.searchDesign === 'icon' || isMobile || (config.mainBar.searchDesign === 'input' && isMobile)) && !isSearchExpanded && (config?.mainBar?.order?.find(
         item => item.id === "search"
     )?.visible);
@@ -31,7 +31,7 @@ const IconsComponent = ({ config, isSearchExpanded, setIsSearchExpanded, onToggl
 
 
     return (
-        <div className="flex items-center gap-4">
+        <div className={`flex items-center ${isMobile ? 'gap-2.5' : 'gap-4'}`}>
             {showSearchIcon && (
                 <button className={iconWrapperClass} onClick={() => setIsSearchExpanded(true)}>
                     <Search size={iconSize} strokeWidth={strokeWidth} style={{ color: accentColor }} />

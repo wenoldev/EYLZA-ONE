@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import NotFound from '@/components/modules/404';
 import dashboardRoutes from './dashboard';
@@ -10,6 +10,7 @@ import StoreSetupWizard from '@/components/modules/store-setup';
 import PricingPage from '@/components/modules/dashboard/billing/PricingPage';
 import {CheckoutPage} from '@/components/modules/dashboard/billing/CheckoutPage';
 import ErrorPage from '@/components/common/ErrorPage';
+import { RoleRedirect } from '@/components/common/RoleRedirect';
 
 // Lazy-load components
 const AuthPages = lazy(() => import('@/components/modules/auth/index'));
@@ -17,7 +18,7 @@ const AuthPages = lazy(() => import('@/components/modules/auth/index'));
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Navigate to="/dashboard" replace />,
+    element: <RoleRedirect />,
   },
   {
     path: 'login',

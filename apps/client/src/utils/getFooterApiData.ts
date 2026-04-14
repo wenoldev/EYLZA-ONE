@@ -2,11 +2,11 @@ import type { FooterCompanyInfo, FooterMenus } from "@eylza/dynamic-components";
 import { useStore } from "@/store/useStore";
 
 export async function getFooterCompanyInfo(): Promise<FooterCompanyInfo> {
-    const { store } = useStore.getState();
+    const { store, themeData } = useStore.getState();
 
     return {
         companyInfo: {
-            name: store?.name ?? undefined,
+            name: store?.name ?? themeData?.name ?? undefined,
             logoUrl: store?.logo_url ?? undefined,
             description: store?.description ?? undefined,
             tagline: "",
