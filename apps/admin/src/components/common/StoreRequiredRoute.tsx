@@ -6,7 +6,7 @@ import Loader from "./Loader";
 
 export const StoreRequiredRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuthStore();
-  const { stores, loading, error, fetchStores } = useStoreStore();
+  const { stores, isLoading, error, fetchStores } = useStoreStore();
   const location = useLocation();
   const isVendor = user?.user_metadata?.role === 'vendor' || user?.role === 'vendor';
 
@@ -14,10 +14,10 @@ export const StoreRequiredRoute = ({ children }: { children: React.ReactNode }) 
     if (!user || !isVendor) return;
     
     // fetch only if stores not fetched yet
-    if (stores === null && !loading) {
+    if (stores === null && !isLoading) {
       fetchStores();
     }
-  }, [user, isVendor, stores, loading, fetchStores]);
+  }, [user, isVendor, stores, isLoading, fetchStores]);
 
   if (!user) {
     return <Loader />;
@@ -25,7 +25,7 @@ export const StoreRequiredRoute = ({ children }: { children: React.ReactNode }) 
 
   // 1️⃣ For vendors, we must wait for store data
   if (isVendor) {
-    if (loading || stores === null) {
+    if (isLoading || stores === null) {
       return <Loader />;
     }
 

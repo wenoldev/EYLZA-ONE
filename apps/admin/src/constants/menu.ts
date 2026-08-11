@@ -42,21 +42,6 @@ export const userMenuData: MenuGroup[] = [
         icon: User,
       },
       {
-        title: "Tickets",
-        route: { url: "dashboard/tickets" },
-        icon: Ticket,
-      },
-      {
-        title: "Plugins",
-        route: { url: "dashboard/plugins" },
-        icon: Store,
-      },
-      {
-        title: "Settings",
-        icon: Settings,
-        route: { url: "dashboard/settings" }
-      },
-      {
         title: "Themes",
         icon: PaintbrushVertical,
         subItems: [
@@ -66,6 +51,21 @@ export const userMenuData: MenuGroup[] = [
           },
           { title: "Edit theme", route: { url: 'dashboard/edit-theme' } }
         ]
+      },
+      {
+        title: "Plugins",
+        route: { url: "dashboard/plugins" },
+        icon: Store,
+      },
+      {
+        title: "Tickets",
+        route: { url: "dashboard/tickets" },
+        icon: Ticket,
+      },
+      {
+        title: "Settings",
+        icon: Settings,
+        route: { url: "dashboard/settings?tab=profile" }
       }
     ]
   },

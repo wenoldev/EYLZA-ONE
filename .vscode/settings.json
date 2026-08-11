@@ -1,0 +1,8 @@
+{
+  "tailwindCSS.experimental.configFile": {
+    "apps/admin/src/index.css": "apps/admin/src/**",
+    "apps/client/src/index.css": "{apps/client/src/**,packages/dynamic-components/src/**}",
+    "packages/dynamic-components/tailwind.config.js": "packages/dynamic-components/src/**",
+    "apps/editor/src/index.css": "apps/editor/src/**"
+  }
+}

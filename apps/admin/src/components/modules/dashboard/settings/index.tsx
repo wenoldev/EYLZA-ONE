@@ -100,13 +100,13 @@ export default function SettingsPage() {
   }
 
   return (
-    <SidebarProvider className="flex min-h-screen w-full bg-gray-50/50">
+    <SidebarProvider className="flex min-h-screen w-full bg-gray-50/50 dark:bg-black">
       <div className="flex w-full">
         {/* Settings Sidebar */}
-        <div className="w-64 flex-shrink-0 border-r bg-white">
+        <div className="w-64 flex-shrink-0 border-r dark:border-zinc-800 bg-white dark:bg-black">
           <Sidebar collapsible="none" className="w-64 border-none">
             <div className="p-6 pb-2">
-              <h2 className="text-lg font-semibold text-gray-900">Settings</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Settings</h2>
             </div>
             <SidebarContent>
               <SidebadrBody items={settingsMenu} />

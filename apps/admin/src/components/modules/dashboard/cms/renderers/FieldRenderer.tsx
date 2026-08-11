@@ -207,6 +207,50 @@ const FieldRenderer: React.FC<FieldProps> = ({ field, value, onChange, allValues
            </div>
         );
 
+      case 'multiImage': {
+        const images = Array.isArray(value) ? value : [];
+        return (
+           <div className="space-y-4">
+              <UploadDialog
+                multiple={true}
+                onImagesSelected={(selectedImages) => {
+                  const urls = selectedImages.map(img => 
+                    typeof img.image_url === 'string' ? img.image_url : img.image_url.fileContent
+                  );
+                  onChange(urls);
+                }}
+                initialValues={images.map(url => ({ image_url: url, isPrimary: false }))}
+              />
+              {images.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-2">
+                  {images.map((url, idx) => (
+                    <div key={idx} className="relative aspect-square group">
+                      <img
+                        src={url || '/placeholder.svg'}
+                        alt={`Preview ${idx + 1}`}
+                        className="w-full h-full object-cover rounded-md border"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
+                        onClick={() => {
+                          const newImages = [...images];
+                          newImages.splice(idx, 1);
+                          onChange(newImages);
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+           </div>
+        );
+      }
+
       case 'video':
         return (
            <div className="space-y-4">
@@ -214,7 +258,7 @@ const FieldRenderer: React.FC<FieldProps> = ({ field, value, onChange, allValues
                 multiple={false}
                 onVideosSelected={(videos) => {
                   if (videos.length > 0) {
-                    onChange(videos[0].video_url); // Directly use the URL string
+                    onChange(videos[0].video_url); 
                   }
                 }}
                 initialValues={value ? [{ video_url: value, isPrimary: true }] : []}
@@ -239,6 +283,48 @@ const FieldRenderer: React.FC<FieldProps> = ({ field, value, onChange, allValues
               )}
            </div>
         );
+
+      case 'multiVideo': {
+        const videos = Array.isArray(value) ? value : [];
+        return (
+           <div className="space-y-4">
+              <UploadVideoDialog
+                multiple={true}
+                onVideosSelected={(selectedVideos) => {
+                  const urls = selectedVideos.map(vid => vid.video_url);
+                  onChange(urls);
+                }}
+                initialValues={videos.map(url => ({ video_url: url, isPrimary: false }))}
+              />
+              {videos.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                  {videos.map((url, idx) => (
+                    <div key={idx} className="relative aspect-video group border rounded-md bg-black">
+                      <video
+                        src={url || ''}
+                        controls
+                        className="w-full h-full object-contain rounded-md"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity z-10 shadow-sm"
+                        onClick={() => {
+                          const newVideos = [...videos];
+                          newVideos.splice(idx, 1);
+                          onChange(newVideos);
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+           </div>
+        );
+      }
 
       case 'object':
         return (

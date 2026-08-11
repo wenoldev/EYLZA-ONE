@@ -171,23 +171,29 @@ export function NotificationSettings() {
     }
 
     return (
-        <div className="max-w-2xl space-y-6">
+        <div className="max-w-4xl space-y-8 pb-10">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="text-xl font-semibold text-gray-900">Notifications</h3>
-                    <p className="text-sm text-gray-500">Manage how you receive alerts for {currentStore?.name || "your store"}</p>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">Notifications</h3>
+                    <p className="text-sm text-gray-500 dark:text-zinc-400">Manage how you receive alerts for {currentStore?.name || "your store"}</p>
                 </div>
             </div>
 
-            <div className="space-y-4">
-                <div className="flex items-center justify-between rounded-lg border p-4 bg-white shadow-sm">
+            <div className="bg-white dark:bg-zinc-950 p-6 rounded-xl border space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                    <Bell className="w-5 h-5 text-gray-700 dark:text-zinc-300" />
+                    <h4 className="font-semibold text-gray-900 dark:text-zinc-100">Notification Preferences</h4>
+                </div>
+                
+                <div className="space-y-4">
+                <div className="flex items-center justify-between rounded-lg border p-4 bg-gray-50 dark:bg-black/50">
                     <div className="flex items-start gap-3">
-                        <div className="mt-1 p-2 bg-blue-50 rounded-lg text-blue-600">
+                        <div className="mt-1 p-2 bg-white dark:bg-zinc-950 border rounded-lg text-gray-700 dark:text-zinc-300 shadow-sm">
                             <MessageSquare className="w-5 h-5" />
                         </div>
                         <div>
                             <p className="font-medium">Customer Queries</p>
-                            <p className="text-sm text-gray-500">Get notified when a customer sends a message</p>
+                            <p className="text-sm text-gray-500 dark:text-zinc-400">Get notified when a customer sends a message</p>
                         </div>
                     </div>
                     <Switch
@@ -197,14 +203,14 @@ export function NotificationSettings() {
                     />
                 </div>
 
-                <div className="flex items-center justify-between rounded-lg border p-4 bg-white shadow-sm">
+                <div className="flex items-center justify-between rounded-lg border p-4 bg-gray-50 dark:bg-black/50">
                     <div className="flex items-start gap-3">
-                        <div className="mt-1 p-2 bg-green-50 rounded-lg text-green-600">
+                        <div className="mt-1 p-2 bg-white dark:bg-zinc-950 border rounded-lg text-gray-700 dark:text-zinc-300 shadow-sm">
                             <Bell className="w-5 h-5" />
                         </div>
                         <div>
                             <p className="font-medium">Order Updates</p>
-                            <p className="text-sm text-gray-500">Receive alerts about new orders and status changes</p>
+                            <p className="text-sm text-gray-500 dark:text-zinc-400">Receive alerts about new orders and status changes</p>
                         </div>
                     </div>
                     <Switch
@@ -214,14 +220,14 @@ export function NotificationSettings() {
                     />
                 </div>
 
-                <div className="flex items-center justify-between rounded-lg border p-4 bg-white shadow-sm">
+                <div className="flex items-center justify-between rounded-lg border p-4 bg-gray-50 dark:bg-black/50">
                     <div className="flex items-start gap-3">
-                        <div className="mt-1 p-2 bg-purple-50 rounded-lg text-purple-600">
+                        <div className="mt-1 p-2 bg-white dark:bg-zinc-950 border rounded-lg text-gray-700 dark:text-zinc-300 shadow-sm">
                             <Bell className="w-5 h-5" />
                         </div>
                         <div>
                             <p className="font-medium">Email Notifications</p>
-                            <p className="text-sm text-gray-500">Periodic email summaries and critical alerts</p>
+                            <p className="text-sm text-gray-500 dark:text-zinc-400">Periodic email summaries and critical alerts</p>
                         </div>
                     </div>
                     <Switch
@@ -231,13 +237,11 @@ export function NotificationSettings() {
                     />
                 </div>
 
-                <hr className="my-6" />
-
-                <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
+                <div className="bg-gray-50 dark:bg-black rounded-xl p-6 border border-gray-200 dark:border-zinc-800">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
-                            {isPushEnabled ? <Bell className="text-green-600 w-5 h-5" /> : <BellOff className="text-gray-400 w-5 h-5" />}
-                            <h4 className="font-semibold text-gray-900 text-lg">Push Notifications (This Device)</h4>
+                            {isPushEnabled ? <Bell className="text-gray-900 dark:text-zinc-100 w-5 h-5" /> : <BellOff className="text-gray-400 dark:text-zinc-500 w-5 h-5" />}
+                            <h4 className="font-semibold text-gray-900 dark:text-zinc-100 text-lg">Push Notifications (This Device)</h4>
                         </div>
                         <Switch
                             checked={isPushEnabled}
@@ -245,16 +249,23 @@ export function NotificationSettings() {
                             disabled={isPushLoading}
                         />
                     </div>
-                    <p className="text-sm text-gray-600 mb-4">
+                    <p className="text-sm text-gray-600 dark:text-zinc-400 mb-4">
                         Enable browser push notifications to receive real-time alerts even when the dashboard is closed. This setting only applies to the current device.
                     </p>
                 </div>
+                </div>
             </div>
 
-            <Button onClick={handleSaveSettings} disabled={isUpdating} className="w-full sm:w-auto">
-                {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Save Global Preferences
-            </Button>
+            <div className="flex justify-end gap-4 border-t pt-6">
+                <Button 
+                    onClick={handleSaveSettings} 
+                    disabled={isUpdating} 
+                    className="bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black shadow-sm transition-all"
+                >
+                    {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Save Global Preferences
+                </Button>
+            </div>
         </div>
     )
 }

@@ -3,6 +3,7 @@ import IconsComponent from './IconsComponent';
 import NavigationComponent from './NavigationComponent';
 import type { HeaderConfig, HeaderMenus } from '../../types/Header';
 import { motion, AnimatePresence } from 'framer-motion';
+import { StoreLink } from './StoreLink';
 
 interface MainBarProps {
     config: HeaderConfig;
@@ -32,7 +33,7 @@ const MainBar = ({
     if (!mainConfig) return null;
 
     const isMobile = viewportSize ? (viewportSize === 'mobile' || viewportSize === 'tablet') : (typeof window !== 'undefined' && window.innerWidth < 1024);
-    const isSearchInputDesign = mainConfig.searchDesign === 'input';
+    const isSearchInputDesign = mainConfig.searchDesign  === 'input';
 
     // On mobile, we force 'icon' design even if 'input' is selected
     const effectiveSearchDesign = isMobile ? 'icon' : mainConfig.searchDesign;
@@ -40,6 +41,7 @@ const MainBar = ({
 
     const elements: Record<string, React.ReactNode> = {
         logo: !isSearchExpanded && (
+            <StoreLink to={'home'}>
             <div className="flex items-center group cursor-pointer h-full">
                 {config.general.showStoreLogo && config.general.storeLogo ? (
                     <img 
@@ -48,7 +50,7 @@ const MainBar = ({
                         className="h-7 md:h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-105"
                     />
                 ) : (
-                    <h1 className="text-xl md:text-3xl font-black tracking-tighter transition-transform duration-500 group-hover:scale-105" style={{
+                    <h1 className="text-xl md:text-3xl font-black tracking-tighter transition-transform duration-500 group-hover:scale-105 font-bold" style={{
                         fontFamily: (config.general?.fontFamily as string) === 'serif' ? 'serif' : 'sans-serif',
                         color: config.general.textColor
                     }}>
@@ -56,6 +58,7 @@ const MainBar = ({
                     </h1>
                 )}
             </div>
+            </StoreLink>
         ),
         search: (
             showSearchAsInput && (
@@ -103,7 +106,7 @@ const MainBar = ({
                 boxShadow: config.general.behaviour === 'sticky' ? '0 10px 30px -10px rgba(0,0,0,0.05)' : 'none'
             }}
         >
-            <div className={`max-w-[1920px] mx-auto transition-all duration-300 ${isMobile ? 'py-3 px-3' : 'py-6 px-10 lg:px-16'}`}>
+            <div className={`max-w-[1920px] mx-auto transition-all duration-300 ${isMobile ? 'py-3 px-4' : 'py-6 px-10 lg:px-16'}`}>
                 <div className={`flex items-center justify-between h-full ${isMobile ? 'gap-3' : 'gap-8'}`}>
                     <AnimatePresence mode="wait">
                         {isSearchExpanded ? (

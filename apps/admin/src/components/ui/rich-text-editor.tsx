@@ -42,12 +42,12 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
     }
 
     return (
-        <div className="flex flex-wrap gap-1 border-b p-2 bg-gray-50 sticky top-0 z-10">
+        <div className="flex flex-wrap gap-1 border-b p-2 bg-gray-50 dark:bg-zinc-950 dark:border-zinc-800 sticky top-0 z-10">
             <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => editor.chain().focus().toggleBold().run()}
-                className={editor.isActive('bold') ? 'bg-gray-200' : ''}
+                className={editor.isActive('bold') ? 'bg-gray-200 dark:bg-zinc-800' : ''}
                 type="button"
             >
                 <Bold className="h-4 w-4" />
@@ -56,7 +56,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => editor.chain().focus().toggleItalic().run()}
-                className={editor.isActive('italic') ? 'bg-gray-200' : ''}
+                className={editor.isActive('italic') ? 'bg-gray-200 dark:bg-zinc-800' : ''}
                 type="button"
             >
                 <Italic className="h-4 w-4" />
@@ -65,17 +65,17 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => editor.chain().focus().toggleUnderline().run()}
-                className={editor.isActive('underline') ? 'bg-gray-200' : ''}
+                className={editor.isActive('underline') ? 'bg-gray-200 dark:bg-zinc-800' : ''}
                 type="button"
             >
                 <UnderlineIcon className="h-4 w-4" />
             </Button>
-            <div className="w-[1px] h-6 bg-gray-300 mx-1 self-center" />
+            <div className="w-[1px] h-6 bg-gray-300 dark:bg-zinc-700 mx-1 self-center" />
             <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                className={editor.isActive('heading', { level: 1 }) ? 'bg-gray-200' : ''}
+                className={editor.isActive('heading', { level: 1 }) ? 'bg-gray-200 dark:bg-zinc-800' : ''}
                 type="button"
             >
                 <Heading1 className="h-4 w-4" />
@@ -84,17 +84,17 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                className={editor.isActive('heading', { level: 2 }) ? 'bg-gray-200' : ''}
+                className={editor.isActive('heading', { level: 2 }) ? 'bg-gray-200 dark:bg-zinc-800' : ''}
                 type="button"
             >
                 <Heading2 className="h-4 w-4" />
             </Button>
-            <div className="w-[1px] h-6 bg-gray-300 mx-1 self-center" />
+            <div className="w-[1px] h-6 bg-gray-300 dark:bg-zinc-700 mx-1 self-center" />
             <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => editor.chain().focus().setTextAlign('left').run()}
-                className={editor.isActive({ textAlign: 'left' }) ? 'bg-gray-200' : ''}
+                className={editor.isActive({ textAlign: 'left' }) ? 'bg-gray-200 dark:bg-zinc-800' : ''}
                 type="button"
             >
                 <AlignLeft className="h-4 w-4" />
@@ -103,7 +103,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => editor.chain().focus().setTextAlign('center').run()}
-                className={editor.isActive({ textAlign: 'center' }) ? 'bg-gray-200' : ''}
+                className={editor.isActive({ textAlign: 'center' }) ? 'bg-gray-200 dark:bg-zinc-800' : ''}
                 type="button"
             >
                 <AlignCenter className="h-4 w-4" />
@@ -112,17 +112,17 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => editor.chain().focus().setTextAlign('right').run()}
-                className={editor.isActive({ textAlign: 'right' }) ? 'bg-gray-200' : ''}
+                className={editor.isActive({ textAlign: 'right' }) ? 'bg-gray-200 dark:bg-zinc-800' : ''}
                 type="button"
             >
                 <AlignRight className="h-4 w-4" />
             </Button>
-            <div className="w-[1px] h-6 bg-gray-300 mx-1 self-center" />
+            <div className="w-[1px] h-6 bg-gray-300 dark:bg-zinc-700 mx-1 self-center" />
             <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
-                className={editor.isActive('bulletList') ? 'bg-gray-200' : ''}
+                className={editor.isActive('bulletList') ? 'bg-gray-200 dark:bg-zinc-800' : ''}
                 type="button"
             >
                 <List className="h-4 w-4" />
@@ -131,7 +131,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                className={editor.isActive('orderedList') ? 'bg-gray-200' : ''}
+                className={editor.isActive('orderedList') ? 'bg-gray-200 dark:bg-zinc-800' : ''}
                 type="button"
             >
                 <ListOrdered className="h-4 w-4" />
@@ -140,22 +140,22 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => editor.chain().focus().toggleBlockquote().run()}
-                className={editor.isActive('blockquote') ? 'bg-gray-200' : ''}
+                className={editor.isActive('blockquote') ? 'bg-gray-200 dark:bg-zinc-800' : ''}
                 type="button"
             >
                 <Quote className="h-4 w-4" />
             </Button>
-            <div className="w-[1px] h-6 bg-gray-300 mx-1 self-center" />
+            <div className="w-[1px] h-6 bg-gray-300 dark:bg-zinc-700 mx-1 self-center" />
             <Button
                 variant="ghost"
                 size="sm"
                 onClick={addLink}
-                className={editor.isActive('link') ? 'bg-gray-200' : ''}
+                className={editor.isActive('link') ? 'bg-gray-200 dark:bg-zinc-800' : ''}
                 type="button"
             >
                 <LinkIcon className="h-4 w-4" />
             </Button>
-            <div className="w-[1px] h-6 bg-gray-300 mx-1 self-center" />
+            <div className="w-[1px] h-6 bg-gray-300 dark:bg-zinc-700 mx-1 self-center" />
             <Button
                 variant="ghost"
                 size="sm"
@@ -194,13 +194,13 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
         },
         editorProps: {
             attributes: {
-                class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl m-5 focus:outline-none min-h-[300px]',
+                class: 'prose dark:prose-invert prose-sm sm:prose lg:prose-lg xl:prose-2xl m-5 focus:outline-none min-h-[300px]',
             },
         },
     })
 
     return (
-        <div className="border rounded-md overflow-hidden bg-white">
+        <div className="border dark:border-zinc-800 rounded-md overflow-hidden bg-white dark:bg-zinc-950 text-gray-900 dark:text-zinc-100">
             <MenuBar editor={editor} />
             <EditorContent editor={editor} />
         </div>

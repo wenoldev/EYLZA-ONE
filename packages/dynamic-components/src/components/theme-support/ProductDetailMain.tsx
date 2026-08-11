@@ -147,9 +147,16 @@ export const ProductDetailMain: React.FC<ProductDetailProps> = ({ config }) => {
 
     if (config.template === 'zarishka') {
         return (
-            <div style={{ backgroundColor: styles.backgroundColor, paddingTop: styles.paddingTop, paddingBottom: styles.paddingBottom }} className="md:py-16 overflow-x-hidden w-full">
-                <div className="mx-auto px-5 md:px-8 w-full max-w-full" style={{ maxWidth: styles.containerWidth }}>
-                    <div className={cn('grid gap-10 lg:gap-14 xl:gap-20 w-full', layout === 'split' ? 'lg:grid-cols-2' : 'grid-cols-1')}>
+            <div style={{ backgroundColor: styles.backgroundColor }} className="py-8 md:py-16 overflow-x-hidden w-full">
+                <div 
+                  className="mx-auto px-4 md:px-8 w-full max-w-full" 
+                  style={{ 
+                    maxWidth: styles.containerWidth,
+                    paddingTop: typeof styles.paddingTop === 'number' ? Math.min(styles.paddingTop, 32) : styles.paddingTop,
+                    paddingBottom: typeof styles.paddingBottom === 'number' ? Math.min(styles.paddingBottom, 40) : styles.paddingBottom
+                  }}
+                >
+                    <div className={cn('grid gap-8 md:gap-10 lg:gap-14 xl:gap-20 w-full', layout === 'split' ? 'lg:grid-cols-2' : 'grid-cols-1')}>
                         <div className="lg:sticky lg:top-24 h-fit">
                             <div
                                 className="overflow-hidden bg-[#f4efe8] rounded-2xl shadow-sm"
@@ -266,22 +273,22 @@ export const ProductDetailMain: React.FC<ProductDetailProps> = ({ config }) => {
                                     </div>
                                 </div>
 
-                                <div className="space-y-3 pt-4">
+                                <div className="grid grid-cols-1 gap-3 pt-4">
                                     <button
                                         type="button"
                                         onClick={handleAddToCart}
                                         disabled={editorMode}
-                                        className="relative flex min-h-[3.5rem] w-full items-center justify-center gap-3 border-2 border-[#1f1a17] bg-transparent px-4 md:px-8 py-4 text-xs md:text-sm font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] transition-all hover:bg-[#1f1a17] hover:text-white disabled:cursor-not-allowed disabled:border-[#c8c0b4] disabled:text-[#aaa18f]"
+                                        className="relative flex min-h-[3rem] md:min-h-[3.5rem] w-full items-center justify-center gap-3 border-2 border-[#1f1a17] bg-transparent px-4 md:px-8 py-3 md:py-4 text-[10px] md:text-sm font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] transition-all hover:bg-[#1f1a17] hover:text-white disabled:cursor-not-allowed disabled:border-[#c8c0b4] disabled:text-[#aaa18f]"
                                         style={{ borderRadius: styles.buttonShape === 'pill' ? 9999 : 0 }}
                                     >
-                                        <ShoppingBag className="h-5 w-5" />
+                                        <ShoppingBag className="h-4 md:h-5 w-4 md:w-5" />
                                         {editorMode ? 'Editor Preview' : styles.buttonText}
                                     </button>
                                     <button
                                         type="button"
                                         onClick={handleAddToCart}
                                         disabled={editorMode}
-                                        className="flex min-h-[3.5rem] w-full items-center justify-center bg-[#1f1a17] px-4 md:px-8 py-4 text-xs md:text-sm font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] text-white shadow-lg transition-all hover:bg-black active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-[#d7d2c3]"
+                                        className="flex min-h-[3rem] md:min-h-[3.5rem] w-full items-center justify-center bg-[#1f1a17] px-4 md:px-8 py-3 md:py-4 text-[10px] md:text-sm font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] text-white shadow-lg transition-all hover:bg-black active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-[#d7d2c3]"
                                         style={{ borderRadius: styles.buttonShape === 'pill' ? 9999 : 0 }}
                                     >
                                         Buy it now
@@ -311,7 +318,7 @@ export const ProductDetailMain: React.FC<ProductDetailProps> = ({ config }) => {
                         </div>
                     </div>
 
-                    <div className="mt-20 grid gap-14 lg:grid-cols-[0.8fr_1.2fr] w-full overflow-hidden">
+                    <div className="mt-12 md:mt-20 grid gap-10 md:gap-14 lg:grid-cols-[0.8fr_1.2fr] w-full overflow-hidden">
                         <div className="space-y-4">
                             <div className="flex items-center gap-2 text-[#1f1a17]">
                                 {Array.from({ length: 5 }).map((_, index) => (

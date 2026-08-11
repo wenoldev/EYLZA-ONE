@@ -6,6 +6,7 @@ export const ComponentRegistry = {
     carousel: lazy(() => import('../components/themes/Carousel')),
     grid: lazy(() => import('../components/themes/MasonryGallerySection')),
     productList: lazy(() => import('../components/themes/ProductList')),
+    "featured-product": lazy(() => import('../components/themes/FeaturedProducts')),
     productDetail: lazy(() => import('../components/themes/ProductDetail')),
     "primary-header": lazy(() => import('../components/themes/Header')),
     "primary-footer": lazy(() => import('../components/themes/Footer')),

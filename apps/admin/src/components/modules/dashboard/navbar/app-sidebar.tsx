@@ -31,7 +31,7 @@ export function AppSidebar({ className, hideStoreSwitcher, ...props }: AppSideba
   const isLoading = useAuthStore((state) => state.isLoading);
 
   const stores = useStoreStore((state) => state.stores);
-  const storeLoading = useStoreStore((state) => state.loading);
+  const storeLoading = useStoreStore((state) => state.isLoading);
   const fetchStores = useStoreStore((state) => state.fetchStores);
 
   const navigate = useNavigate();

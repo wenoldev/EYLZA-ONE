@@ -97,7 +97,7 @@ export function PolicyEditor({ policyName, policyLabel }: PolicyEditorProps) {
 
     if (!currentStore && !loading) {
         return (
-            <div className="flex items-center justify-center p-12 text-gray-500 border-2 border-dashed rounded-lg">
+            <div className="flex items-center justify-center p-12 text-gray-500 dark:text-zinc-400 border-2 border-dashed rounded-lg">
                 Please select or create a store first to manage policies.
             </div>
         )
@@ -107,15 +107,19 @@ export function PolicyEditor({ policyName, policyLabel }: PolicyEditorProps) {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="text-xl font-semibold text-gray-900">{policyLabel}</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-zinc-100">{policyLabel}</h3>
                     {lastUpdated && (
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-zinc-400">
                             Last updated: {new Date(lastUpdated).toLocaleDateString()} at{" "}
                             {new Date(lastUpdated).toLocaleTimeString()}
                         </p>
                     )}
                 </div>
-                <Button onClick={handleSave} disabled={saving || loading}>
+                <Button 
+                    onClick={handleSave} 
+                    disabled={saving || loading}
+                    className="bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black shadow-sm transition-all"
+                >
                     {saving ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
@@ -126,11 +130,11 @@ export function PolicyEditor({ policyName, policyLabel }: PolicyEditorProps) {
             </div>
 
             {loading ? (
-                <div className="flex h-[400px] items-center justify-center border rounded-md bg-white">
-                    <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                <div className="flex h-[400px] items-center justify-center border rounded-md bg-white dark:bg-zinc-950">
+                    <Loader2 className="h-8 w-8 animate-spin text-gray-400 dark:text-zinc-500" />
                 </div>
             ) : (
-                <div className="bg-white rounded-md shadow-sm">
+                <div className="bg-white dark:bg-zinc-950 rounded-md shadow-sm">
                     <RichTextEditor value={content} onChange={setContent} />
                 </div>
             )}

@@ -66,7 +66,10 @@ interface CreateStoreResponse {
 
 interface StoreState {
   stores: Store[] | null;
-  loading: boolean;
+  isLoading: boolean;
+  isCreating: boolean;
+  isUpdating: boolean;
+  isDeleting: boolean;
   error: string | null;
   page: number;
   limit: number;
@@ -88,7 +91,10 @@ interface StoreOperationResponse {
 
 export const useStoreStore = create<StoreState>((set, get) => ({
   stores: null,
-  loading: false,
+  isLoading: false,
+  isCreating: false,
+  isUpdating: false,
+  isDeleting: false,
   error: null,
   page: 1,
   limit: 20,
@@ -97,14 +103,14 @@ export const useStoreStore = create<StoreState>((set, get) => ({
   setActiveStoreId: (storeId: string) => set({ activeStoreId: storeId }),
 
   fetchStores: async ({ page = 1, limit = 20, status, search } = {}) => {
-    set({ loading: true, error: null });
+    set({ isLoading: true, error: null });
     try {
       const response = await api.get<StoreResponse>('/api/v1/stores', {
         params: { page, limit, status, search },
       });
 
       if (response.data.error) {
-        set({ loading: false, error: response.data.error.message });
+        set({ isLoading: false, error: response.data.error.message });
         return;
       }
       set({
@@ -113,42 +119,42 @@ export const useStoreStore = create<StoreState>((set, get) => ({
         limit: response.data.data.limit,
         total: response.data.data.stores.length, // Adjust if backend provides total count
         activeStoreId: response.data.data.stores.length > 0 && !get().activeStoreId ? response.data.data.stores[0].id : get().activeStoreId,
-        loading: false,
+        isLoading: false,
         error: null,
       });
     } catch (error: any) {
       console.log("here", error);
 
-      set({ loading: false, error: error.response?.data?.error?.message || 'Failed to fetch stores' });
+      set({ isLoading: false, error: error.response?.data?.error?.message || 'Failed to fetch stores' });
     }
   },
 
   createStore: async (payload: CreateStorePayload) => {
-    set({ loading: true, error: null });
+    set({ isCreating: true, error: null });
     try {
       const response = await api.post<CreateStoreResponse>('/api/v1/stores', payload);
       if (response.data.error) {
-        set({ loading: false, error: response.data.error.message });
+        set({ isCreating: false, error: response.data.error.message });
         return null;
       }
       const newStore = response.data.data.store;
       set((state) => ({
         stores: state.stores ? [...state.stores, newStore] : [newStore],
-        loading: false,
+        isCreating: false,
         error: null,
       }));
       return newStore;
     } catch (error: any) {
-      set({ loading: false, error: error.response?.data?.error?.message || 'Failed to create store' });
+      set({ isCreating: false, error: error.response?.data?.error?.message || 'Failed to create store' });
       return null;
     }
   },
   updateStore: async (storeId: string, payload: UpdateStorePayload) => {
-    set({ loading: true, error: null });
+    set({ isUpdating: true, error: null });
     try {
       const response = await api.patch<StoreOperationResponse>(`/api/v1/stores/${storeId}`, payload);
       if (response.data.error) {
-        set({ loading: false, error: response.data.error.message });
+        set({ isUpdating: false, error: response.data.error.message });
         return null;
       }
       const updatedStore = response.data.data.store ?? null;
@@ -156,33 +162,33 @@ export const useStoreStore = create<StoreState>((set, get) => ({
         stores: state.stores?.map((store) =>
           store.id === storeId && updatedStore ? { ...store, ...updatedStore } : store
         ),
-        loading: false,
+        isUpdating: false,
         error: null,
       }));
       return updatedStore;
     } catch (error: any) {
-      set({ loading: false, error: error.response?.data?.error?.message || 'Failed to update store' });
+      set({ isUpdating: false, error: error.response?.data?.error?.message || 'Failed to update store' });
       return null;
     }
   },
 
   deleteStore: async (storeId: string) => {
-    set({ loading: true, error: null });
+    set({ isDeleting: true, error: null });
     try {
       const response = await api.delete<StoreOperationResponse>(`/api/v1/stores/${storeId}`);
       if (response.data.error) {
-        set({ loading: false, error: response.data.error.message });
+        set({ isDeleting: false, error: response.data.error.message });
         return false;
       }
       set((state) => ({
         stores: state.stores?.filter((store) => store.id !== storeId) || null,
-        loading: false,
+        isDeleting: false,
         error: null,
       }));
       return true;
     } catch (error: any) {
-      set({ loading: false, error: error.response?.data?.error?.message || 'Failed to delete store' });
+      set({ isDeleting: false, error: error.response?.data?.error?.message || 'Failed to delete store' });
       return false;
     }
   },
-}));
+}));

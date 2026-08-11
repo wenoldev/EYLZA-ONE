@@ -15,7 +15,7 @@ interface UploadDialogProps {
   multiple?: boolean
 }
 
-export function UploadDialog({ onImagesSelected, initialValues, multiple = true }: UploadDialogProps) {
+export function UploadDialog({ onImagesSelected, initialValues, multiple = false }: UploadDialogProps) {
   const [images, setImages] = useState<ImageData[]>(initialValues || [])
   const [primaryIndex, setPrimaryIndex] = useState(0)
   const [open, setOpen] = useState(false)
@@ -26,6 +26,10 @@ export function UploadDialog({ onImagesSelected, initialValues, multiple = true 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { stores } = useStoreStore()
   const storeId = stores?.[0]?.id
+
+  useEffect(() => {
+    setImages(initialValues || [])
+  }, [initialValues, open])
 
   const fetchGallery = useCallback(async () => {
     if (!storeId) return
@@ -179,70 +183,102 @@ export function UploadDialog({ onImagesSelected, initialValues, multiple = true 
       <DialogTrigger asChild>
         <Button variant="outline" className="w-full">
           <Upload className="mr-2 h-4 w-4" />
-          Add Images
+          {multiple ? "Add Images" : "Add Image"}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col" onPaste={handlePaste}>
         <DialogHeader>
-          <DialogTitle>Add Images</DialogTitle>
+          <DialogTitle>{multiple ? "Add Images" : "Add Image"}</DialogTitle>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="grow flex flex-col overflow-hidden">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="upload">Upload New</TabsTrigger>
-            <TabsTrigger value="gallery">Store Gallery</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="upload" className="grow overflow-y-auto space-y-4 pt-4">
-            <div
-              className={`border-2 border-dashed rounded-lg p-10 text-center transition-all duration-300 ${isDragging ? "bg-muted/50 scale-[1.02]" : "hover:bg-muted/50"
-                } cursor-pointer`}
-              onDragOver={(e) => {
-                e.preventDefault()
-                setIsDragging(true)
-              }}
-              onDragLeave={() => setIsDragging(false)}
-              onDrop={(e) => {
-                e.preventDefault()
-                setIsDragging(false)
-                handleFileChange(e.dataTransfer.files)
-              }}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <Upload className="mx-auto h-10 w-10 mb-2 text-muted-foreground" />
-              <p className="font-medium">Drag & drop images here, click to browse, or paste from clipboard</p>
-              <p className="text-sm text-muted-foreground mt-1">Maximum file size: 5MB</p>
+        {!multiple && images.length > 0 ? (
+          <div className="flex-1 overflow-y-auto p-4 flex flex-col items-center justify-center space-y-4 min-h-0">
+            <div className="relative group max-w-md w-full aspect-square rounded-lg overflow-hidden border bg-muted shadow-lg">
+              <img
+                src={getImageSrc(images[0])}
+                alt="Selected Image Preview"
+                className="w-full h-full object-contain"
+              />
+              <Button
+                type="button"
+                variant="destructive"
+                size="icon"
+                className="absolute top-2 right-2 h-8 w-8 rounded-full shadow-md"
+                onClick={() => handleRemoveImage(0)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
             </div>
-          </TabsContent>
+            <p className="text-sm text-muted-foreground text-center">Select a different image or click confirm to finish</p>
+            <div className="flex gap-4">
+               <Button variant="outline" size="sm" onClick={() => setActiveTab("upload")}>
+                  Upload Different
+               </Button>
+               <Button variant="outline" size="sm" onClick={() => setActiveTab("gallery")}>
+                  From Gallery
+               </Button>
+            </div>
+          </div>
+        ) : (
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="grow flex flex-col overflow-hidden">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="upload">Upload New</TabsTrigger>
+              <TabsTrigger value="gallery">Store Gallery</TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="gallery" className="grow overflow-y-auto pt-4">
-            {isLoadingGallery ? (
-              <div className="flex justify-center items-center h-40">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <TabsContent value="upload" className="grow overflow-y-auto space-y-4 pt-4">
+              <div
+                className={`border-2 border-dashed rounded-lg p-10 text-center transition-all duration-300 ${isDragging ? "bg-muted/50 scale-[1.02]" : "hover:bg-muted/50"
+                  } cursor-pointer`}
+                onDragOver={(e) => {
+                  e.preventDefault()
+                  setIsDragging(true)
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault()
+                  setIsDragging(false)
+                  handleFileChange(e.dataTransfer.files)
+                }}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="mx-auto h-10 w-10 mb-2 text-muted-foreground" />
+                <p className="font-medium">
+                  {multiple ? "Drag & drop images here" : "Drag & drop image here"}, click to browse, or paste from clipboard
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">Maximum file size: 5MB</p>
               </div>
-            ) : galleryImages.length > 0 ? (
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
-                {galleryImages.map((img, idx) => (
-                  <div
-                    key={idx}
-                    className="group relative aspect-square rounded-md overflow-hidden border hover:border-primary cursor-pointer transition-all"
-                    onClick={() => handleGallerySelect(img)}
-                  >
-                    <img src={img.url} alt="" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                      <ImageIcon className="text-white h-6 w-6" />
+            </TabsContent>
+
+            <TabsContent value="gallery" className="grow overflow-y-auto pt-4">
+              {isLoadingGallery ? (
+                <div className="flex justify-center items-center h-40">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : galleryImages.length > 0 ? (
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+                  {galleryImages.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="group relative aspect-square rounded-md overflow-hidden border hover:border-primary cursor-pointer transition-all"
+                      onClick={() => handleGallerySelect(img)}
+                    >
+                      <img src={img.url} alt="" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                        <ImageIcon className="text-white h-6 w-6" />
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-20 text-muted-foreground border-2 border-dashed rounded-lg">
-                <ImageIcon className="h-10 w-10 mx-auto mb-2 opacity-50" />
-                <p>No images found in your gallery.</p>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-20 text-muted-foreground border-2 border-dashed rounded-lg">
+                  <ImageIcon className="h-10 w-10 mx-auto mb-2 opacity-50" />
+                  <p>No images found in your gallery.</p>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
+        )}
 
         <input
           ref={fileInputRef}
@@ -253,9 +289,14 @@ export function UploadDialog({ onImagesSelected, initialValues, multiple = true 
           onChange={(e) => handleFileChange(e.target.files)}
         />
 
-        {images.length > 0 && (
+        {multiple && images.length > 0 && (
           <div className="mt-4 space-y-4 max-h-60 overflow-y-auto p-1">
-            <h4 className="text-sm font-semibold">Selected Images ({images.length})</h4>
+            <div className="flex items-center justify-between">
+              <h4 className="text-sm font-semibold">Selected Images ({images.length})</h4>
+              <Button variant="ghost" size="sm" onClick={() => setImages([])} className="h-7 text-xs text-destructive">
+                Remove All
+              </Button>
+            </div>
             {images.map((image, index) => (
               <div
                 key={index}
@@ -298,7 +339,7 @@ export function UploadDialog({ onImagesSelected, initialValues, multiple = true 
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={images.length === 0}>
-            Finish Selection
+            {multiple ? "Finish Selection" : "Confirm Image"}
           </Button>
         </div>
       </DialogContent>

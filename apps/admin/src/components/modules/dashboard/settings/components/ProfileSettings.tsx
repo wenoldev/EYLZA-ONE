@@ -64,78 +64,88 @@ export function ProfileSettings() {
     }
 
     return (
-        <div className="max-w-2xl space-y-6">
+        <div className="max-w-4xl space-y-8 pb-10">
             <div>
-                <h3 className="text-xl font-semibold text-gray-900">Profile</h3>
-                <p className="text-sm text-gray-500">Manage your personal information</p>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">Profile</h3>
+                <p className="text-sm text-gray-500 dark:text-zinc-400">Manage your personal information</p>
             </div>
 
-            <div className="flex items-center gap-6">
-                <Avatar className="h-20 w-20">
-                    <AvatarImage src={user?.user_metadata?.avatar_url} />
-                    <AvatarFallback className="text-lg">
-                        {userName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "U"}
-                    </AvatarFallback>
-                </Avatar>
-                <Button variant="outline" className="flex items-center gap-2">
-                    <Upload className="h-4 w-4" /> Change Photo
+            <div className="bg-white dark:bg-zinc-950 p-6 rounded-xl border space-y-8">
+                <div className="flex items-center gap-6">
+                    <Avatar className="h-24 w-24 rounded-xl">
+                        <AvatarImage src={user?.user_metadata?.avatar_url} className="rounded-xl object-cover" />
+                        <AvatarFallback className="text-3xl rounded-xl bg-gray-100 dark:bg-zinc-900 text-gray-900 dark:text-zinc-100 font-medium">
+                            {userName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "U"}
+                        </AvatarFallback>
+                    </Avatar>
+                    <Button variant="outline" className="flex items-center gap-2">
+                        <Upload className="h-4 w-4" /> Change Photo
+                    </Button>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div className="space-y-2">
+                        <Label htmlFor="name" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Full Name</Label>
+                        <Input
+                            id="name"
+                            value={userName}
+                            onChange={(e) => setUserName(e.target.value)}
+                            placeholder="John Doe"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Email</Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            value={user?.email || ""}
+                            disabled
+                            className="bg-gray-50 dark:bg-black"
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="phone" className="text-sm font-medium text-gray-700 dark:text-zinc-300">Phone</Label>
+                    <Input
+                        id="phone"
+                        value={userPhone}
+                        onChange={(e) => setUserPhone(e.target.value)}
+                        placeholder="+1 234 567 8900"
+                    />
+                </div>
+
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div className="bg-gray-50 dark:bg-black p-4 rounded-lg">
+                        <Label className="text-xs font-semibold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Role</Label>
+                        <p className="mt-1 text-sm font-medium text-gray-900 dark:text-zinc-100 capitalize">
+                            {userMetadata?.role || user?.user_metadata?.role || user?.role || "Vendor"}
+                        </p>
+                    </div>
+
+                    <div className="bg-gray-50 dark:bg-black p-4 rounded-lg">
+                        <Label className="text-xs font-semibold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Member Since</Label>
+                        <p className="mt-1 text-sm font-medium text-gray-900 dark:text-zinc-100">
+                            {userMetadata?.created_at
+                                ? new Date(userMetadata.created_at).toLocaleDateString()
+                                : user?.created_at
+                                    ? new Date(user.created_at).toLocaleDateString()
+                                    : "15/2/2026"}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex justify-end border-t pt-6">
+                <Button 
+                    onClick={handleSaveProfile} 
+                    disabled={isUpdating} 
+                    className="bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black shadow-sm transition-all"
+                >
+                    {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Save Changes
                 </Button>
             </div>
-
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div>
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input
-                        id="name"
-                        value={userName}
-                        onChange={(e) => setUserName(e.target.value)}
-                        placeholder="John Doe"
-                    />
-                </div>
-                <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                        id="email"
-                        type="email"
-                        value={user?.email || ""}
-                        disabled
-                        className="bg-gray-50"
-                    />
-                </div>
-            </div>
-
-            <div>
-                <Label htmlFor="phone">Phone</Label>
-                <Input
-                    id="phone"
-                    value={userPhone}
-                    onChange={(e) => setUserPhone(e.target.value)}
-                    placeholder="+1 234 567 8900"
-                />
-            </div>
-
-            <div>
-                <Label>Role</Label>
-                <p className="mt-1 text-gray-700 capitalize">
-                    {userMetadata?.role || user?.user_metadata?.role || user?.role || "N/A"}
-                </p>
-            </div>
-
-            <div>
-                <Label>Member Since</Label>
-                <p className="mt-1 text-gray-700">
-                    {userMetadata?.created_at
-                        ? new Date(userMetadata.created_at).toLocaleDateString()
-                        : user?.created_at
-                            ? new Date(user.created_at).toLocaleDateString()
-                            : "N/A"}
-                </p>
-            </div>
-
-            <Button onClick={handleSaveProfile} disabled={isUpdating}>
-                {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Save Changes
-            </Button>
         </div>
     )
 }

@@ -61,9 +61,9 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({ pageKey }) =>
     <div className="w-full">
       {content && Array.isArray(content) && content.length > 0 ? (
         content.map((component: any, index: number) => { // eslint-disable-line @typescript-eslint/no-explicit-any
-          const Component = ComponentRegistry[component.selector as keyof typeof ComponentRegistry] as any;
+          const DynamicComponent = ComponentRegistry[component.selector as keyof typeof ComponentRegistry] as any;
 
-          if (!Component) {
+          if (!DynamicComponent) {
             return (
               <div key={component.id || index} className="py-10 border-b border-dashed border-border/30 bg-card/10">
                 <div className="max-w-7xl mx-auto px-4 text-center">
@@ -74,9 +74,34 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({ pageKey }) =>
             );
           }
 
+          // Map currentProduct to dynamic component format if we are on a product page
+          let componentConfig = component.props;
+          if (pageKey === 'product' && currentProduct && (component.selector === 'productDetail' || component.selector === 'aurelianProductDetail')) {
+            componentConfig = {
+              ...component.props,
+              product: {
+                id: currentProduct.id,
+                name: currentProduct.name,
+                price: currentProduct.price,
+                originalPrice: currentProduct.original_price,
+                description: currentProduct.description || '',
+                images: currentProduct.images?.map((img: any) => img.url) || [],
+                // Use existing props if available, otherwise defaults/mapped values
+                badge: component.props?.product?.badge,
+                label: component.props?.product?.label,
+                reviewCount: component.props?.product?.reviewCount,
+                rating: component.props?.product?.rating,
+                stockText: component.props?.product?.stockText,
+                options: component.props?.product?.options,
+                metadata: component.props?.product?.metadata,
+                ...component.props?.product
+              }
+            };
+          }
+
           return (
             <Suspense key={component.id || index} fallback={<ShadeLoader />}>
-              <Component config={component.props} {...component.props} />
+              <DynamicComponent config={componentConfig} {...componentConfig} />
             </Suspense>
           );
         })

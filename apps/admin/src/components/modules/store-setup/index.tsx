@@ -39,7 +39,7 @@ const initialFormData: StoreFormData = {
 export default function StoreSetupWizard() {
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState<StoreFormData>(initialFormData)
-  const { createStore, loading, error } = useStoreStore()
+  const { createStore, isLoading: loading, isCreating, error } = useStoreStore()
 
   const totalSteps = 3
 
@@ -106,7 +106,7 @@ export default function StoreSetupWizard() {
             updateFormData={updateFormData}
             onBack={prevStep}
             onSubmit={handleSubmit}
-            loading={loading}
+            loading={isCreating}
           />
         )
       default:

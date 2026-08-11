@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import api from "@/lib/api"
 import { useStoreStore } from "@/stores/storeStore"
 import { useAuthStore } from "@/stores/authStore"
+import { getStandardUploadPath } from "@/lib/upload-utils"
 
 interface ExtendedVideoData extends VideoData {
   id?: string;
@@ -23,7 +24,7 @@ interface UploadVideoDialogProps {
   multiple?: boolean
 }
 
-export function UploadVideoDialog({ onVideosSelected, initialValues, multiple = true }: UploadVideoDialogProps) {
+export function UploadVideoDialog({ onVideosSelected, initialValues, multiple = false }: UploadVideoDialogProps) {
   const [videos, setVideos] = useState<ExtendedVideoData[]>(initialValues || [])
   const [primaryIndex, setPrimaryIndex] = useState(0)
   const [open, setOpen] = useState(false)
@@ -34,6 +35,10 @@ export function UploadVideoDialog({ onVideosSelected, initialValues, multiple = 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { stores } = useStoreStore()
   const storeId = stores?.[0]?.id
+
+  useEffect(() => {
+    setVideos(initialValues || [])
+  }, [initialValues, open])
 
   const fetchGallery = useCallback(async () => {
     if (!storeId) return
@@ -64,18 +69,26 @@ export function UploadVideoDialog({ onVideosSelected, initialValues, multiple = 
 
   const uploadFile = async (file: File, tempId: string) => {
     try {
+      if (!storeId) {
+        toast.error("Store ID not found. Please refresh.")
+        return
+      }
+      
       const token = useAuthStore.getState().getAccessToken();
       
-      // 1. Get Cloudinary signature from our backend
       const signResponse = await axios.post(
         `${import.meta.env.VITE_API_URL || ''}/api/v1/upload`, 
-        { fileName: file.name, folder: 'cms/videos' },
+        { 
+          fileName: file.name, 
+          area: 'cms',
+          storeId: storeId,
+          type: 'videos'
+        },
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
 
       const { signature, timestamp, public_id, api_key, upload_url, folder } = signResponse.data.data;
 
-      // 2. Upload directly to Cloudinary
       const cloudFormData = new FormData();
       cloudFormData.append('file', file);
       cloudFormData.append('signature', signature);
@@ -93,7 +106,6 @@ export function UploadVideoDialog({ onVideosSelected, initialValues, multiple = 
           : v
         )
       );
-      // toast.success(`${file.name} uploaded`);
     } catch (error) {
       console.error("Upload failed:", error);
       setVideos((prev) => 
@@ -114,7 +126,7 @@ export function UploadVideoDialog({ onVideosSelected, initialValues, multiple = 
       const filesToProcess = multiple ? filesArray : [filesArray[0]]
 
       filesToProcess.forEach((file) => {
-        if (file.size > 50 * 1024 * 1024) { // 50MB limit for videos
+        if (file.size > 50 * 1024 * 1024) { 
           toast.error(`File ${file.name} is larger than 50MB.`)
           return
         }
@@ -124,7 +136,7 @@ export function UploadVideoDialog({ onVideosSelected, initialValues, multiple = 
         
         const newVideo: ExtendedVideoData = {
           id: tempId,
-          video_url: '', // Will be filled after upload
+          video_url: '', 
           isPrimary: multiple ? (videos.length === 0) : true,
           isUploading: true,
           localUrl
@@ -223,70 +235,108 @@ export function UploadVideoDialog({ onVideosSelected, initialValues, multiple = 
       <DialogTrigger asChild>
         <Button variant="outline" className="w-full">
           <Upload className="mr-2 h-4 w-4" />
-          Add Videos
+          {multiple ? "Add Videos" : "Add Video"}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
-          <DialogTitle>Add Videos</DialogTitle>
+          <DialogTitle>{multiple ? "Add Videos" : "Add Video"}</DialogTitle>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="grow flex flex-col overflow-hidden">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="upload">Upload New</TabsTrigger>
-            <TabsTrigger value="gallery">Store Gallery</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="upload" className="grow overflow-y-auto space-y-4 pt-4">
-            <div
-              className={`border-2 border-dashed rounded-lg p-10 text-center transition-all duration-300 ${isDragging ? "bg-muted/50 scale-[1.02]" : "hover:bg-muted/50"
-                } cursor-pointer`}
-              onDragOver={(e) => {
-                e.preventDefault()
-                setIsDragging(true)
-              }}
-              onDragLeave={() => setIsDragging(false)}
-              onDrop={(e) => {
-                e.preventDefault()
-                setIsDragging(false)
-                handleFileChange(e.dataTransfer.files)
-              }}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <VideoIcon className="mx-auto h-10 w-10 mb-2 text-muted-foreground" />
-              <p className="font-medium">Drag & drop videos here or click to browse</p>
-              <p className="text-sm text-muted-foreground mt-1">Maximum file size: 50MB</p>
+        {!multiple && videos.length > 0 ? (
+          <div className="flex-1 overflow-y-auto p-4 flex flex-col items-center justify-center space-y-4 min-h-0">
+            <div className="relative group max-w-2xl w-full aspect-video rounded-lg overflow-hidden border bg-black shadow-lg">
+              <video
+                src={getVideoSrc(videos[0])}
+                controls
+                className="w-full h-full object-contain"
+              />
+              {videos[0].isUploading && (
+                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white">
+                   <Loader2 className="h-10 w-10 animate-spin mb-2" />
+                   <p className="text-sm">Uploading video...</p>
+                </div>
+              )}
+              <Button
+                type="button"
+                variant="destructive"
+                size="icon"
+                className="absolute top-2 right-2 h-8 w-8 rounded-full shadow-md z-10"
+                onClick={() => handleRemoveVideo(0)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
             </div>
-          </TabsContent>
+            <p className="text-sm text-muted-foreground text-center">Select a different video or click confirm to finish</p>
+            <div className="flex gap-4">
+               <Button variant="outline" size="sm" onClick={() => setActiveTab("upload")}>
+                  Upload Different
+               </Button>
+               <Button variant="outline" size="sm" onClick={() => setActiveTab("gallery")}>
+                  From Gallery
+               </Button>
+            </div>
+          </div>
+        ) : (
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="grow flex flex-col overflow-hidden">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="upload">Upload New</TabsTrigger>
+              <TabsTrigger value="gallery">Store Gallery</TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="gallery" className="grow overflow-y-auto pt-4">
-            {isLoadingGallery ? (
-              <div className="flex justify-center items-center h-40">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <TabsContent value="upload" className="grow overflow-y-auto space-y-4 pt-4">
+              <div
+                className={`border-2 border-dashed rounded-lg p-10 text-center transition-all duration-300 ${isDragging ? "bg-muted/50 scale-[1.02]" : "hover:bg-muted/50"
+                  } cursor-pointer`}
+                onDragOver={(e) => {
+                  e.preventDefault()
+                  setIsDragging(true)
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault()
+                  setIsDragging(false)
+                  handleFileChange(e.dataTransfer.files)
+                }}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <VideoIcon className="mx-auto h-10 w-10 mb-2 text-muted-foreground" />
+                <p className="font-medium">
+                   {multiple ? "Drag & drop videos here" : "Drag & drop video here"} or click to browse
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">Maximum file size: 50MB</p>
               </div>
-            ) : galleryVideos.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                {galleryVideos.map((vid, idx) => (
-                  <div
-                    key={idx}
-                    className="group relative aspect-video rounded-md overflow-hidden border hover:border-primary cursor-pointer transition-all"
-                    onClick={() => handleGallerySelect(vid)}
-                  >
-                    <video src={vid.url} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                      <VideoIcon className="text-white h-6 w-6" />
+            </TabsContent>
+
+            <TabsContent value="gallery" className="grow overflow-y-auto pt-4">
+              {isLoadingGallery ? (
+                <div className="flex justify-center items-center h-40">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : galleryVideos.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                  {galleryVideos.map((vid, idx) => (
+                    <div
+                      key={idx}
+                      className="group relative aspect-video rounded-md overflow-hidden border hover:border-primary cursor-pointer transition-all"
+                      onClick={() => handleGallerySelect(vid)}
+                    >
+                      <video src={vid.url} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                        <VideoIcon className="text-white h-6 w-6" />
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-20 text-muted-foreground border-2 border-dashed rounded-lg">
-                <VideoIcon className="h-10 w-10 mx-auto mb-2 opacity-50" />
-                <p>No videos found in your gallery.</p>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-20 text-muted-foreground border-2 border-dashed rounded-lg">
+                  <VideoIcon className="h-10 w-10 mx-auto mb-2 opacity-50" />
+                  <p>No videos found in your gallery.</p>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
+        )}
 
         <input
           ref={fileInputRef}
@@ -297,9 +347,14 @@ export function UploadVideoDialog({ onVideosSelected, initialValues, multiple = 
           onChange={(e) => handleFileChange(e.target.files)}
         />
 
-        {videos.length > 0 && (
+        {multiple && videos.length > 0 && (
           <div className="mt-4 space-y-4 max-h-60 overflow-y-auto p-1">
-            <h4 className="text-sm font-semibold">Selected Videos ({videos.length})</h4>
+            <div className="flex items-center justify-between">
+               <h4 className="text-sm font-semibold">Selected Videos ({videos.length})</h4>
+               <Button variant="ghost" size="sm" onClick={() => setVideos([])} className="h-7 text-xs text-destructive">
+                  Remove All
+               </Button>
+            </div>
             {videos.map((video, index) => (
               <div
                 key={video.id || index}
@@ -357,7 +412,7 @@ export function UploadVideoDialog({ onVideosSelected, initialValues, multiple = 
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={videos.length === 0 || isAnyUploading}>
-            {isAnyUploading ? 'Uploading...' : 'Finish Selection'}
+            {isAnyUploading ? 'Uploading...' : (multiple ? 'Finish Selection' : 'Confirm Video')}
           </Button>
         </div>
       </DialogContent>

@@ -4,11 +4,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Store, Loader2, Globe, Mail, Phone, MapPin, Clock, Tag } from "lucide-react"
+import { Store, Loader2, Globe, Mail, Phone, MapPin, Clock, Tag, Check, CheckCircle2 } from "lucide-react"
 import { useStoreStore } from "@/stores/storeStore"
 import { toast } from "sonner"
 import { UploadDialog } from "@/components/common/UploadImage"
-import { X } from "lucide-react"
+import { X, AlertCircle } from "lucide-react"
+import api from "@/lib/api"
 
 const countries = [
   { value: "US", label: "United States" },
@@ -39,7 +40,7 @@ const timezones = [
 ]
 
 export function StoreSettings() {
-    const { stores, loading: storeLoading, error: storeError, fetchStores, updateStore } = useStoreStore()
+    const { stores, isLoading: storeLoading, isUpdating, error: storeError, updateStore, fetchStores } = useStoreStore()
     const currentStore = stores?.[0]
 
     const [formData, setFormData] = useState({
@@ -54,6 +55,9 @@ export function StoreSettings() {
         timezone: "",
         logo_url: "",
     })
+
+    const [slugStatus, setSlugStatus] = useState<"idle" | "checking" | "available" | "taken" | "error" | "invalid">("idle")
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
 
     useEffect(() => {
         if (!stores || stores.length === 0) {
@@ -80,8 +84,55 @@ export function StoreSettings() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target
+        
+        if (id === 'slug') {
+            const cleanSlug = value.toLowerCase().replace(/[^a-z0-9-]/g, "")
+            setFormData(prev => ({ ...prev, [id]: cleanSlug }))
+            if (cleanSlug !== currentStore?.slug) {
+                setSlugStatus("idle")
+            } else {
+                setSlugStatus("available")
+            }
+            return
+        }
+        
         setFormData(prev => ({ ...prev, [id]: value }))
     }
+
+    const checkSlugAvailability = async (slug: string) => {
+        if (!slug || !currentStore) return
+        if (slug === currentStore.slug) {
+            setSlugStatus("available")
+            return
+        }
+
+        setSlugStatus("checking")
+
+        try {
+            const response = await api.get(`/api/v1/stores/check-slug`, {
+                params: { slug, excludeId: currentStore.id }
+            })
+
+            if (response.data?.data?.exists) {
+                setSlugStatus("taken")
+            } else if (response.data?.data?.valid === false) {
+                setSlugStatus("invalid")
+            } else {
+                setSlugStatus("available")
+            }
+        } catch (error: any) {
+            setSlugStatus("error")
+        }
+    }
+
+    useEffect(() => {
+        if (formData.slug && formData.slug !== currentStore?.slug && formData.slug.length > 2) {
+            const timeoutId = setTimeout(() => {
+                checkSlugAvailability(formData.slug)
+            }, 500)
+            return () => clearTimeout(timeoutId)
+        }
+    }, [formData.slug, currentStore?.id])
 
     const handleSelectChange = (id: string, value: string) => {
         setFormData(prev => ({ ...prev, [id]: value }))
@@ -104,9 +155,9 @@ export function StoreSettings() {
 
     if (!currentStore && !storeLoading) {
         return (
-            <div className="rounded-lg border border-dashed p-8 text-center bg-white">
-                <Store className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="mt-2 text-gray-600">No store found. Please create a store first.</p>
+            <div className="rounded-lg border border-dashed p-8 text-center bg-white dark:bg-zinc-950">
+                <Store className="mx-auto h-12 w-12 text-gray-400 dark:text-zinc-500" />
+                <p className="mt-2 text-gray-600 dark:text-zinc-400">No store found. Please create a store first.</p>
             </div>
         )
     }
@@ -114,20 +165,20 @@ export function StoreSettings() {
     return (
         <div className="max-w-4xl space-y-8 pb-10">
             <div>
-                <h3 className="text-2xl font-bold text-gray-900">Store Settings</h3>
-                <p className="text-sm text-gray-500">Manage your store's identity and regional settings</p>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">Store Settings</h3>
+                <p className="text-sm text-gray-500 dark:text-zinc-400">Manage your store's identity and regional settings</p>
             </div>
 
             {/* Logo Upload Section */}
-            <div className="bg-white p-6 rounded-xl border space-y-4">
+            <div className="bg-white dark:bg-zinc-950 p-6 rounded-xl border space-y-4">
                 <div className="flex items-center gap-2 mb-2">
-                    <Store className="w-5 h-5 text-blue-600" />
-                    <h4 className="font-semibold text-gray-900">Store Logo</h4>
+                    <Store className="w-5 h-5 text-gray-700 dark:text-zinc-300" />
+                    <h4 className="font-semibold text-gray-900 dark:text-zinc-100">Store Logo</h4>
                 </div>
                 
                 <div className="flex items-start gap-6">
                     <div className="relative group">
-                        <div className="w-32 h-32 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden bg-gray-50 transition-colors group-hover:border-blue-400">
+                        <div className="w-32 h-32 rounded-xl border-2 border-dashed border-gray-200 dark:border-zinc-800 flex items-center justify-center overflow-hidden bg-gray-50 dark:bg-black transition-colors group-hover:border-blue-400">
                             {formData.logo_url ? (
                                 <img 
                                     src={formData.logo_url} 
@@ -136,8 +187,8 @@ export function StoreSettings() {
                                 />
                             ) : (
                                 <div className="text-center p-4">
-                                    <Store className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-                                    <p className="text-[10px] text-gray-400">No logo uploaded</p>
+                                    <Store className="w-8 h-8 text-gray-300 dark:text-zinc-600 mx-auto mb-2" />
+                                    <p className="text-[10px] text-gray-400 dark:text-zinc-500">No logo uploaded</p>
                                 </div>
                             )}
                         </div>
@@ -152,7 +203,7 @@ export function StoreSettings() {
                     </div>
                     
                     <div className="flex-1 space-y-3">
-                        <p className="text-sm text-gray-600 leading-relaxed">
+                        <p className="text-sm text-gray-600 dark:text-zinc-400 leading-relaxed">
                             Upload your store logo. This logo will be used in your storefront header, emails, and invoices.
                             Recommended size: 200x200px. Max size: 2MB.
                         </p>
@@ -172,10 +223,10 @@ export function StoreSettings() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* General Information */}
-                <div className="space-y-6 bg-white p-6 rounded-xl border">
+                <div className="space-y-6 bg-white dark:bg-zinc-950 p-6 rounded-xl border">
                     <div className="flex items-center gap-2 mb-2">
-                        <Tag className="w-5 h-5 text-blue-600" />
-                        <h4 className="font-semibold text-gray-900">Basic Information</h4>
+                        <Tag className="w-5 h-5 text-gray-700 dark:text-zinc-300" />
+                        <h4 className="font-semibold text-gray-900 dark:text-zinc-100">Basic Information</h4>
                     </div>
 
                     <div className="space-y-4">
@@ -191,17 +242,47 @@ export function StoreSettings() {
 
                         <div className="space-y-2">
                             <Label htmlFor="slug">Store URL Slug</Label>
-                            <div className="flex items-center">
-                                <span className="bg-gray-100 border border-r-0 rounded-l-md px-3 py-2 text-sm text-gray-500 h-10 flex items-center">/</span>
-                                <Input
-                                    id="slug"
-                                    value={formData.slug}
-                                    onChange={handleInputChange}
-                                    placeholder="my-store"
-                                    className="rounded-l-none"
-                                />
+                            <div className="relative">
+                                <div className="flex">
+                                    <div className="flex items-center px-3 bg-gray-50 dark:bg-black border border-r-0 border-gray-300 dark:border-zinc-700 rounded-l-md text-gray-500 dark:text-zinc-400 text-sm whitespace-nowrap overflow-hidden max-w-[200px]">
+                                        {baseUrl.replace(/^https?:\/\//, '')}/
+                                    </div>
+                                    <Input
+                                        id="slug"
+                                        value={formData.slug}
+                                        onChange={handleInputChange}
+                                        placeholder="my-store"
+                                        className={`rounded-l-none pr-10 ${
+                                            slugStatus === 'taken' ? 'border-red-500 focus-visible:ring-red-500' : 
+                                            slugStatus === 'available' && formData.slug !== currentStore?.slug ? 'border-green-500 focus-visible:ring-green-500' : ''
+                                        }`}
+                                    />
+                                </div>
+                                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                                    {slugStatus === "checking" && <Loader2 className="w-4 h-4 animate-spin text-green-500" />}
+                                    {slugStatus === "available" && formData.slug !== currentStore?.slug && <CheckCircle2 className="w-4 h-4 text-green-500" />}
+                                    {slugStatus === "taken" && <AlertCircle className="w-4 h-4 text-red-500" />}
+                                </div>
                             </div>
-                            <p className="text-[10px] text-gray-500 mt-1">Changing this will change your store's web address.</p>
+                            
+                            {slugStatus === "taken" && (
+                                <p className="text-[10px] text-red-600 animate-in fade-in slide-in-from-top-1">
+                                    This URL is already taken. Please try a different one.
+                                </p>
+                            )}
+                            {slugStatus === "invalid" && (
+                                <p className="text-[10px] text-red-600 animate-in fade-in slide-in-from-top-1">
+                                    Invalid format. Use lowercase letters, numbers and hyphens only.
+                                </p>
+                            )}
+                            {slugStatus === "available" && formData.slug !== currentStore?.slug && (
+                                <p className="text-[10px] text-green-600 animate-in fade-in slide-in-from-top-1">
+                                    Great! This URL is available.
+                                </p>
+                            )}
+                            <p className="text-[10px] text-gray-500 dark:text-zinc-400 mt-1">
+                                Changing this will change your store's web address: <span className="font-medium">{baseUrl}/{formData.slug}</span>
+                            </p>
                         </div>
 
                         <div className="space-y-2">
@@ -218,10 +299,10 @@ export function StoreSettings() {
                 </div>
 
                 {/* Regional & Contact */}
-                <div className="space-y-6 bg-white p-6 rounded-xl border">
+                <div className="space-y-6 bg-white dark:bg-zinc-950 p-6 rounded-xl border">
                     <div className="flex items-center gap-2 mb-2">
-                        <Globe className="w-5 h-5 text-blue-600" />
-                        <h4 className="font-semibold text-gray-900">Regional & Contact</h4>
+                        <Globe className="w-5 h-5 text-gray-700 dark:text-zinc-300" />
+                        <h4 className="font-semibold text-gray-900 dark:text-zinc-100">Regional & Contact</h4>
                     </div>
 
                     <div className="space-y-4">
@@ -258,7 +339,7 @@ export function StoreSettings() {
                             <div className="space-y-2">
                                 <Label htmlFor="city">City</Label>
                                 <div className="relative">
-                                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-zinc-500" />
                                     <Input
                                         id="city"
                                         value={formData.city}
@@ -273,7 +354,7 @@ export function StoreSettings() {
                                 <Select value={formData.timezone} onValueChange={(val) => handleSelectChange("timezone", val)}>
                                     <SelectTrigger>
                                         <div className="flex items-center gap-2">
-                                            <Clock className="w-4 h-4 text-gray-400" />
+                                            <Clock className="w-4 h-4 text-gray-400 dark:text-zinc-500" />
                                             <SelectValue placeholder="Select Timezone" />
                                         </div>
                                     </SelectTrigger>
@@ -289,7 +370,7 @@ export function StoreSettings() {
                         <div className="space-y-2">
                             <Label htmlFor="contact_email">Contact Email</Label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-zinc-500" />
                                 <Input
                                     id="contact_email"
                                     type="email"
@@ -304,7 +385,7 @@ export function StoreSettings() {
                         <div className="space-y-2">
                             <Label htmlFor="phone">Phone Number</Label>
                             <div className="relative">
-                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-zinc-500" />
                                 <Input
                                     id="phone"
                                     value={formData.phone}
@@ -319,20 +400,24 @@ export function StoreSettings() {
             </div>
 
             <div className="flex justify-end gap-4 border-t pt-6">
-                <Button variant="outline" onClick={() => fetchStores({ page: 1, limit: 1 })} disabled={storeLoading}>
+                <Button variant="outline" onClick={() => fetchStores({ page: 1, limit: 1 })} disabled={isUpdating}>
                     Cancel
                 </Button>
-                <Button onClick={handleSaveStore} disabled={storeLoading} className="bg-blue-600 hover:bg-blue-700">
-                    {storeLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                <Button 
+                    onClick={handleSaveStore} 
+                    disabled={isUpdating || slugStatus === 'checking' || slugStatus === 'taken' || slugStatus === 'invalid'} 
+                    className="bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black shadow-sm transition-all"
+                >
+                    {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Save Changes
                 </Button>
             </div>
 
-            <div className="bg-blue-50 border border-blue-100 p-4 rounded-lg flex items-start gap-3">
-                <Globe className="w-5 h-5 text-blue-600 mt-0.5" />
+            <div className="bg-gray-50 dark:bg-black border border-gray-200 dark:border-zinc-800 p-4 rounded-lg flex items-start gap-3">
+                <Globe className="w-5 h-5 text-gray-700 dark:text-zinc-300 mt-0.5" />
                 <div className="text-sm">
-                    <p className="font-semibold text-blue-900">Store Status: <span className="capitalize">{currentStore?.status || "active"}</span></p>
-                    <p className="text-blue-700">Started on {currentStore?.created_at ? new Date(currentStore.created_at).toLocaleDateString() : "N/A"}</p>
+                    <p className="font-semibold text-gray-900 dark:text-zinc-100">Store Status: <span className="capitalize">{currentStore?.status || "active"}</span></p>
+                    <p className="text-gray-600 dark:text-zinc-400">Started on {currentStore?.created_at ? new Date(currentStore.created_at).toLocaleDateString() : "N/A"}</p>
                 </div>
             </div>
         </div>

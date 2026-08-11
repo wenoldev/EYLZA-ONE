@@ -80,7 +80,7 @@ api.interceptors.response.use(
       if (!skipRedirect) {
         console.error("API Error: Max retries reached or critical failure. Redirecting to error page.", error);
         if (window.location.pathname !== '/error') {
-          window.location.href = '/error';
+          // window.location.href = '/error';
         }
       }
     }

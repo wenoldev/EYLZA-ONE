@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { Loader2 } from "lucide-react"
+import { Loader2, Key, Shield } from "lucide-react"
 import { useAuthStore } from "@/stores/authStore"
 import { toast } from "sonner"
 import api from "@/lib/api"
@@ -83,16 +83,19 @@ export function SecuritySettings() {
     }
 
     return (
-        <div className="max-w-md space-y-6">
+        <div className="max-w-4xl space-y-8 pb-10">
             <div>
-                <h3 className="text-xl font-semibold text-gray-900">Security</h3>
-                <p className="text-sm text-gray-500">Manage your security settings</p>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-zinc-100">Security</h3>
+                <p className="text-sm text-gray-500 dark:text-zinc-400">Manage your security settings</p>
             </div>
 
-            <div className="border-b pb-6">
-                <h4 className="mb-4 font-medium">Change Password</h4>
-                <div className="space-y-4">
-                    <div>
+            <div className="bg-white dark:bg-zinc-950 p-6 rounded-xl border space-y-6">
+                <div className="flex items-center gap-2 mb-2">
+                    <Key className="w-5 h-5 text-gray-700 dark:text-zinc-300" />
+                    <h4 className="font-semibold text-gray-900 dark:text-zinc-100">Change Password</h4>
+                </div>
+                <div className="space-y-4 max-w-md">
+                    <div className="space-y-2">
                         <Label htmlFor="currentPassword">Current Password</Label>
                         <Input
                             id="currentPassword"
@@ -102,7 +105,7 @@ export function SecuritySettings() {
                             autoComplete="current-password"
                         />
                     </div>
-                    <div>
+                    <div className="space-y-2">
                         <Label htmlFor="newPassword">New Password</Label>
                         <Input
                             id="newPassword"
@@ -111,9 +114,9 @@ export function SecuritySettings() {
                             onChange={(e) => setNewPassword(e.target.value)}
                             autoComplete="new-password"
                         />
-                        <p className="mt-1 text-xs text-gray-500">Must be at least 8 characters</p>
+                        <p className="text-[10px] text-gray-500 dark:text-zinc-400">Must be at least 8 characters</p>
                     </div>
-                    <div>
+                    <div className="space-y-2">
                         <Label htmlFor="confirmPassword">Confirm Password</Label>
                         <Input
                             id="confirmPassword"
@@ -123,19 +126,24 @@ export function SecuritySettings() {
                             autoComplete="new-password"
                         />
                     </div>
-                    <Button onClick={handleChangePassword} disabled={isUpdating}>
-                        {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Change Password
-                    </Button>
+                    <div className="pt-2">
+                        <Button onClick={handleChangePassword} disabled={isUpdating} className="bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black shadow-sm transition-all">
+                            {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Change Password
+                        </Button>
+                    </div>
                 </div>
             </div>
 
-            <div>
-                <h4 className="mb-4 font-medium">Two-Factor Authentication</h4>
-                <div className="flex items-center justify-between rounded-lg border p-4">
+            <div className="bg-white dark:bg-zinc-950 p-6 rounded-xl border space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                    <Shield className="w-5 h-5 text-gray-700 dark:text-zinc-300" />
+                    <h4 className="font-semibold text-gray-900 dark:text-zinc-100">Two-Factor Authentication</h4>
+                </div>
+                <div className="flex items-center justify-between rounded-lg border p-4 bg-gray-50 dark:bg-black/50">
                     <div>
-                        <p className="font-medium">Enable 2FA via Email</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="font-medium text-gray-900 dark:text-zinc-100">Enable 2FA via Email</p>
+                        <p className="text-sm text-gray-500 dark:text-zinc-400">
                             Add an extra layer of security to your account
                         </p>
                     </div>

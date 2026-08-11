@@ -297,6 +297,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ fields, onSubmit, initialValu
               {field.type === "image-group" && (
                 <div className="space-y-2">
                   <UploadDialog
+                    multiple={true}
                     onImagesSelected={(images) => handleImageGroupChange(field.name, images)}
                     initialValues={initialValues[field.name] as ImageData[]}
                   />

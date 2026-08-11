@@ -159,24 +159,24 @@ const LiveChatWidget: React.FC<{
   if (!isOpen) return null
 
   return (
-    <div className="fixed bottom-4 right-4 w-96 h-[500px] bg-white rounded-lg shadow-2xl border z-50 flex flex-col">
+    <div className="fixed bottom-4 right-4 w-96 h-[500px] bg-white dark:bg-zinc-950 rounded-lg shadow-2xl border z-50 flex flex-col">
       {/* Header */}
-      <div className="bg-blue-600 text-white p-4 rounded-t-lg flex items-center justify-between">
+      <div className="bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900 p-4 rounded-t-lg flex items-center justify-between">
         <div>
           <h3 className="font-semibold">Live Chat Support</h3>
-          <p className="text-xs text-blue-100">We're here to help</p>
+          <p className="text-xs text-gray-300 dark:text-zinc-600">We're here to help</p>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={onMinimize}
-            className="text-white hover:text-gray-200 p-1"
+            className="text-white dark:text-zinc-900 hover:text-gray-200 p-1"
             title="Minimize"
           >
             <Minimize2 className="h-4 w-4" />
           </button>
           <button
             onClick={onClose}
-            className="text-white hover:text-gray-200 p-1"
+            className="text-white dark:text-zinc-900 hover:text-gray-200 p-1"
             title="Close"
           >
             <X className="h-4 w-4" />
@@ -185,16 +185,16 @@ const LiveChatWidget: React.FC<{
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+      <div className="flex-1 p-4 overflow-y-auto bg-gray-50 dark:bg-black">
         {isLoading ? (
           <div className="flex justify-center items-center h-full">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
           </div>
         ) : (
           <>
             {/* Welcome message */}
-            <div className="bg-blue-100 rounded-lg p-3 mb-4">
-              <p className="text-sm text-blue-800">
+            <div className="bg-gray-100 dark:bg-zinc-900 rounded-lg p-3 mb-4">
+              <p className="text-sm text-gray-800 dark:text-zinc-200">
                 👋 Hello {vendorName}! How can we help you today?
               </p>
             </div>
@@ -207,12 +207,12 @@ const LiveChatWidget: React.FC<{
               >
                 <div
                   className={`max-w-[80%] rounded-lg p-3 ${message.sender_type === 'vendor'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white border shadow-sm'
+                      ? 'bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                      : 'bg-white dark:bg-zinc-950 border shadow-sm'
                     }`}
                 >
                   <p className="text-sm">{message.content}</p>
-                  <p className={`text-xs mt-1 ${message.sender_type === 'vendor' ? 'text-blue-100' : 'text-gray-500'
+                  <p className={`text-xs mt-1 ${message.sender_type === 'vendor' ? 'text-gray-300 dark:text-zinc-600' : 'text-gray-500 dark:text-zinc-400'
                     }`}>
                     {new Date(message.timestamp).toLocaleTimeString()}
                   </p>
@@ -223,11 +223,11 @@ const LiveChatWidget: React.FC<{
             {/* Typing indicator when sending */}
             {isSending && (
               <div className="flex justify-end mb-4">
-                <div className="bg-blue-600 text-white rounded-lg p-3 max-w-[80%]">
+                <div className="bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-lg p-3 max-w-[80%]">
                   <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 bg-white dark:bg-zinc-950 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-white dark:bg-zinc-950 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-white dark:bg-zinc-950 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   </div>
                 </div>
               </div>
@@ -239,7 +239,7 @@ const LiveChatWidget: React.FC<{
       </div>
 
       {/* Input Area */}
-      <div className="p-4 border-t bg-white rounded-b-lg">
+      <div className="p-4 border-t bg-white dark:bg-zinc-950 rounded-b-lg">
         <form onSubmit={handleSendMessage} className="flex gap-2">
           <Input
             placeholder="Type your message..."
@@ -256,7 +256,7 @@ const LiveChatWidget: React.FC<{
             <Send className="h-4 w-4" />
           </Button>
         </form>
-        <p className="text-xs text-gray-500 mt-2">
+        <p className="text-xs text-gray-500 dark:text-zinc-400 mt-2">
           Press Enter to send
         </p>
       </div>
@@ -366,12 +366,12 @@ export function HelpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-black">
       <div className="max-w-6xl mx-auto p-6">
         {/* Header */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Help & Support Center</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-zinc-100 mb-4">Help & Support Center</h1>
+          <p className="text-lg text-gray-600 dark:text-zinc-400 max-w-2xl mx-auto">
             Find answers to common questions, access helpful resources, or get in touch with our support team
           </p>
         </div>
@@ -379,7 +379,7 @@ export function HelpPage() {
         {/* Search */}
         <div className="mb-10">
           <div className="relative max-w-2xl mx-auto">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-zinc-500 h-5 w-5" />
             <Input
               placeholder="Search help articles, FAQs, and guides..."
               value={searchQuery}
@@ -392,54 +392,53 @@ export function HelpPage() {
         {/* Contact Options */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           <Card
-            className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 hover:border-blue-200"
+            className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 hover:border-gray-300 dark:border-zinc-700"
             onClick={handleOpenChat}
           >
             <CardHeader className="text-center pb-4">
               <div className="relative">
-                <MessageCircle className="h-12 w-12 text-blue-600 mx-auto mb-3" />
-                <Badge className="absolute -top-1 -right-1 bg-green-500 text-white text-xs px-2 py-1">
+                <MessageCircle className="h-12 w-12 text-gray-800 dark:text-zinc-200 mx-auto mb-3" />
+                <Badge className="absolute -top-1 -right-1 bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-xs px-2 py-1">
                   Online
                 </Badge>
               </div>
-              <CardTitle className="text-xl text-gray-900">Live Chat</CardTitle>
-              <CardDescription className="text-gray-600">
+              <CardTitle className="text-xl text-gray-900 dark:text-zinc-100">Live Chat</CardTitle>
+              <CardDescription className="text-gray-600 dark:text-zinc-400">
                 Get instant help from our support team. Average response time: 2 minutes
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
-              <Button variant="outline" className="w-full">
+              <Button className="w-full bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black dark:text-zinc-900">
                 Start Chat
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 hover:border-green-200">
+          <Card className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 hover:border-gray-300 dark:border-zinc-700">
             <CardHeader className="text-center pb-4">
-              <Phone className="h-12 w-12 text-green-600 mx-auto mb-3" />
-              <CardTitle className="text-xl text-gray-900">Phone Support</CardTitle>
-              <CardDescription className="text-gray-600">
+              <Phone className="h-12 w-12 text-gray-800 dark:text-zinc-200 mx-auto mb-3" />
+              <CardTitle className="text-xl text-gray-900 dark:text-zinc-100">Phone Support</CardTitle>
+              <CardDescription className="text-gray-600 dark:text-zinc-400">
                 Call our support hotline for immediate assistance
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
-              <p className="font-semibold text-green-600 mb-2">+1 (555) 123-4567</p>
-              <p className="text-sm text-gray-500">Mon-Fri: 9 AM - 6 PM EST</p>
+              <p className="font-semibold text-gray-900 dark:text-zinc-100 mb-2">+91 8681956434</p>
+              <p className="text-sm text-gray-500 dark:text-zinc-400">Mon-Fri: 9 AM - 6 PM EST</p>
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 hover:border-purple-200">
+          <Card className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 hover:border-gray-300 dark:border-zinc-700">
             <CardHeader className="text-center pb-4">
-              <FileEdit className="h-12 w-12 text-purple-600 mx-auto mb-3" />
-              <CardTitle className="text-xl text-gray-900">Support Tickets</CardTitle>
-              <CardDescription className="text-gray-600">
+              <FileEdit className="h-12 w-12 text-gray-800 dark:text-zinc-200 mx-auto mb-3" />
+              <CardTitle className="text-xl text-gray-900 dark:text-zinc-100">Support Tickets</CardTitle>
+              <CardDescription className="text-gray-600 dark:text-zinc-400">
                 Submit a formal support ticket and track its progress in your dashboard
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
               <Button
-                variant="outline"
-                className="w-full"
+                className="w-full bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black dark:text-zinc-900"
                 onClick={() => navigate('/dashboard/tickets')}
               >
                 Submit Ticket
@@ -450,13 +449,13 @@ export function HelpPage() {
 
         {/* FAQ Section */}
         <Card className="shadow-lg">
-          <CardHeader className="border-b bg-gradient-to-r from-blue-50 to-purple-50">
-            <CardTitle className="text-2xl text-gray-900">Frequently Asked Questions</CardTitle>
-            <CardDescription className="text-gray-600">
+          <CardHeader className="border-b bg-white dark:bg-zinc-950">
+            <CardTitle className="text-2xl text-gray-900 dark:text-zinc-100">Frequently Asked Questions</CardTitle>
+            <CardDescription className="text-gray-600 dark:text-zinc-400">
               Quick answers to the most common questions from our users
             </CardDescription>
             {searchQuery && (
-              <p className="text-sm text-blue-600 mt-2">
+              <p className="text-sm text-gray-600 dark:text-zinc-400 mt-2">
                 Found {filteredFaqs.length} result{filteredFaqs.length !== 1 ? 's' : ''} for "{searchQuery}"
               </p>
             )}
@@ -465,7 +464,7 @@ export function HelpPage() {
             <div className="divide-y divide-gray-200">
               {filteredFaqs.length > 0 ? (
                 filteredFaqs.map((faq) => (
-                  <div key={faq.id} className="p-6 hover:bg-gray-50 transition-colors">
+                  <div key={faq.id} className="p-6 hover:bg-gray-50 dark:bg-black transition-colors">
                     <button
                       onClick={() => toggleFaq(faq.id)}
                       className="flex items-center justify-between w-full text-left group"
@@ -474,36 +473,36 @@ export function HelpPage() {
                         <Badge variant="secondary" className="text-xs">
                           {faq.category}
                         </Badge>
-                        <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                        <h3 className="font-semibold text-gray-900 dark:text-zinc-100 group-hover:text-gray-600 dark:text-zinc-400 transition-colors">
                           {faq.question}
                         </h3>
                       </div>
                       <div className="flex items-center">
                         {expandedFaq === faq.id ? (
-                          <ChevronDown className="h-5 w-5 text-gray-500 group-hover:text-blue-600 transition-colors" />
+                          <ChevronDown className="h-5 w-5 text-gray-500 dark:text-zinc-400 group-hover:text-gray-700 dark:text-zinc-300 transition-colors" />
                         ) : (
-                          <ChevronRight className="h-5 w-5 text-gray-500 group-hover:text-blue-600 transition-colors" />
+                          <ChevronRight className="h-5 w-5 text-gray-500 dark:text-zinc-400 group-hover:text-gray-700 dark:text-zinc-300 transition-colors" />
                         )}
                       </div>
                     </button>
                     {expandedFaq === faq.id && (
                       <div className="mt-4 ml-20 pr-8">
-                        <p className="text-gray-700 leading-relaxed">{faq.answer}</p>
+                        <p className="text-gray-700 dark:text-zinc-300 leading-relaxed">{faq.answer}</p>
                       </div>
                     )}
                   </div>
                 ))
               ) : (
                 <div className="p-12 text-center">
-                  <div className="text-gray-400 mb-4">
+                  <div className="text-gray-400 dark:text-zinc-500 mb-4">
                     <Search className="h-12 w-12 mx-auto" />
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-zinc-100 mb-2">No results found</h3>
+                  <p className="text-gray-600 dark:text-zinc-400">
                     Try searching with different keywords or{" "}
                     <button
                       onClick={handleOpenChat}
-                      className="text-blue-600 hover:underline font-medium"
+                      className="text-gray-900 dark:text-zinc-100 hover:underline font-medium"
                     >
                       chat with our support team
                     </button>
@@ -516,7 +515,7 @@ export function HelpPage() {
 
         {/* Additional Resources */}
         <div className="mt-12 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Additional Resources</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-zinc-100 mb-6">Additional Resources</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Button variant="outline" className="h-12">
               📖 User Guide
@@ -549,7 +548,7 @@ export function HelpPage() {
       {isChatMinimized && (
         <button
           onClick={() => setIsChatOpen(true)}
-          className="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-50"
+          className="fixed bottom-4 right-4 bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900 p-4 rounded-full shadow-lg hover:bg-black transition-colors z-50"
         >
           <MessageCircle className="h-6 w-6" />
         </button>

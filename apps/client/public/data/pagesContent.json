@@ -46,58 +46,10 @@
     },
     {
       "id": "home-featured-products",
-      "selector": "productList",
+      "selector": "featured-product",
       "props": {
         "title": "Featured products",
         "template": "zarishka",
-        "items": [
-          {
-            "id": "birthstone-necklace",
-            "title": "Personalised Birthstone Necklace",
-            "image": "https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=900&q=80",
-            "price": "From Rs. 1,499.00",
-            "oldPrice": "Rs. 2,299.00",
-            "href": "/product/hidden-message-curved-bar-bracelet"
-          },
-          {
-            "id": "rose-flower-necklace",
-            "title": "Rose Flower Necklace 18k Gold Plated",
-            "image": "https://images.unsplash.com/photo-1611652022440-4f8fdd9874a3?auto=format&fit=crop&w=900&q=80",
-            "price": "Rs. 1,099.00",
-            "oldPrice": "Rs. 1,599.00",
-            "href": "/product/hidden-message-curved-bar-bracelet"
-          },
-          {
-            "id": "knot-bracelet",
-            "title": "Personalized Knot Bracelet with Birthstone",
-            "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=900&q=80",
-            "price": "Rs. 1,399.00",
-            "oldPrice": "Rs. 1,699.00",
-            "href": "/product/hidden-message-curved-bar-bracelet"
-          },
-          {
-            "id": "curved-bar-bracelet",
-            "title": "Hidden Message Curved Bar Bracelet",
-            "image": "https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=900&q=80",
-            "price": "Rs. 1,299.00",
-            "oldPrice": "Rs. 1,699.00",
-            "href": "/product/hidden-message-curved-bar-bracelet"
-          },
-          {
-            "id": "message-necklace",
-            "title": "Personalised Message Necklace",
-            "image": "https://images.unsplash.com/photo-1611085583191-a3b181a88401?auto=format&fit=crop&w=900&q=80",
-            "price": "Rs. 1,499.00",
-            "href": "/product/hidden-message-curved-bar-bracelet"
-          },
-          {
-            "id": "initial-necklace",
-            "title": "Initials Birthstone Necklace",
-            "image": "https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=900&q=80",
-            "price": "From Rs. 1,499.00",
-            "href": "/product/hidden-message-curved-bar-bracelet"
-          }
-        ],
         "layout": {
           "desktop": 3,
           "tablet": 2,
@@ -164,31 +116,6 @@
           "aspectRatio": "4/3",
           "roundedCorners": "0rem"
         }
-      }
-    },
-    {
-      "id": "home-testimonials",
-      "selector": "testimonialGrid",
-      "props": {
-        "title": "What Customer says about us.",
-        "backgroundColor": "#ffffff",
-        "textColor": "#1f1a17",
-        "accentColor": "#6f6758",
-        "containerWidth": 1240,
-        "items": [
-          {
-            "author": "Ritika Sehgal",
-            "quote": "Lovely necklace - so cute. Had my daughters name put on it and she loves it! Had lots of compliments."
-          },
-          {
-            "author": "Deeksha Mawai",
-            "quote": "Beautiful necklace and presentably packaged. My order arrived in good time and in tact. Would definitely recommend."
-          },
-          {
-            "author": "Archit Jain",
-            "quote": "Beautiful gift, was very appreciated by the recipient and came beautifully packaged and presented. Would order again."
-          }
-        ]
       }
     }
   ],

@@ -1,5 +1,8 @@
 import React from 'react';
 import type { MediaTextSectionConfig } from '../../types/MediaTextSection';
+import { cn } from '../../libs/utils';
+
+import './MediaTextSection.css';
 
 const MediaTextSection: React.FC<MediaTextSectionConfig> = (config) => {
   const {
@@ -21,14 +24,14 @@ const MediaTextSection: React.FC<MediaTextSectionConfig> = (config) => {
     backgroundColor,
     textColor,
     aspectRatio = '4/3',
-    roundedCorners = '1rem',
-    shadow
+    roundedCorners = '0',
+    shadow = 'none'
   } = styles;
 
   const buttonStyles = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700',
-    secondary: 'bg-gray-800 text-white hover:bg-gray-900',
-    outline: 'border-2 border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white'
+    primary: 'bg-stone-900 text-white hover:bg-stone-800',
+    secondary: 'bg-stone-200 text-stone-900 hover:bg-stone-300',
+    outline: 'border border-stone-400 text-stone-900 hover:border-stone-900 uppercase tracking-widest text-xs py-4 px-10'
   };
 
   const alignmentClasses: Record<string, string> = {
@@ -39,37 +42,53 @@ const MediaTextSection: React.FC<MediaTextSectionConfig> = (config) => {
 
   return (
     <section
-      className={`py-16 md:py-24 ${sectionWidth === 'full' ? 'w-full' : 'container mx-auto px-4'}`}
+      className={cn(
+        "py-20 md:py-32 overflow-hidden",
+        sectionWidth === 'full' ? 'w-full' : 'container mx-auto px-6 max-w-7xl'
+      )}
       style={{ backgroundColor }}
     >
-      <div className={`flex flex-col ${mediaPosition === 'right' ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12 md:gap-20`}>
+      <div 
+        className={cn(
+          "media-text-section-wrapper gap-12 md:gap-24 lg:gap-32",
+          mediaPosition === 'right' ? "position-right" : "position-left"
+        )}
+      >
         {/* Content Area */}
-        <div className={`flex-1 flex flex-col ${alignmentClasses[buttonAlignment]}`}>
+        <div 
+          className={cn(
+            "flex-1 flex flex-col w-full",
+            alignmentClasses[buttonAlignment]
+          )}
+        >
           {subTitle && (
-            <span className="text-blue-600 font-bold tracking-widest uppercase text-sm mb-4">
+            <span className="text-stone-500 font-sans tracking-[0.2em] uppercase text-[10px] md:text-xs mb-4">
               {subTitle}
             </span>
           )}
           <h2
-            className="text-3xl md:text-5xl font-bold mb-6 leading-tight"
+            className="font-serif text-4xl md:text-5xl lg:text-7xl mb-8 leading-[1.1] text-stone-900"
             style={{ color: textColor }}
             dangerouslySetInnerHTML={{ __html: title }}
           />
           {description && (
             <div
-              className="text-lg text-gray-600 mb-8 leading-relaxed"
-              style={{ color: textColor, opacity: 0.8 }}
+              className="text-base md:text-lg text-stone-600 mb-10 leading-relaxed font-sans max-w-xl"
+              style={{ color: textColor, opacity: 0.9 }}
               dangerouslySetInnerHTML={{ __html: description }}
             />
           )}
 
           {buttons.length > 0 && (
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-6">
               {buttons.map((btn, index) => (
                 <a
                   key={index}
                   href={btn.link}
-                  className={`px-8 py-3 rounded-md font-semibold transition-all duration-300 ${buttonStyles[btn.style]}`}
+                  className={cn(
+                    "inline-flex items-center justify-center font-medium transition-all duration-300",
+                    buttonStyles[btn.style]
+                  )}
                 >
                   {btn.label}
                 </a>
@@ -79,9 +98,9 @@ const MediaTextSection: React.FC<MediaTextSectionConfig> = (config) => {
         </div>
 
         {/* Media Area */}
-        <div className="flex-1 w-full">
+        <div className="flex-1 w-full order-first md:order-none">
           <div
-            className="relative overflow-hidden shadow-2xl"
+            className="relative overflow-hidden w-full h-full"
             style={{
               aspectRatio,
               borderRadius: roundedCorners,
@@ -92,7 +111,7 @@ const MediaTextSection: React.FC<MediaTextSectionConfig> = (config) => {
               <img
                 src={mediaUrl}
                 alt={title}
-                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
               />
             ) : (
               <video

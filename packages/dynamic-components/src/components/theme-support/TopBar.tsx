@@ -30,13 +30,14 @@ const TopBar = ({ config }: { config: HeaderConfig }) => {
                     100% { transform: translateX(-50%); }
                 }
                 .animate-marquee {
-                    display: inline-flex;
-                    animation: marquee 15s linear infinite;
+                    display: flex;
+                    animation: marquee 20s linear infinite;
                     width: max-content;
                 }
-                /* Repeat content 3 times in marquee to ensure seamless loop */
                 .animate-marquee > div {
-                    padding-right: 2rem;
+                    display: flex;
+                    align-items: center;
+                    padding-right: 4rem;
                 }
             `}</style>
         </div>
