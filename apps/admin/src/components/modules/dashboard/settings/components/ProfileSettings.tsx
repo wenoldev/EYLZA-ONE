@@ -71,16 +71,16 @@ export function ProfileSettings() {
             </div>
 
             <div className="bg-white dark:bg-zinc-950 p-6 rounded-xl border space-y-8">
-                <div className="flex items-center gap-6">
+                <div className="flex items-center justify-center gap-6">
                     <Avatar className="h-24 w-24 rounded-xl">
                         <AvatarImage src={user?.user_metadata?.avatar_url} className="rounded-xl object-cover" />
                         <AvatarFallback className="text-3xl rounded-xl bg-gray-100 dark:bg-zinc-900 text-gray-900 dark:text-zinc-100 font-medium">
                             {userName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "U"}
                         </AvatarFallback>
                     </Avatar>
-                    <Button variant="outline" className="flex items-center gap-2">
+                    {/* <Button variant="outline" className="flex items-center gap-2">
                         <Upload className="h-4 w-4" /> Change Photo
-                    </Button>
+                    </Button> */}
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">

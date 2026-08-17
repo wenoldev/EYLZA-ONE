@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
-import { Loader2, Bell, BellOff, MessageSquare } from "lucide-react"
+import { Loader2, Bell, BellOff, MessageSquare, Mail } from "lucide-react"
 // import { useAuthStore } from "@/stores/authStore"
 import { useStoreStore } from "@/stores/storeStore"
 import { toast } from "sonner"
@@ -180,64 +180,12 @@ export function NotificationSettings() {
             </div>
 
             <div className="bg-white dark:bg-zinc-950 p-6 rounded-xl border space-y-4">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-4">
                     <Bell className="w-5 h-5 text-gray-700 dark:text-zinc-300" />
-                    <h4 className="font-semibold text-gray-900 dark:text-zinc-100">Notification Preferences</h4>
-                </div>
-                
-                <div className="space-y-4">
-                <div className="flex items-center justify-between rounded-lg border p-4 bg-gray-50 dark:bg-black/50">
-                    <div className="flex items-start gap-3">
-                        <div className="mt-1 p-2 bg-white dark:bg-zinc-950 border rounded-lg text-gray-700 dark:text-zinc-300 shadow-sm">
-                            <MessageSquare className="w-5 h-5" />
-                        </div>
-                        <div>
-                            <p className="font-medium">Customer Queries</p>
-                            <p className="text-sm text-gray-500 dark:text-zinc-400">Get notified when a customer sends a message</p>
-                        </div>
-                    </div>
-                    <Switch
-                        checked={settings.query_enabled}
-                        onCheckedChange={(checked) => setSettings(prev => ({ ...prev, query_enabled: checked }))}
-                        disabled={isUpdating}
-                    />
+                    <h4 className="font-semibold text-gray-900 dark:text-zinc-100">Real-time Notifications</h4>
                 </div>
 
-                <div className="flex items-center justify-between rounded-lg border p-4 bg-gray-50 dark:bg-black/50">
-                    <div className="flex items-start gap-3">
-                        <div className="mt-1 p-2 bg-white dark:bg-zinc-950 border rounded-lg text-gray-700 dark:text-zinc-300 shadow-sm">
-                            <Bell className="w-5 h-5" />
-                        </div>
-                        <div>
-                            <p className="font-medium">Order Updates</p>
-                            <p className="text-sm text-gray-500 dark:text-zinc-400">Receive alerts about new orders and status changes</p>
-                        </div>
-                    </div>
-                    <Switch
-                        checked={settings.order_enabled}
-                        onCheckedChange={(checked) => setSettings(prev => ({ ...prev, order_enabled: checked }))}
-                        disabled={isUpdating}
-                    />
-                </div>
-
-                <div className="flex items-center justify-between rounded-lg border p-4 bg-gray-50 dark:bg-black/50">
-                    <div className="flex items-start gap-3">
-                        <div className="mt-1 p-2 bg-white dark:bg-zinc-950 border rounded-lg text-gray-700 dark:text-zinc-300 shadow-sm">
-                            <Bell className="w-5 h-5" />
-                        </div>
-                        <div>
-                            <p className="font-medium">Email Notifications</p>
-                            <p className="text-sm text-gray-500 dark:text-zinc-400">Periodic email summaries and critical alerts</p>
-                        </div>
-                    </div>
-                    <Switch
-                        checked={settings.email_enabled}
-                        onCheckedChange={(checked) => setSettings(prev => ({ ...prev, email_enabled: checked }))}
-                        disabled={isUpdating}
-                    />
-                </div>
-
-                <div className="bg-gray-50 dark:bg-black rounded-xl p-6 border border-gray-200 dark:border-zinc-800">
+                <div className="bg-gray-50 dark:bg-black rounded-xl p-6 border border-gray-200 dark:border-zinc-800 mb-6">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
                             {isPushEnabled ? <Bell className="text-gray-900 dark:text-zinc-100 w-5 h-5" /> : <BellOff className="text-gray-400 dark:text-zinc-500 w-5 h-5" />}
@@ -253,6 +201,65 @@ export function NotificationSettings() {
                         Enable browser push notifications to receive real-time alerts even when the dashboard is closed. This setting only applies to the current device.
                     </p>
                 </div>
+
+                <div className={`space-y-4 pl-4 border-l-2 border-gray-100 dark:border-zinc-800 ${!isPushEnabled ? 'opacity-50' : ''}`}>
+                    <div className="flex items-center justify-between rounded-lg border p-4 bg-gray-50 dark:bg-black/50">
+                        <div className="flex items-start gap-3">
+                            <div className="mt-1 p-2 bg-white dark:bg-zinc-950 border rounded-lg text-gray-700 dark:text-zinc-300 shadow-sm">
+                                <MessageSquare className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <p className="font-medium text-gray-900 dark:text-zinc-100">Customer Queries</p>
+                                <p className="text-sm text-gray-500 dark:text-zinc-400">Get notified when a customer sends a message</p>
+                            </div>
+                        </div>
+                        <Switch
+                            checked={settings.query_enabled}
+                            onCheckedChange={(checked) => setSettings(prev => ({ ...prev, query_enabled: checked }))}
+                            disabled={isUpdating || !isPushEnabled}
+                        />
+                    </div>
+
+                    <div className="flex items-center justify-between rounded-lg border p-4 bg-gray-50 dark:bg-black/50">
+                        <div className="flex items-start gap-3">
+                            <div className="mt-1 p-2 bg-white dark:bg-zinc-950 border rounded-lg text-gray-700 dark:text-zinc-300 shadow-sm">
+                                <Bell className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <p className="font-medium text-gray-900 dark:text-zinc-100">Order Updates</p>
+                                <p className="text-sm text-gray-500 dark:text-zinc-400">Receive alerts about new orders and status changes</p>
+                            </div>
+                        </div>
+                        <Switch
+                            checked={settings.order_enabled}
+                            onCheckedChange={(checked) => setSettings(prev => ({ ...prev, order_enabled: checked }))}
+                            disabled={isUpdating || !isPushEnabled}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div className="bg-white dark:bg-zinc-950 p-6 rounded-xl border space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                    <Mail className="w-5 h-5 text-gray-700 dark:text-zinc-300" />
+                    <h4 className="font-semibold text-gray-900 dark:text-zinc-100">Email Notifications</h4>
+                </div>
+                
+                <div className="flex items-center justify-between rounded-lg border p-4 bg-gray-50 dark:bg-black/50">
+                    <div className="flex items-start gap-3">
+                        <div className="mt-1 p-2 bg-white dark:bg-zinc-950 border rounded-lg text-gray-700 dark:text-zinc-300 shadow-sm">
+                            <Mail className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p className="font-medium text-gray-900 dark:text-zinc-100">Email Alerts</p>
+                            <p className="text-sm text-gray-500 dark:text-zinc-400">Periodic email summaries and critical alerts</p>
+                        </div>
+                    </div>
+                    <Switch
+                        checked={settings.email_enabled}
+                        onCheckedChange={(checked) => setSettings(prev => ({ ...prev, email_enabled: checked }))}
+                        disabled={isUpdating}
+                    />
                 </div>
             </div>
 

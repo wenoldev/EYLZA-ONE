@@ -9,11 +9,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import api from '@/lib/api';
 import { useStoreStore } from '@/stores/storeStore';
 import { toast } from 'sonner';
-import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ImageIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { UploadDialog } from '@/components/common/UploadImage';
 
 const CreateTicket = () => {
-  const [newTicket, setNewTicket] = useState({ subject: '', message: '', priority: 'normal' });
+  const [newTicket, setNewTicket] = useState({ subject: '', message: '', priority: 'normal', image_url: '' });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const { stores } = useStoreStore();
@@ -120,6 +121,21 @@ const CreateTicket = () => {
               rows={8}
               className="resize-none"
             />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-semibold">Attachment (Optional)</Label>
+            <div className="flex items-center gap-4">
+              <UploadDialog 
+                onImagesSelected={(images) => setNewTicket({ ...newTicket, image_url: images[0]?.url || '' })}
+                initialValues={newTicket.image_url ? [{ url: newTicket.image_url, alt: '' }] : []}
+                multiple={false}
+              />
+              {newTicket.image_url && (
+                <div className="relative h-16 w-16 overflow-hidden rounded-md border">
+                  <img src={newTicket.image_url} alt="Attachment" className="h-full w-full object-cover" />
+                </div>
+              )}
+            </div>
           </div>
           <Button 
             onClick={handleSubmit} 

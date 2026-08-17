@@ -9,6 +9,7 @@ const AdminStores = lazy(() => import('@/components/modules/admin/stores'));
 const AdminStoreDetails = lazy(() => import('@/components/modules/admin/stores/details'));
 const AdminThemes = lazy(() => import('@/components/modules/admin/themes'));
 const AdminTickets = lazy(() => import('@/components/modules/admin/tickets'));
+const AdminTicketDetail = lazy(() => import('@/components/modules/admin/tickets/TicketDetail'));
 const AdminPlans = lazy(() => import('@/components/modules/admin/plans'));
 const AdminUsers = lazy(() => import('@/components/modules/admin/users'));
 const AdminPlugins = lazy(() => import('@/components/modules/dashboard/admin/plugins'));
@@ -105,6 +106,14 @@ const adminRoutes = [
         element: (
           <Suspense fallback={<Loader />}>
             <AdminTickets />
+          </Suspense>
+        )
+      },
+      {
+        path: 'tickets/:id',
+        element: (
+          <Suspense fallback={<Loader />}>
+            <AdminTicketDetail />
           </Suspense>
         )
       },

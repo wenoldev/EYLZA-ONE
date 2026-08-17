@@ -3,13 +3,16 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import Loader from '@/components/common/Loader';
+import { useNavigate } from 'react-router-dom';
 
 const AdminTickets = () => {
   const [tickets, setTickets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchTickets = async () => {
     try {
@@ -88,19 +91,24 @@ const AdminTickets = () => {
                   </TableCell>
                   <TableCell>{new Date(ticket.created_at).toLocaleDateString()}</TableCell>
                   <TableCell>
-                    <Select
-                      defaultValue={ticket.status}
-                      onValueChange={(value) => updateStatus(ticket.id, value)}
-                    >
-                      <SelectTrigger className="w-[140px]">
-                        <SelectValue placeholder="Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="open">Open</SelectItem>
-                        <SelectItem value="in_progress">In Progress</SelectItem>
-                        <SelectItem value="closed">Closed</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <div className="flex items-center gap-2">
+                      <Select
+                        defaultValue={ticket.status}
+                        onValueChange={(value) => updateStatus(ticket.id, value)}
+                      >
+                        <SelectTrigger className="w-[140px]">
+                          <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="open">Open</SelectItem>
+                          <SelectItem value="in_progress">In Progress</SelectItem>
+                          <SelectItem value="closed">Closed</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button variant="outline" size="sm" onClick={() => navigate(`/admin/tickets/${ticket.id}`)}>
+                        View
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

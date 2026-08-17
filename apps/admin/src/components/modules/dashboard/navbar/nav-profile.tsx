@@ -11,7 +11,7 @@ import { useStoreStore } from "@/stores/storeStore"
 import type { PricingPlan } from "@/constants/plans"
 import api from "@/lib/api"
 import { useNavigate } from "react-router-dom"
-import { LogOut, Crown, Settings } from "lucide-react"
+import { LogOut, Crown, Settings, CreditCard } from "lucide-react"
 import { useState, useEffect } from "react"
 
 export function NavProfile() {
@@ -41,9 +41,10 @@ export function NavProfile() {
   const nextPlan = currentPlanIndex !== -1 && currentPlanIndex < plans.length - 1 
     ? plans[currentPlanIndex + 1] 
     : null
+  console.log({user});
 
-  const userDisplayName = user?.user_metadata?.full_name || "User"
-  const userEmail = user?.user_metadata?.email || user?.email || "m@example.com"
+  const userDisplayName = user?.name || user?.user_metadata?.full_name || "User"
+  const userEmail = user?.email || user?.user_metadata?.email || "m@example.com"
   const userInitial = userDisplayName.charAt(0).toUpperCase()
 
   const handleLogout = async () => {
@@ -57,6 +58,11 @@ export function NavProfile() {
   const handleSettingsClick = () => {
     navigate("/dashboard/settings")
   }
+
+  const handlePaymentsClick = () => {
+    navigate("/dashboard/payments")
+  }
+
 
   return (
     <DropdownMenu>
@@ -81,7 +87,7 @@ export function NavProfile() {
         </div>
 
         {/* Menu Items */}
-        {nextPlan && (
+        {/*nextPlan && (
           <DropdownMenuItem 
             className="px-2 py-2 cursor-pointer"
             onClick={() => navigate('/pricing')}
@@ -89,12 +95,18 @@ export function NavProfile() {
             <Crown className="w-4 h-4 mr-3 text-amber-500" />
             <span>Upgrade to {nextPlan.name}</span>
           </DropdownMenuItem>
-        )}
+        )*/}
 
         <DropdownMenuItem className="px-2 py-2 cursor-pointer" onClick={handleSettingsClick}>
           <Settings className="w-4 h-4 mr-3 text-muted-foreground" />
           <span>Settings</span>
         </DropdownMenuItem>
+
+        <DropdownMenuItem className="px-2 py-2 cursor-pointer" onClick={handlePaymentsClick}>
+          <CreditCard className="w-4 h-4 mr-3 text-muted-foreground" />
+          <span>Billing & Payments</span>
+        </DropdownMenuItem>
+
 
         <DropdownMenuSeparator />
 

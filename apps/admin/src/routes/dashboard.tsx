@@ -25,6 +25,7 @@ const VendorTickets = lazy(() => import('@/components/modules/dashboard/tickets'
 const TicketList = lazy(() => import('@/components/modules/dashboard/tickets/TicketList'));
 const CreateTicket = lazy(() => import('@/components/modules/dashboard/tickets/CreateTicket'));
 const TicketDetail = lazy(() => import('@/components/modules/dashboard/tickets/TicketDetail'));
+const PaymentsPage = lazy(() => import('@/components/modules/dashboard/billing/PaymentsPage'));
 
 const dashboardRoutes = [
   {
@@ -91,6 +92,14 @@ const dashboardRoutes = [
         path: 'settings',
         element: (
           <SettingsPage />
+        )
+      },
+      {
+        path: 'payments',
+        element: (
+          <Suspense fallback={<Loader />}>
+            <PaymentsPage />
+          </Suspense>
         )
       },
       {

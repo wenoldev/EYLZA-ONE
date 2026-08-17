@@ -5,6 +5,8 @@ import type { PricingPlan } from '@/constants/plans';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import api from '@/lib/api';
 import Loader from '@/components/common/Loader';
+import { useAuthStore } from '@/stores/authStore';
+import { LogOut } from 'lucide-react';
 
 const PricingPage: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annually'>('monthly');
@@ -13,6 +15,8 @@ const PricingPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const storeId = searchParams.get('storeId');
+  const { logout } = useAuthStore();
+
 
   const [trialLoading, setTrialLoading] = useState(false);
 
@@ -66,6 +70,16 @@ const PricingPage: React.FC = () => {
     navigate(`/checkout?${params.toString()}`);
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -75,7 +89,14 @@ const PricingPage: React.FC = () => {
   }
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen relative">
+      <button 
+        onClick={handleLogout}
+        className="absolute top-6 right-6 flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
+      >
+        <LogOut className="w-4 h-4" />
+        Log out
+      </button>
       <section className="py-24 px-4 max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">

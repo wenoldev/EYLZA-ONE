@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,29 +6,68 @@ import api from '@/lib/api';
 import { useParams, useNavigate } from 'react-router-dom';
 import Loader from '@/components/common/Loader';
 import { ArrowLeft, Clock, AlertCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
-const TicketDetail = () => {
+const AdminTicketDetail = () => {
   const { id } = useParams();
   const [ticket, setTicket] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchTicket = async () => {
-      try {
-        const response = await api.get(`/api/v1/tickets/${id}`);
-        if (response.data?.data?.ticket) {
-          setTicket(response.data.data.ticket);
-        }
-      } catch (error) {
-        console.error('Failed to fetch ticket detail', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const [replyMessage, setReplyMessage] = useState('');
+  const [replying, setReplying] = useState(false);
 
+  const fetchTicket = async () => {
+    try {
+      const response = await api.get(`/api/v1/tickets/${id}`);
+      if (response.data?.data?.ticket) {
+        setTicket(response.data.data.ticket);
+      }
+    } catch (error) {
+      console.error('Failed to fetch ticket detail', error);
+      toast.error('Failed to fetch ticket detail');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchTicket();
   }, [id]);
+
+  const handleSendReply = async () => {
+    if (!replyMessage.trim()) return;
+    setReplying(true);
+    try {
+      const res = await api.post(`/api/v1/tickets/${id}/messages`, {
+        message: replyMessage,
+        sender_type: 'admin'
+      });
+      if (res.data?.data?.message) {
+        setTicket({ ...ticket, messages: [...(ticket.messages || []), res.data.data.message] });
+        setReplyMessage('');
+        toast.success('Reply sent');
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to send reply');
+    } finally {
+      setReplying(false);
+    }
+  };
+
+  const updateStatus = async (status: string) => {
+    try {
+      const response = await api.patch(`/api/v1/tickets/${id}`, { status });
+      if (response.status === 200) {
+        toast.success('Ticket status updated');
+        setTicket({ ...ticket, status });
+      }
+    } catch (error) {
+      console.error('Failed to update ticket', error);
+      toast.error('Failed to update ticket status');
+    }
+  };
 
   if (loading) return <Loader />;
 
@@ -38,7 +76,7 @@ const TicketDetail = () => {
       <div className="flex flex-col items-center justify-center h-[400px] space-y-4">
         <AlertCircle className="w-12 h-12 text-destructive" />
         <h2 className="text-xl font-semibold">Ticket not found</h2>
-        <Button onClick={() => navigate('/dashboard/tickets')}>Back to Tickets</Button>
+        <Button onClick={() => navigate('/admin/tickets')}>Back to Tickets</Button>
       </div>
     );
   }
@@ -53,40 +91,18 @@ const TicketDetail = () => {
     }
   };
 
-  const [replyMessage, setReplyMessage] = useState('');
-  const [replying, setReplying] = useState(false);
-
-  const handleSendReply = async () => {
-    if (!replyMessage.trim()) return;
-    setReplying(true);
-    try {
-      const res = await api.post(`/api/v1/tickets/${id}/messages`, {
-        message: replyMessage,
-        sender_type: 'vendor'
-      });
-      if (res.data?.data?.message) {
-        setTicket({ ...ticket, messages: [...(ticket.messages || []), res.data.data.message] });
-        setReplyMessage('');
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setReplying(false);
-    }
-  };
-
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard/tickets')}>
+          <Button variant="ghost" size="icon" onClick={() => navigate('/admin/tickets')}>
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div className="space-y-1">
             <h2 className="text-2xl font-bold tracking-tight">{ticket.subject}</h2>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Clock className="w-4 h-4" />
-              <span>Created on {new Date(ticket.created_at).toLocaleString()}</span>
+              <span>Created on {new Date(ticket.created_at).toLocaleString()} by {ticket.users?.email || 'Vendor'}</span>
             </div>
           </div>
         </div>
@@ -123,10 +139,10 @@ const TicketDetail = () => {
         <div className="space-y-4">
           <h3 className="text-lg font-bold">Replies</h3>
           {ticket.messages.map((msg: any) => (
-            <Card key={msg.id} className={msg.sender_type === 'vendor' ? 'border-primary/20 bg-primary/5' : ''}>
+            <Card key={msg.id} className={msg.sender_type === 'admin' ? 'border-primary/20 bg-primary/5' : ''}>
               <CardHeader className="py-3 px-4 flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-sm font-semibold">
-                  {msg.sender_type === 'vendor' ? 'You' : 'Support Admin'}
+                  {msg.sender_type === 'admin' ? 'You (Support)' : 'Vendor'}
                 </CardTitle>
                 <span className="text-xs text-muted-foreground">{new Date(msg.created_at).toLocaleString()}</span>
               </CardHeader>
@@ -155,9 +171,12 @@ const TicketDetail = () => {
               onChange={(e) => setReplyMessage(e.target.value)}
             />
             <div className="flex justify-between items-center">
-              <Button variant="outline" onClick={() => navigate('/dashboard/tickets')}>Back to List</Button>
+              <Button variant="outline" onClick={() => navigate('/admin/tickets')}>Back to List</Button>
               <div className="flex gap-2">
-                <Button variant="destructive" onClick={() => {/* Handle close if needed */}}>
+                <Button variant="secondary" onClick={() => updateStatus(ticket.status === 'in_progress' ? 'resolved' : 'in_progress')}>
+                  Mark as {ticket.status === 'in_progress' ? 'Resolved' : 'In Progress'}
+                </Button>
+                <Button variant="destructive" onClick={() => updateStatus('closed')}>
                   Close Ticket
                 </Button>
                 <Button onClick={handleSendReply} disabled={!replyMessage.trim() || replying}>
@@ -170,12 +189,13 @@ const TicketDetail = () => {
       )}
 
       {ticket.status === 'closed' && (
-        <div className="flex justify-end gap-3">
-          <Button variant="outline" onClick={() => navigate('/dashboard/tickets')}>Back to List</Button>
+        <div className="flex justify-between items-center mt-4">
+          <Button variant="outline" onClick={() => navigate('/admin/tickets')}>Back to List</Button>
+          <Button variant="secondary" onClick={() => updateStatus('open')}>Reopen Ticket</Button>
         </div>
       )}
     </div>
   );
 };
 
-export default TicketDetail;
+export default AdminTicketDetail;
