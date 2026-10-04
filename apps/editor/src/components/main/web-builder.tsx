@@ -366,6 +366,7 @@ export function WebBuilder() {
         )}
 
         <div className="flex-1 overflow-auto flex flex-col">
+          here
           <div ref={canvasRef} className="relative flex-1">
             <Canvas
               components={fullPageComponents}

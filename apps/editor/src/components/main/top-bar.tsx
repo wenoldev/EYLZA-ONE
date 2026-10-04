@@ -1,4 +1,4 @@
-import { Undo, Redo, Smartphone, Monitor, Maximize, Moon, Sun, PanelRight, Loader2, Globe } from "lucide-react"
+import { Undo, Redo, Smartphone, Monitor, Maximize, Moon, Sun, PanelRight, Loader2, Globe, Braces } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -7,6 +7,7 @@ import { useEditorStore } from "@/store/useEditorStore"
 
 export function TopBar() {
   const storeData = useEditorStore(state => state.storeData)
+  const isDev = useEditorStore(state => state.isDev)
   const pages = useEditorStore(state => state.pages)
   const undo = useEditorStore(state => state.undo)
   const redo = useEditorStore(state => state.redo)
@@ -156,7 +157,7 @@ export function TopBar() {
 
             <div className="w-px h-4 bg-border mx-1 hidden sm:block" />
 
-            <Tooltip>
+            {/* <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   size="icon"
@@ -168,7 +169,22 @@ export function TopBar() {
                 </Button>
               </TooltipTrigger>
               <TooltipContent>{showRightPanel ? "Hide" : "Show"} Properties</TooltipContent>
-            </Tooltip>
+            </Tooltip> */}
+            {isDev && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => window.open('/theme-json-editor', '_blank')}
+                    className="h-8 w-8"
+                  >
+                    <Braces className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Open Json Editor</TooltipContent>
+              </Tooltip>
+            )}
           </div>
 
           <Button

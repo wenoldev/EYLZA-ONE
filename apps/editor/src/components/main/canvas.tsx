@@ -39,12 +39,16 @@ const CanvasItem = memo(({
   handleDrop: (e: React.DragEvent, index: number) => void
   viewportSize: ViewportSize
 }) => {
-  const selector = component.selector || (component as any).type
-  const Component = ComponentRegistry[selector as keyof typeof ComponentRegistry] as any
+  const selector = component.selector || (component as any).type;
+  console.log({selector})
+  const Component = ComponentRegistry[selector as keyof typeof ComponentRegistry] as any;
+  console.log({Component});
+  
   if (!Component) return null
 
-  return (
+  return ( 
     <div key={component.id || `canvas-${index}`}>
+      here
       <div
         onDragOver={(e) => handleDragOver(e, index)}
         onDragLeave={handleDragLeave}
@@ -67,13 +71,17 @@ const CanvasItem = memo(({
         onSelect={onSelect}
         onHover={onHover}
       >
+        inside section wrapper
         <Suspense fallback={<Loader />}>
           {["header", "footer"].includes(selector) ? (
+            <>
+            <h2>For header/footer</h2>
             <Component
               config={component.props}
               data-x-id={`${selector}_${component.id}`}
               viewportSize={viewportSize}
-            />
+              />
+              </>
           ) : (
             <Component
               {...component.props}
@@ -101,7 +109,7 @@ export const Canvas = memo(({
     e.dataTransfer.dropEffect = "copy"
     setDropIndicator(index)
   }, [])
-
+console.log(components)
   const handleDragLeave = React.useCallback(() => {
     setDropIndicator(null)
   }, [])
@@ -128,7 +136,9 @@ export const Canvas = memo(({
 
   return (
     <div className="flex-1 overflow-auto bg-muted/30 p-2 sm:p-4 md:p-8">
+      here 2
       <div className={`${canvasClasses} space-y-0 transition-all`}>
+        almost
         {components.length === 0 ? (
           <div className="flex h-64 sm:h-96 items-center justify-center rounded-lg border-2 border-dashed border-border bg-card shadow-sm">
             <p className="text-muted-foreground text-center px-4 text-sm sm:text-base">
@@ -138,9 +148,9 @@ export const Canvas = memo(({
         ) : (
           components.map((component, index) => (
             <CanvasItem
-              key={component.id}
+              key={component?.id || index}
               component={component}
-              isSelected={selectedComponent?.id === component.id}
+              isSelected={selectedComponent?.id === component?.id}
               onSelect={onSelectComponent}
               onHover={onHoverComponent}
               index={index}

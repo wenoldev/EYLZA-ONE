@@ -41,6 +41,7 @@ interface EditorState {
 
   // Admin Mode
   isAdminMode: boolean;
+  isDev: boolean;
 
   // History
   history: EditorHistory;
@@ -72,6 +73,7 @@ interface EditorState {
   saveChanges: () => Promise<void>;
   hasChanges: () => boolean;
   logout: () => void;
+  setIsDev: (isDev: boolean) => void;
 }
 
 const getSlug = (pageName: string) => pageName.toLowerCase().replace(/\s+/g, "-");
@@ -95,6 +97,7 @@ export const editorStore = createStore<EditorState>()((set, get) => ({
   loadProgress: 0,
   loadingPages: new Set(),
   isAdminMode: false,
+  isDev: localStorage.getItem('isDev') === 'true' || import.meta.env.VITE_IS_PRODUCTION === 'false',
   history: { states: [], index: -1 },
 
   setStoreData: (data: any) => set({ storeData: data }),
@@ -122,11 +125,40 @@ export const editorStore = createStore<EditorState>()((set, get) => ({
   setIsLoading: (loading: boolean) => set({ isLoading: loading }),
   setIsInitialLoading: (loading: boolean) => set({ isInitialLoading: loading }),
   setLoadProgress: (progress: number) => set({ loadProgress: progress }),
+  setIsDev: (isDev: boolean) => {
+    localStorage.setItem('isDev', String(isDev));
+    set({ isDev });
+  },
 
   setInitialData: (global: any, pagesList: any[]) => {
+    let finalGlobal = global;
+    if (get().isDev) {
+      localStorage.setItem('dev_pages_list', JSON.stringify(pagesList));
+      
+      const devGlobal = localStorage.getItem('dev_global_config');
+      if (devGlobal) {
+        try {
+          const parsed = JSON.parse(devGlobal);
+          if (parsed?.data?.theme?.global_config) {
+            finalGlobal = parsed.data.theme.global_config;
+          } else if (parsed?.theme?.global_config) {
+            finalGlobal = parsed.theme.global_config;
+          } else if (parsed?.global_config) {
+            finalGlobal = parsed.global_config;
+          } else {
+            finalGlobal = parsed;
+          }
+        } catch(e) {
+          console.error("Invalid JSON in dev override for global config", e);
+          finalGlobal = {};
+        }
+      } else {
+        finalGlobal = {};
+      }
+    }
     set({
-      globalConfig: global,
-      initialGlobalConfig: JSON.parse(JSON.stringify(global)),
+      globalConfig: finalGlobal,
+      initialGlobalConfig: JSON.parse(JSON.stringify(finalGlobal)),
       pages: pagesList,
       pagesData: {},
       initialPagesData: {},
@@ -147,7 +179,29 @@ export const editorStore = createStore<EditorState>()((set, get) => ({
 
     try {
       let content = [];
-      if (get().isAdminMode) {
+      
+      if (get().isDev) {
+        const devOverride = localStorage.getItem(`dev_page_${slug}`);
+        if (devOverride) {
+          try {
+            const parsed = JSON.parse(devOverride);
+            if (Array.isArray(parsed)) {
+              content = parsed;
+            } else if (parsed?.data?.page?.content && Array.isArray(parsed.data.page.content)) {
+              content = parsed.data.page.content;
+            } else if (parsed?.page?.content && Array.isArray(parsed.page.content)) {
+              content = parsed.page.content;
+            } else if (parsed?.content && Array.isArray(parsed.content)) {
+              content = parsed.content;
+            } else {
+              content = [];
+              console.error("Could not find an array of components in dev override for", slug);
+            }
+          } catch(e) {
+            console.error("Invalid JSON in dev override for", slug, e);
+          }
+        }
+      } else if (get().isAdminMode) {
         // Special case for Admin Mode: pages are already preloaded in 'pages' array
         // We look for the page in the state
         const foundPage = get().pages.find(p => p.slug === slug);

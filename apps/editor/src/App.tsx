@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { RootProvider } from '@/components/root-provider'
 import Entry from './components/Entry'
+import JsonEditor from './components/development/json-editor'
 
 function EditorRuntimeBridge() {
   useEffect(() => {
@@ -23,6 +24,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Entry />} />
+          <Route path="/theme-json-editor" element={<JsonEditor />} />
         </Routes>
       </Router>
     </RootProvider>
