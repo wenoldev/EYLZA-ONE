@@ -38,7 +38,9 @@ export function AppSidebar({ className, hideStoreSwitcher, ...props }: AppSideba
   const [activePlugins, setActivePlugins] = useState<string[]>([]);
 
   const currentStore = stores?.[0];
-  const userRole = user?.user_metadata?.role || user?.role;
+  const storeRole = useAuthStore((state) => state.role);
+  const userRole = storeRole || user?.role || user?.user_metadata?.role;
+  console.log("[AppSidebar] userRole resolved:", userRole, "storeRole:", storeRole);
 
   useEffect(() => {
     // Initialize auth state on mount

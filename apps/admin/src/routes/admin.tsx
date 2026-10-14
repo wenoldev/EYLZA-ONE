@@ -32,8 +32,12 @@ const adminRoutes = [
     ),
     children: [
       {
+        index: true,
+        element: <Navigate to="/admin/stores" replace />
+      },
+      {
         path: '',
-        element: <Navigate to="stores" replace />
+        element: <Navigate to="/admin/stores" replace />
       },
       {
         path: 'stores',

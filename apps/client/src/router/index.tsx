@@ -9,6 +9,7 @@ import StorefrontError from "@/components/common/StorefrontError"
 
 const DynamicPageRenderer = lazy(() => import("@/components/engine/DynamicPageRenderer"))
 const Checkout = lazy(() => import("@/pages/checkout"))
+const OrderSuccessPage = lazy(() => import("@/pages/checkout/OrderSuccessPage"))
 const Cart = lazy(() => import("@/pages/cart"))
 const PolicyPage = lazy(() => import("@/pages/policy"))
 
@@ -98,6 +99,14 @@ const storefrontRoutes = [
     element: (
       <Suspense fallback={<ShadeLoader />}>
         <Checkout />
+      </Suspense>
+    ),
+  },
+  {
+    path: "order-success",
+    element: (
+      <Suspense fallback={<ShadeLoader />}>
+        <OrderSuccessPage />
       </Suspense>
     ),
   },

@@ -6,7 +6,8 @@ import {
   Store,
   Lock,
   Bell,
-  Shield
+  Shield,
+  CreditCard
 } from "lucide-react"
 
 import { SidebadrBody } from "../navbar/sidebar-body"
@@ -15,6 +16,7 @@ import { Sidebar, SidebarProvider, SidebarContent } from "@/components/ui/sideba
 // Import separate components
 import { ProfileSettings } from "./components/ProfileSettings"
 import { StoreSettings } from "./components/StoreSettings"
+import { PaymentSettings } from "./components/PaymentSettings"
 import { SecuritySettings } from "./components/SecuritySettings"
 import { NotificationSettings } from "./components/NotificationSettings"
 import { PrivacyPolicy } from "./components/PrivacyPolicy"
@@ -36,6 +38,11 @@ const settingsMenu: MenuGroup[] = [
         title: "Store",
         icon: Store,
         route: { url: "dashboard/settings", queryParams: { tab: "store" } }
+      },
+      {
+        title: "Payments",
+        icon: CreditCard,
+        route: { url: "dashboard/settings", queryParams: { tab: "payments" } }
       },
       {
         title: "Security",
@@ -84,6 +91,8 @@ export default function SettingsPage() {
         return <ProfileSettings />
       case "store":
         return <StoreSettings />
+      case "payments":
+        return <PaymentSettings />
       case "security":
         return <SecuritySettings />
       case "notifications":

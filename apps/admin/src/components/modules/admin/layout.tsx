@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { AppSidebar } from '@/components/modules/dashboard/navbar/app-sidebar'
 import { Separator } from '@/components/ui/separator'
 import { NavProfile } from '@/components/modules/dashboard/navbar/nav-profile'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate, Link } from 'react-router-dom'
 import ThemeSwitcher from '@/components/common/ThemeSwitcher'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -24,7 +24,9 @@ const AdminLayout = () => {
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <div>
-              <h1 className="font-semibold">Eylza Admin</h1>
+              <Link to="/admin/stores" className="font-semibold hover:opacity-80 transition-opacity">
+                Eylza Admin
+              </Link>
             </div>
           </div>
           <div className='flex-grow' />

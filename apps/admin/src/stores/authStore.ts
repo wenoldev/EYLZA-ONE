@@ -60,7 +60,8 @@ export const useAuthStore = create<AuthState>()(
             return result;
           }
 
-          const userRole = (result.data.user.user_metadata?.role || result.data.role) as UserRole;
+          const userRole = (result.data.role || result.data.user?.role || result.data.user?.user_metadata?.role) as UserRole;
+          console.log("[AuthStore] Login response data.role:", result.data.role, "user_metadata role:", result.data.user?.user_metadata?.role, "=> Resolved userRole:", userRole);
 
           if (userRole !== 'admin' && userRole !== 'vendor') {
             set({
@@ -138,10 +139,12 @@ export const useAuthStore = create<AuthState>()(
           }
 
           // success -> set session
+          const refreshedRole = (result.data.role || result.data.user?.role || result.data.user?.user_metadata?.role) as UserRole;
+          console.log("[AuthStore] Token refresh data.role:", result.data.role, "=> Resolved role:", refreshedRole);
           set({
-            user: result.data.user,
+            user: { ...(result.data.user), role: refreshedRole },
             session: result.data.session,
-            role: result.data.user?.user_metadata?.role,
+            role: refreshedRole,
             isAuthenticated: true,
           });
         } catch (err: any) {
@@ -225,12 +228,15 @@ export const useAuthIntegration = () => {
     const result = await login(email, password);
 
     if (!result.error) {
-      const role = result.data.role;
-      if (role === 'vendor' || role === 'admin') {
+      const role = result.data.role || useAuthStore.getState().role;
+      console.log("[useAuthIntegration] handleLogin resolved role:", role, "=> Navigating to:", role === 'admin' ? '/admin/stores' : '/');
+      
+      if (role === 'admin') {
+        navigate('/admin/stores');
+      } else if (role === 'vendor') {
         navigate('/');
-      }
-      else {
-        navigate('/login')
+      } else {
+        navigate('/login');
       }
     }
 

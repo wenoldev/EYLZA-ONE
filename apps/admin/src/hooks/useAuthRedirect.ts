@@ -17,7 +17,7 @@ export const useAuthRedirect = () => {
       } else {
         // Default redirects based on role
         if (role === 'admin') {
-          navigate('/', { replace: true });
+          navigate('/admin/stores', { replace: true });
         } else if (role === 'vendor') {
           navigate('/', { replace: true });
         }

@@ -1,41 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { useUserStore } from '@/store/useUserStore';
 import { Package, Truck, CheckCircle2, ShoppingBag, ArrowRight, ExternalLink, RefreshCw } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { api } from '@/lib/api';
 
 const OrdersPage: React.FC = () => {
     const { user } = useUserStore();
+    const { storeSlug } = useParams();
     const [orders, setOrders] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        // Mock fetching orders
+    const storePrefix = storeSlug ? `/${storeSlug}` : '';
+
+    const fetchOrders = async () => {
         setIsLoading(true);
-        setTimeout(() => {
-            const mockOrders = [
-                { 
-                    id: '#EYL-12345', 
-                    date: 'March 15, 2026', 
-                    total: 7999, 
-                    status: 'Delivered', 
-                    items: [
-                        { name: 'Gold Birthstone Necklace', image: '/images/jewelry-1.jpg', price: 4999, quantity: 1 },
-                        { name: 'Silver Hoop Earrings', image: '/images/jewelry-2.jpg', price: 2999, quantity: 1 }
-                    ]
-                },
-                { 
-                    id: '#EYL-12301', 
-                    date: 'February 28, 2026', 
-                    total: 12499, 
-                    status: 'Shipped', 
-                    items: [
-                        { name: 'Diamond Solitaire Ring', image: '/images/jewelry-3.jpg', price: 12499, quantity: 1 }
-                    ]
-                }
-            ];
-            setOrders(mockOrders);
+        try {
+            const res = await api.get('/customer/orders');
+            const data = res.data?.orders || res.orders || [];
+            if (data && data.length > 0) {
+                const formatted = data.map((o: any) => ({
+                    id: o.id,
+                    date: o.created_at ? new Date(o.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Recent',
+                    total: o.total_amount,
+                    status: o.status ? (o.status.charAt(0).toUpperCase() + o.status.slice(1)) : 'Processing',
+                    items: (o.order_items || []).map((it: any) => ({
+                        name: it.product_name,
+                        image: '/placeholder.svg',
+                        price: it.product_price,
+                        quantity: it.quantity,
+                    }))
+                }));
+                setOrders(formatted);
+            } else {
+                setOrders([]);
+            }
+        } catch (err) {
+            console.warn("Failed to fetch customer orders:", err);
+            setOrders([]);
+        } finally {
             setIsLoading(false);
-        }, 1200);
+        }
+    };
+
+    useEffect(() => {
+        fetchOrders();
     }, [user?.id]);
 
     const getStatusIcon = (status: string) => {
@@ -62,11 +70,14 @@ const OrdersPage: React.FC = () => {
                     <p className="text-muted-foreground">Track your orders and view past purchases from {user?.name || 'your'} collection.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-accent/30 hover:bg-accent/50 border border-border rounded-full text-xs font-bold uppercase tracking-widest transition-all">
-                        <RefreshCw className="w-3.5 h-3.5" />
+                    <button 
+                        onClick={fetchOrders}
+                        className="flex items-center gap-2 px-4 py-2 bg-accent/30 hover:bg-accent/50 border border-border rounded-full text-xs font-bold uppercase tracking-widest transition-all"
+                    >
+                        <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
                         Refresh
                     </button>
-                    <Link to="/products" className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all">
+                    <Link to={`${storePrefix}/products`} className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all">
                         New Order
                     </Link>
                 </div>

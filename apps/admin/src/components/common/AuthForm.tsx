@@ -128,7 +128,7 @@ export const AuthForm: React.FC<{ page: AuthPage }> = ({ page }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'google-login',
-          role: 'vendor',
+          ...(page === 'register' ? { role: 'vendor' } : {}),
           options: { redirectTo: `${window.location.origin}/auth/callback` },
         }),
       });

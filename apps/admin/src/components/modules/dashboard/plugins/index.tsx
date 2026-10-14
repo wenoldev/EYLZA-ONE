@@ -5,10 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/stores/authStore';
 import { useStoreStore } from '@/stores/storeStore';
-import { toast } from 'sonner';
 import Loader from '@/components/common/Loader';
 import api from '@/lib/api';
 import { Search, RotateCw, Puzzle } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Plugin {
     id: string;

@@ -16,11 +16,25 @@ const MOCK_MENUS: HeaderMenus = {
   ]
 };
 
-const Header = ({ config, viewportSize }: { config: HeaderConfig, viewportSize?: string }) => {
+interface HeaderComponentProps {
+  config: HeaderConfig;
+  viewportSize?: string;
+  cartItemCount?: number;
+  onCartClick?: () => void;
+  [key: string]: any;
+}
+
+const Header = ({ config, viewportSize, cartItemCount, onCartClick }: HeaderComponentProps) => {
   const [$menus, setMenus] = useState<HeaderMenus | null>(null);
 
   // @ts-ignore
   const $actions = typeof getHeaderActions === 'function' ? getHeaderActions() : {};
+
+  const mergedActions = {
+    ...$actions,
+    cartCount: cartItemCount !== undefined ? cartItemCount : $actions.cartCount,
+    onToggleCart: onCartClick || $actions.onToggleCart,
+  };
 
   useEffect(() => {
     // @ts-ignore
@@ -35,7 +49,7 @@ const Header = ({ config, viewportSize }: { config: HeaderConfig, viewportSize?:
   if (!$menus) return null;
 
   return (
-    <HeaderMain config={config} menus={$menus} actions={$actions} viewportSize={viewportSize} />
+    <HeaderMain config={config} menus={$menus} actions={mergedActions} viewportSize={viewportSize} />
   )
 }
 

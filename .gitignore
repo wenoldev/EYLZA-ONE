@@ -37,3 +37,9 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Python
+python_utils/
+*.pyc
+__pycache__/
+.pytest_cache/

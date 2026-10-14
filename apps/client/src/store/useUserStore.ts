@@ -110,7 +110,7 @@ export const useUserStore = create<UserState>()(
       updateProfile: async (data) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await api.patch('/customer/auth/profile', data);
+          const response = await api.patch('/customer/profile', data);
           if (response?.user) {
             set({ user: response.user });
           }

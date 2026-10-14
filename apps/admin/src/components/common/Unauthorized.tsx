@@ -38,7 +38,7 @@ export const Unauthorized = () => {
             ) : (
               <>
                 <Link
-                  to={role === 'admin' ? '/admin/dashboard' : '/'}
+                  to={role === 'admin' ? '/admin/stores' : '/'}
                   className="inline-flex items-center justify-center w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors"
                 >
                   Go to Dashboard

@@ -1,21 +1,42 @@
 import { useState, useEffect } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { ChevronRight, ShoppingCart, Tag, Info, ShieldCheck, CheckCircle2 } from "lucide-react"
 import { useCartStore } from "@/store/useCartStore"
 import { useUserStore } from "@/store/useUserStore"
 import { useStore } from "@/store/useStore"
+import { api } from "@/lib/api"
+
+function loadRazorpayScript(): Promise<boolean> {
+  return new Promise((resolve) => {
+    if ((window as any).Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+}
 
 export default function Checkout() {
   const { items, getSubtotal, clearCart } = useCartStore()
   const { user, isAuthenticated } = useUserStore()
   const { store } = useStore()
   const navigate = useNavigate()
+  const { storeSlug } = useParams()
 
   const [paymentMethod, setPaymentMethod] = useState("razorpay")
+  const [availableMethods, setAvailableMethods] = useState<any[]>([
+    { id: "razorpay", name: "Razorpay (UPI, Cards, NetBanking)", type: "prepaid" },
+    { id: "cod", name: "Cash on Delivery (COD)", type: "postpaid" }
+  ])
   const [billingAddress, setBillingAddress] = useState("same")
   const [discountCode, setDiscountCode] = useState("")
   const [showSummaryMobile, setShowSummaryMobile] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   
   // Form state
   const [formData, setFormData] = useState({
@@ -36,9 +57,29 @@ export default function Checkout() {
 
   useEffect(() => {
     if (items.length === 0 && !isProcessing) {
-      navigate('/cart')
+      navigate(storeSlug ? `/${storeSlug}/cart` : '/cart')
     }
-  }, [items, navigate, isProcessing])
+  }, [items, navigate, isProcessing, storeSlug])
+
+  useEffect(() => {
+    const fetchMethods = async () => {
+      const storeId = store?.id || (globalThis as any).__EYLZA_STORE_ID__;
+      if (!storeId) return;
+      try {
+        const res = await api.get(`/public/stores/${storeId}/payment-methods`);
+        const methods = res.methods || res.data?.methods;
+        if (methods && methods.length > 0) {
+          setAvailableMethods(methods);
+          if (!methods.find((m: any) => m.id === paymentMethod)) {
+            setPaymentMethod(methods[0].id);
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch store payment methods, using defaults:", err);
+      }
+    };
+    fetchMethods();
+  }, [store?.id]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target
@@ -46,17 +87,143 @@ export default function Checkout() {
   }
 
   const handleCompleteOrder = async () => {
+    if (!formData.email || !formData.firstName || !formData.address || !formData.city || !formData.pinCode) {
+      alert("Please fill in all required contact and shipping details.");
+      return;
+    }
+
     setIsProcessing(true)
-    // Mocking order creation
-    setTimeout(() => {
-      console.log("Order placed:", { items, total, formData, paymentMethod })
-      clearCart()
-      // In a real app, redirect to success page
-      // navigate('/order-success')
-      setIsProcessing(false)
-      alert("Order placed successfully! (Mock)")
-      navigate('/')
-    }, 2000)
+    setErrorMessage(null)
+
+    const customerData = {
+      id: user?.id || null,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      name: `${formData.firstName} ${formData.lastName}`.trim(),
+      email: formData.email,
+      phone: formData.phone,
+      address: `${formData.address}${formData.apartment ? ', ' + formData.apartment : ''}, ${formData.city}, ${formData.state} - ${formData.pinCode}`,
+    }
+
+    const effectiveStoreId = store?.id || (globalThis as any).__EYLZA_STORE_ID__;
+
+    try {
+      if (paymentMethod === "razorpay") {
+        const isLoaded = await loadRazorpayScript();
+        if (!isLoaded) {
+          throw new Error("Razorpay SDK failed to load. Please check your network connection.");
+        }
+
+        // 1. Create order on vendor's Razorpay account
+        const orderRes = await api.post('/public/checkout/razorpay/order', {
+          store_id: effectiveStoreId,
+          amount: total,
+          currency: 'INR',
+          customer: customerData,
+          items: items.map(item => ({
+            id: item.product_id,
+            product_id: item.product_id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            attributes: item.attributes,
+          })),
+          tax,
+          shipping: 0,
+        });
+
+        const orderInfo = orderRes.data || orderRes;
+        const { razorpay_order_id, key_id, amount, currency } = orderInfo;
+
+        // 2. Open Razorpay Checkout modal
+        const options = {
+          key: key_id,
+          amount,
+          currency: currency || 'INR',
+          name: store?.name || 'EYLZA Store',
+          description: `Order #${razorpay_order_id.slice(-8)}`,
+          order_id: razorpay_order_id,
+          prefill: {
+            name: customerData.name,
+            email: customerData.email,
+            contact: customerData.phone,
+          },
+          theme: {
+            color: '#615d3c',
+          },
+          handler: async (response: any) => {
+            try {
+              // 3. Verify signature & record transaction
+              const verifyRes = await api.post('/public/checkout/razorpay/verify', {
+                store_id: effectiveStoreId,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                customer: customerData,
+                items,
+                tax,
+                shipping: 0,
+              });
+
+              clearCart();
+              const confirmedOrder = verifyRes.data?.order || verifyRes.order || {
+                id: response.razorpay_payment_id,
+                total_amount: total,
+                status: 'paid'
+              };
+
+              navigate(storeSlug ? `/${storeSlug}/order-success` : '/order-success', {
+                state: { order: confirmedOrder, customer: customerData, items }
+              });
+            } catch (vErr: any) {
+              setErrorMessage(vErr.message || "Payment verification failed. Please contact support.");
+            } finally {
+              setIsProcessing(false);
+            }
+          },
+          modal: {
+            ondismiss: () => {
+              setIsProcessing(false);
+            }
+          }
+        };
+
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
+      } else {
+        // Cash on Delivery
+        const codRes = await api.post('/public/checkout/cod', {
+          store_id: effectiveStoreId,
+          customer: customerData,
+          items: items.map(item => ({
+            id: item.product_id,
+            product_id: item.product_id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            attributes: item.attributes,
+          })),
+          tax,
+          shipping: 0,
+        });
+
+        clearCart();
+        const confirmedOrder = codRes.data?.order || codRes.order || {
+          id: `COD-${Date.now()}`,
+          total_amount: total,
+          status: 'pending'
+        };
+
+        navigate(storeSlug ? `/${storeSlug}/order-success` : '/order-success', {
+          state: { order: confirmedOrder, customer: customerData, items }
+        });
+        setIsProcessing(false);
+      }
+    } catch (err: any) {
+      console.error("Order processing error:", err);
+      setErrorMessage(err.message || "Failed to process order. Please try again.");
+      setIsProcessing(false);
+    }
   }
 
   return (
@@ -301,50 +468,48 @@ export default function Checkout() {
               <p className="text-[13px] text-gray-500 mb-4">All transactions are secure and encrypted.</p>
               
               <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-                {/* Razorpay Option */}
-                <div 
-                  className={`p-4 cursor-pointer transition-all ${paymentMethod === "razorpay" ? "bg-primary/5" : "bg-white hover:bg-gray-50"}`}
-                  onClick={() => setPaymentMethod("razorpay")}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center bg-white transition-all ${paymentMethod === "razorpay" ? "border-primary" : "border-gray-300"}`}>
-                      {paymentMethod === "razorpay" && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
-                    </div>
-                    <div className="flex-1 flex items-center justify-between">
-                      <span className="text-sm font-bold">Razorpay Secure (UPI, Cards, Wallets)</span>
-                      <div className="flex gap-1.5">
-                         <div className="w-8 h-5 bg-white rounded border border-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-400">UPI</div>
-                         <div className="w-8 h-5 bg-white rounded border border-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-400">VISA</div>
-                         <div className="w-8 h-5 bg-white rounded border border-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-400">MC</div>
+                {availableMethods.map((method, idx) => (
+                  <div 
+                    key={method.id}
+                    className={`p-4 cursor-pointer transition-all ${idx > 0 ? 'border-t border-gray-200' : ''} ${paymentMethod === method.id ? "bg-primary/5" : "bg-white hover:bg-gray-50"}`}
+                    onClick={() => setPaymentMethod(method.id)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center bg-white transition-all ${paymentMethod === method.id ? "border-primary" : "border-gray-300"}`}>
+                        {paymentMethod === method.id && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                      </div>
+                      <div className="flex-1 flex items-center justify-between">
+                        <span className="text-sm font-bold">{method.name || (method.id === 'razorpay' ? 'Razorpay Secure' : 'Cash on Delivery')}</span>
+                        {method.id === 'razorpay' && (
+                          <div className="flex gap-1.5">
+                            <div className="w-8 h-5 bg-white rounded border border-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-400">UPI</div>
+                            <div className="w-8 h-5 bg-white rounded border border-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-400">VISA</div>
+                            <div className="w-8 h-5 bg-white rounded border border-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-400">MC</div>
+                          </div>
+                        )}
                       </div>
                     </div>
-                  </div>
-                  {paymentMethod === "razorpay" && (
-                    <div className="mt-4 p-6 bg-accent/20 rounded-lg text-center animate-in zoom-in-95 duration-200">
-                      <div className="flex flex-col items-center">
-                        <CheckCircle2 className="w-10 h-10 text-primary/40 mb-3" />
-                        <p className="text-sm text-gray-600 max-w-xs mx-auto">
-                          After clicking "Complete order", you will be redirected to Razorpay Secure to complete your purchase safely.
-                        </p>
+                    {paymentMethod === "razorpay" && method.id === "razorpay" && (
+                      <div className="mt-4 p-6 bg-accent/20 rounded-lg text-center animate-in zoom-in-95 duration-200">
+                        <div className="flex flex-col items-center">
+                          <CheckCircle2 className="w-10 h-10 text-primary/40 mb-3" />
+                          <p className="text-sm text-gray-600 max-w-xs mx-auto">
+                            After clicking "Complete order", the Razorpay payment window will open to pay securely via UPI, Cards, or NetBanking.
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* COD Option */}
-                <div 
-                  className={`p-4 border-t border-gray-200 cursor-pointer transition-all ${paymentMethod === "cod" ? "bg-primary/5" : "bg-white hover:bg-gray-50"}`}
-                  onClick={() => setPaymentMethod("cod")}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center bg-white transition-all ${paymentMethod === "cod" ? "border-primary" : "border-gray-300"}`}>
-                      {paymentMethod === "cod" && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
-                    </div>
-                    <span className="text-sm font-bold">Cash on Delivery (COD)</span>
+                    )}
                   </div>
-                </div>
+                ))}
               </div>
             </section>
+
+            {/* Error Message */}
+            {errorMessage && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-medium animate-in fade-in">
+                {errorMessage}
+              </div>
+            )}
 
             {/* Actions */}
             <div className="pt-4">

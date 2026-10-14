@@ -48,7 +48,8 @@ export const AuthCallback: React.FC = () => {
 
           if (response.ok) {
             const userData = await response.json();
-            let userRole = userData.user.user_metadata?.role || userData.role;
+            let userRole = userData.role || userData.user?.role || userData.user?.user_metadata?.role;
+            console.log("[AuthCallback] Received userData:", userData, "=> Resolved userRole:", userRole);
             if (!userRole && role) {
               // Call backend to set role
               const setRoleResponse = await fetch(`${apiUrl}/api/v1/auth/user`, {
@@ -67,13 +68,13 @@ export const AuthCallback: React.FC = () => {
               }
             }
             useAuthStore.setState({
-              user: userData.user,
+              user: { ...userData.user, role: userRole },
               session: {
                 access_token: accessToken,
                 refresh_token: refreshToken,
                 expires_at: Math.floor(Date.now() / 1000) + 3600, // 1 hour from now
               },
-              role: userData.user.user_metadata?.role || userData.role,
+              role: userRole,
               isAuthenticated: true,
             });
           } else {
@@ -90,16 +91,14 @@ export const AuthCallback: React.FC = () => {
 
         // Redirect based on role or recovery flow after a short delay
         setTimeout(() => {
+          const finalRole = useAuthStore.getState().role;
+          console.log("[AuthCallback] Executing final redirect with role:", finalRole);
           if (isRecovery) {
             navigate('/update-password');
-          } else if (isAuthenticated && role) {
-            if (role === 'admin') {
-              navigate('/admin/dashboard');
-            } else if (role === 'vendor') {
-              navigate('/');
-            } else {
-              navigate('/login');
-            }
+          } else if (finalRole === 'admin') {
+            navigate('/admin/stores');
+          } else if (finalRole === 'vendor') {
+            navigate('/');
           } else {
             navigate('/');
           }

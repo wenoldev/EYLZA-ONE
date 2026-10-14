@@ -17,6 +17,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const isLoading = useAuthStore((state) => state.isLoading);
   const role = useAuthStore((state) => state.role);
   const location = useLocation();
+  console.log("[ProtectedRoute] Path:", location.pathname, "Role in store:", role, "AllowedRoles:", allowedRoles);
 
   if (isLoading) {
     return <Loader />;
