@@ -70,7 +70,7 @@ const LoginPage: React.FC = () => {
                                 <label htmlFor="password" className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                                     Password
                                 </label>
-                                <Link to="/forgot-password" size="sm" className="text-[10px] font-bold uppercase tracking-widest text-primary hover:text-primary/70 transition-colors">
+                                <Link to="/forgot-password" className="text-[10px] font-bold uppercase tracking-widest text-primary hover:text-primary/70 transition-colors">
                                     Forgot password?
                                 </Link>
                             </div>

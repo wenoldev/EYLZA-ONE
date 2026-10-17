@@ -23,5 +23,6 @@ export interface SliderConfig {
         cardStyles: DynamicCardProps['styles'];
         gap?: string;
         padding?: string;
+        fontFamily?: string;
     };
 }

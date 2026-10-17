@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation, useParams } from 'react-router-dom';
-import { useUserStore } from '@/store/useUserStore';
-import { useStore } from '@/store/useStore';
+import { useUserStore, useStore } from '../../../libs/storeBridge';
 import { ShieldCheck } from 'lucide-react';
 
 const AurelianLogin: React.FC = () => {
@@ -81,7 +80,7 @@ const AurelianLogin: React.FC = () => {
                             <div className="space-y-1">
                                 <div className="flex justify-between items-end">
                                     <label className="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-stone-400">Password</label>
-                                    <Link to="/forgot-password" size="sm" className="text-[10px] font-sans font-bold uppercase tracking-widest text-primary hover:text-stone-900 transition-colors">
+                                    <Link to="/forgot-password" className="text-[10px] font-sans font-bold uppercase tracking-widest text-primary hover:text-stone-900 transition-colors">
                                         Forgot?
                                     </Link>
                                 </div>

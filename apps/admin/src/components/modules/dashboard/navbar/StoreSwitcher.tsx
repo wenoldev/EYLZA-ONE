@@ -80,7 +80,7 @@ const getStatusGlow = (status: Status) => {
 
 export function StoreSwitcher() {
   const { isMobile } = useSidebar();
-  const { stores, loading, error, activeStoreId, setActiveStoreId, fetchStores } = useStoreStore();
+  const { stores, isLoading: loading, error, activeStoreId, setActiveStoreId, fetchStores } = useStoreStore();
   const [activeTeam, setActiveTeam] = useState<Store | null>(null);
   const [isLimitDialogOpen, setIsLimitDialogOpen] = useState(false);
 

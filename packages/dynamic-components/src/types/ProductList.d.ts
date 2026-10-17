@@ -1,4 +1,5 @@
 export interface ProductListConfig {
+  items?: any[];
   title?: string;
   subtitle?: string;
   template: 'category' | 'product' | 'minimal' | 'zarishka';

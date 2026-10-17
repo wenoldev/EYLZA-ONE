@@ -43,3 +43,7 @@ python_utils/
 *.pyc
 __pycache__/
 .pytest_cache/
+
+# Cloudflare
+.wrangler
+

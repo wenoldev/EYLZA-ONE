@@ -126,8 +126,12 @@ const CreateTicket = () => {
             <Label className="text-sm font-semibold">Attachment (Optional)</Label>
             <div className="flex items-center gap-4">
               <UploadDialog 
-                onImagesSelected={(images) => setNewTicket({ ...newTicket, image_url: images[0]?.url || '' })}
-                initialValues={newTicket.image_url ? [{ url: newTicket.image_url, alt: '' }] : []}
+                onImagesSelected={(images) => {
+                  const img = images[0]
+                  const url = img ? (typeof img.image_url === 'string' ? img.image_url : img.image_url?.fileContent || '') : ''
+                  setNewTicket({ ...newTicket, image_url: url })
+                }}
+                initialValues={newTicket.image_url ? [{ image_url: newTicket.image_url, isPrimary: true }] : []}
                 multiple={false}
               />
               {newTicket.image_url && (

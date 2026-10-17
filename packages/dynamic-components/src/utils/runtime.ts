@@ -5,6 +5,10 @@ type CartAttributes = Record<string, string>;
 export type EylzaBridge = {
   addToCart?: (product: any, quantity?: number, attributes?: CartAttributes) => void;
   useProductStore?: () => any;
+  useCartStore?: () => any;
+  useUserStore?: () => any;
+  useStore?: () => any;
+  useUIStore?: () => any;
 };
 
 const getGlobalObject = (): any => {

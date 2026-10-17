@@ -7,14 +7,21 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "clean": "rimraf node_modules **/node_modules dist **/.turbo"
+    "clean": "rimraf node_modules **/node_modules dist **/.turbo",
+    "deploy:storefront": "npm run build && wrangler pages deploy apps/client/dist --project-name=eylza-storefront",
+    "deploy:dashboard": "npm run build && wrangler pages deploy apps/admin/dist --project-name=eylza-dashboard",
+    "deploy:editor": "npm run build && wrangler pages deploy apps/editor/dist --project-name=eylza-editor",
+    "deploy:client": "npm run deploy:storefront",
+    "deploy:admin": "npm run deploy:dashboard",
+    "deploy": "npm run deploy:dashboard && npm run deploy:editor && npm run deploy:storefront"
   },
   "devDependencies": {
     "prettier": "^3.7.4",
     "turbo": "^2.7.6",
     "typescript": "5.9.2",
     "eslint": "^9.18.0",
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.0.1",
+    "wrangler": "^4.147.0"
   },
   "engines": {
     "node": ">=18"

@@ -22,7 +22,7 @@ export interface ImageBannerConfig {
   buttons: {
     label: string;
     link: string;
-    style: 'primary' | 'secondary' | 'outline';
+    style: 'primary' | 'secondary' | 'outline' | 'boxed-outline';
     showArrow?: boolean;
     backgroundColor?: string;
     borderRadius?: number;
@@ -59,6 +59,7 @@ export interface ImageBannerConfig {
     backgroundColor?: string;
     height?: string;
     borderRadius?: string;
+    fontFamily?: string;
   };
   style?: {
     general?: {

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Star, Plus, ArrowRight, Minus } from 'lucide-react';
-import { useCartStore } from '@/store/useCartStore';
-import { useUIStore } from '@/store/useUIStore';
+import { useCartStore, useUIStore } from '../../../libs/storeBridge';
 
 const AurelianProductDetail: React.FC = () => {
     const { productId } = useParams();

@@ -78,6 +78,7 @@ export interface EditorControl {
   step?: number
   itemLabel?: string
   fields?: EditorControl[]
+  visible?: ((props: any) => boolean) | boolean
   visibleWhen?: {
     property: string
     value: any

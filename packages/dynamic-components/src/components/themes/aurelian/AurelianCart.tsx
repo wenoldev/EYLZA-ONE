@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { X, Minus, Plus, ShoppingBag, Truck, ShieldCheck } from 'lucide-react';
-import { useCartStore } from '@/store/useCartStore';
+import { useCartStore, type CartItem } from '../../../libs/storeBridge';
 
 const AurelianCart: React.FC = () => {
   const { items, updateQuantity, removeItem, getSubtotal } = useCartStore();
@@ -45,7 +45,7 @@ const AurelianCart: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
         {/* Cart Items */}
         <div className="lg:col-span-8 space-y-12">
-          {items.map((item) => (
+          {items.map((item: CartItem) => (
             <div key={item.id} className="group relative flex flex-col md:flex-row gap-8 bg-white p-6 md:p-0 border border-stone-100 shadow-sm rounded-3xl overflow-hidden md:border-none md:bg-transparent md:shadow-none">
               <div className="w-full md:w-56 aspect-[4/5] overflow-hidden bg-white border border-stone-100 shadow-sm rounded-2xl">
                 <img 

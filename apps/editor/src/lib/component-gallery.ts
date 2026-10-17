@@ -2,13 +2,15 @@ export interface ComponentVariant {
   id: string
   name: string
   thumbnail?: string
-  selector: string
+  selector?: string
+  type?: string
   defaultProps: Record<string, any>
   hidden?: boolean
 }
 
 export interface ComponentGalleryItem {
   selector: string
+  type?: string
   label: string
   variants: ComponentVariant[]
   hidden?: boolean
@@ -395,6 +397,7 @@ export const componentGallery: ComponentGalleryItem[] = [
     ]
   },
   {
+    selector: "mediaText",
     type: "mediaText",
     label: "Media & Text",
     variants: [
