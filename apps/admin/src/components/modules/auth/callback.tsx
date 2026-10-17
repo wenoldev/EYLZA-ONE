@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
 
@@ -11,10 +11,16 @@ interface ErrorState {
 export const AuthCallback: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { initializeAuth, role, isAuthenticated } = useAuthStore();
+  const { initializeAuth } = useAuthStore();
   const [error, setError] = useState<ErrorState | null>(null);
+  const hasHandled = useRef(false);
 
   useEffect(() => {
+    if (hasHandled.current) return;
+    hasHandled.current = true;
+
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
     const handleCallback = async () => {
       try {
         // Parse query parameters from URL
@@ -22,18 +28,19 @@ export const AuthCallback: React.FC = () => {
 
         const accessToken = hashParams.get('access_token');
         const refreshToken = hashParams.get('refresh_token');
-        const error = hashParams.get('error');
-        const errorCode = hashParams.get('error_code');
-        const errorDescription = hashParams.get('error_description');
+        const errorParam = hashParams.get('error');
+        const errorCodeParam = hashParams.get('error_code');
+        const errorDescParam = hashParams.get('error_description');
         const role = searchParams.get('role');
+
         // Handle error case
-        if (error && errorCode && errorDescription) {
+        if (errorParam && errorCodeParam && errorDescParam) {
           setError({
-            error,
-            errorCode,
-            errorDescription: decodeURIComponent(errorDescription),
+            error: errorParam,
+            errorCode: errorCodeParam,
+            errorDescription: decodeURIComponent(errorDescParam),
           });
-          navigate(`/login?error=${encodeURIComponent(error)}`);
+          navigate(`/login?error=${encodeURIComponent(errorParam)}`);
           return;
         }
 
@@ -90,7 +97,7 @@ export const AuthCallback: React.FC = () => {
         const isRecovery = type === 'recovery';
 
         // Redirect based on role or recovery flow after a short delay
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           const finalRole = useAuthStore.getState().role;
           console.log("[AuthCallback] Executing final redirect with role:", finalRole);
           if (isRecovery) {
@@ -102,7 +109,7 @@ export const AuthCallback: React.FC = () => {
           } else {
             navigate('/');
           }
-        }, 2000);
+        }, 1500);
       } catch (err) {
         console.error('Callback error:', err);
         setError({
@@ -115,7 +122,11 @@ export const AuthCallback: React.FC = () => {
     };
 
     handleCallback();
-  }, [searchParams, navigate, initializeAuth, role, isAuthenticated]);
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [searchParams, navigate, initializeAuth]);
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
